@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commodities Trading Lifecycle Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           CSS VARIABLES — Finance-dashboard palette
+           Light backgrounds with dark-blue accents
+           ============================================================ */
+        :root {
+            --primary: #1e3a5f;
+            --primary-dark: #0f2440;
+            --primary-light: #2c5282;
+            --accent: #3182ce;
+            --bg-page: #f0f2f7;
+            --bg-card: #ffffff;
+            --bg-sidebar: #f7f8fc;
+            --border: #d5dbe5;
+            --border-light: #e8ecf2;
+            --text-dark: #1a202c;
+            --text-body: #2d3748;
+            --text-muted: #718096;
+            --success: #2f855a;
+            --success-bg: #f0fff4;
+            --success-border: #c6f6d5;
+            --warning: #b7791f;
+            --warning-bg: #fffff0;
+            --warning-border: #fefcbf;
+            --danger: #c53030;
+            --danger-bg: #fff5f5;
+            --danger-border: #fed7d7;
+            --info: #2b6cb0;
+            --info-bg: #ebf8ff;
+            --radius: 6px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+            --nav-height: 56px;
+            --sidebar-width: 310px;
+        }
+
+        /* ============================================================
+           BASE STYLES
+           ============================================================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 14px; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-page);
+            color: var(--text-body);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* ============================================================
+           NAVIGATION — Fixed top bar
+           ============================================================ */
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            height: var(--nav-height);
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--primary);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: var(--shadow);
+        }
+        .nav-brand {
+            font-size: 1.15rem; font-weight: 700; color: var(--primary);
+            letter-spacing: -0.3px;
+        }
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+        .nav-btn {
+            background: none; border: 1px solid transparent; border-radius: var(--radius);
+            padding: 7px 16px; font-size: 0.85rem; font-weight: 500;
+            color: var(--text-body); cursor: pointer; transition: all 0.15s;
+            font-family: inherit;
+        }
+        .nav-btn:hover { background: var(--bg-page); border-color: var(--border); }
+        .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .seed-btn {
+            background: var(--info-bg) !important; color: var(--info) !important;
+            border: 1px solid var(--accent) !important; font-size: 0.8rem;
+        }
+        .seed-btn:hover { background: #d0e8ff !important; }
+
+        /* ============================================================
+           LAYOUT — Main + Sidebar grid
+           ============================================================ */
+        .app-layout {
+            display: flex;
+            margin-top: var(--nav-height);
+            min-height: calc(100vh - var(--nav-height));
+        }
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            margin-right: var(--sidebar-width);
+            max-width: calc(100% - var(--sidebar-width));
+        }
+        .risk-sidebar {
+            position: fixed; top: var(--nav-height); right: 0; bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-left: 1px solid var(--border);
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .sidebar-title {
+            font-size: 0.9rem; font-weight: 700; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 12px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* ============================================================
+           STEPPER — Horizontal lifecycle progress bar
+           ============================================================ */
+        .stepper-container {
+            position: sticky; top: var(--nav-height); z-index: 50;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .stepper {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .step {
+            display: flex; flex-direction: column; align-items: center;
+            position: relative; flex: 0 0 auto;
+        }
+        .step-circle {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85rem;
+            border: 2px solid var(--border);
+            background: var(--bg-page);
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+        .step.completed .step-circle {
+            background: var(--success); border-color: var(--success); color: #fff;
+        }
+        .step.active .step-circle {
+            background: var(--primary); border-color: var(--primary); color: #fff;
+            box-shadow: 0 0 0 3px rgba(30,58,95,0.2);
+        }
+        .step-label {
+            font-size: 0.7rem; font-weight: 600; color: var(--text-muted);
+            margin-top: 6px; text-align: center; white-space: nowrap;
+        }
+        .step.active .step-label { color: var(--primary); }
+        .step.completed .step-label { color: var(--success); }
+        .step-line {
+            flex: 1; height: 2px; background: var(--border);
+            margin: 0 8px; margin-bottom: 20px;
+        }
+        .step-line.completed { background: var(--success); }
+
+        /* ============================================================
+           CARDS & PANELS
+           ============================================================ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+        .card-title {
+            font-size: 1rem; font-weight: 700; color: var(--primary);
+            margin-bottom: 14px; padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .risk-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+        }
+        .risk-panel-title {
+            font-size: 0.78rem; font-weight: 700; color: var(--primary);
+            margin-bottom: 8px; text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .risk-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.78rem; padding: 3px 0;
+        }
+        .risk-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+        .risk-value.positive { color: var(--success); }
+        .risk-value.negative { color: var(--danger); }
+
+        /* ============================================================
+           FORMS
+           ============================================================ */
+        .form-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label {
+            font-size: 0.78rem; font-weight: 600; color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 10px; border: 1px solid var(--border);
+            border-radius: var(--radius); font-size: 0.85rem;
+            font-family: inherit; background: #fff;
+            transition: border-color 0.15s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(49,130,206,0.15);
+        }
+        .form-group input[readonly] { background: var(--bg-page); color: var(--text-muted); }
+        .notional-display {
+            background: var(--info-bg); border: 1px solid #bee3f8;
+            border-radius: var(--radius); padding: 12px 16px;
+            margin-top: 14px;
+        }
+        .notional-label { font-size: 0.78rem; color: var(--info); font-weight: 600; }
+        .notional-value {
+            font-size: 1.4rem; font-weight: 700; color: var(--primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ============================================================
+           TABLES
+           ============================================================ */
+        .data-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .data-table thead th {
+            background: var(--primary); color: #fff;
+            padding: 9px 10px; text-align: left;
+            font-weight: 600; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .data-table tbody td {
+            padding: 8px 10px; border-bottom: 1px solid var(--border-light);
+            white-space: nowrap;
+        }
+        .data-table tbody tr:hover { background: var(--bg-page); }
+        .data-table tbody tr.highlight { background: #ebf8ff; }
+        .data-table tbody tr.matched td { background: var(--success-bg); }
+        .data-table tbody tr.break td { background: var(--danger-bg); }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 9px 18px; border: none; border-radius: var(--radius);
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-success:hover { background: #276749; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #9b2c2c; }
+        .btn-warning { background: var(--warning); color: #fff; }
+        .btn-warning:hover { background: #975a16; }
+        .btn-outline {
+            background: #fff; color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        .btn-outline:hover { background: var(--bg-page); }
+        .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-group { display: flex; gap: 8px; margin-top: 16px; }
+
+        /* ============================================================
+           TOOLTIPS — Hover definitions for jargon
+           ============================================================ */
+        .tip {
+            position: relative;
+            border-bottom: 1px dashed var(--accent);
+            cursor: help; color: var(--accent);
+            font-weight: 500;
+        }
+        .tip::after {
+            content: attr(data-tip);
+            position: absolute; bottom: calc(100% + 6px); left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-dark); color: #fff;
+            padding: 6px 10px; border-radius: 4px;
+            font-size: 0.72rem; font-weight: 400;
+            white-space: nowrap; max-width: 320px;
+            pointer-events: none; opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 200; line-height: 1.4;
+        }
+        .tip:hover::after { opacity: 1; }
+
+        /* ============================================================
+           VALIDATION CHECKLIST
+           ============================================================ */
+        .check-list { list-style: none; }
+        .check-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 12px; border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
+        }
+        .check-icon { font-size: 1.1rem; width: 22px; text-align: center; }
+        .check-pass .check-icon { color: var(--success); }
+        .check-fail .check-icon { color: var(--danger); }
+
+        /* ============================================================
+           CONFIRMATION MESSAGE — Pre-formatted text
+           ============================================================ */
+        .confirmation-msg {
+            background: var(--bg-page);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px; margin: 16px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem; line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            color: var(--text-dark);
+        }
+
+        /* ============================================================
+           RECONCILIATION PANELS — Three-column layout
+           ============================================================ */
+        .recon-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px; margin: 16px 0;
+        }
+        .recon-panel {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .recon-panel-header {
+            background: var(--primary); color: #fff;
+            padding: 8px 12px; font-size: 0.78rem; font-weight: 700;
+        }
+        .recon-panel-body { padding: 10px; font-size: 0.8rem; }
+        .recon-panel-body table { width: 100%; }
+        .recon-panel-body td { padding: 4px 6px; }
+        .recon-panel.matched { border-color: var(--success); }
+        .recon-panel.matched .recon-panel-header { background: var(--success); }
+        .recon-panel.break-panel { border-color: var(--danger); }
+        .recon-panel.break-panel .recon-panel-header { background: var(--danger); }
+
+        /* ============================================================
+           CREDIT RISK BAR
+           ============================================================ */
+        .credit-bar-container {
+            margin: 4px 0; font-size: 0.72rem;
+        }
+        .credit-bar-label {
+            display: flex; justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .credit-bar {
+            height: 8px; background: var(--border-light);
+            border-radius: 4px; overflow: hidden;
+        }
+        .credit-bar-fill {
+            height: 100%; border-radius: 4px; transition: width 0.3s;
+        }
+        .credit-bar-fill.safe { background: var(--success); }
+        .credit-bar-fill.amber { background: #dd6b20; }
+        .credit-bar-fill.red { background: var(--danger); }
+
+        /* ============================================================
+           ABOUT PAGE
+           ============================================================ */
+        .about-section {
+            margin-bottom: 20px;
+        }
+        .about-section h3 {
+            color: var(--primary); margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .about-section p { color: var(--text-body); font-size: 0.88rem; line-height: 1.65; }
+        .stage-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--primary); color: #fff;
+            font-weight: 700; font-size: 0.82rem;
+        }
+
+        /* ============================================================
+           SETTLEMENT INSTRUCTIONS
+           ============================================================ */
+        .settlement-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; margin: 12px 0;
+        }
+        .settlement-box {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 12px;
+        }
+        .settlement-box h4 {
+            font-size: 0.8rem; font-weight: 700; color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .settlement-row {
+            display: flex; justify-content: space-between;
+            font-size: 0.82rem; padding: 3px 0;
+        }
+        .settlement-row .label { color: var(--text-muted); }
+        .settlement-row .value { font-weight: 600; }
+
+        /* ============================================================
+           ENRICHMENT TABLE
+           ============================================================ */
+        .enrich-table {
+            width: 100%; font-size: 0.82rem;
+        }
+        .enrich-table td {
+            padding: 5px 8px; border-bottom: 1px solid var(--border-light);
+        }
+        .enrich-table td:first-child {
+            font-weight: 600; color: var(--text-dark); width: 180px;
+        }
+
+        /* ============================================================
+           AGGREGATE PANEL
+           ============================================================ */
+        .agg-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px; margin-top: 12px;
+        }
+        .agg-card {
+            background: var(--bg-page); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 10px;
+        }
+        .agg-card-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .agg-card-value { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .agg-card-sub { font-size: 0.75rem; font-weight: 600; }
+        .agg-card-sub.long { color: var(--success); }
+        .agg-card-sub.short { color: var(--danger); }
+        .agg-card-sub.flat { color: var(--text-muted); }
+
+        /* ============================================================
+           SWAP SCHEDULE TABLE
+           ============================================================ */
+        .swap-schedule { margin: 12px 0; }
+        .swap-schedule table { width: 100%; }
+
+        /* ============================================================
+           UTILITY CLASSES
+           ============================================================ */
+        .text-success { color: var(--success) !important; }
+        .text-danger { color: var(--danger) !important; }
+        .text-warning { color: var(--warning) !important; }
+        .text-muted { color: var(--text-muted) !important; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: 700; }
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 12px; }
+        .mt-4 { margin-top: 16px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-3 { margin-bottom: 12px; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .hidden { display: none !important; }
+        .badge {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 0.7rem; font-weight: 600;
+        }
+        .badge-buy { background: #ebf8ff; color: #2b6cb0; }
+        .badge-sell { background: #fff5f5; color: #c53030; }
+        .badge-stage { background: var(--bg-page); color: var(--primary); border: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION BAR
+     ============================================================ -->
+<nav class="top-nav">
+    <div class="nav-brand">Commodities Trading Lifecycle</div>
+    <div class="nav-links">
+        <button class="nav-btn active" id="navNewTrade" onclick="startNewTrade()">New Trade</button>
+        <button class="nav-btn" id="navBlotter" onclick="showView('blotter')">Blotter</button>
+        <button class="nav-btn" id="navAbout" onclick="showView('about')">About the Lifecycle</button>
+        <button class="nav-btn seed-btn" onclick="seedDemoTrades()">Seed 5 Demo Trades</button>
+    </div>
+</nav>
+
+<!-- ============================================================
+     APP LAYOUT: Main + Risk Sidebar
+     ============================================================ -->
+<div class="app-layout">
+    <main class="main-content" id="mainContent">
+        <!-- Content rendered dynamically by JavaScript -->
+    </main>
+    <aside class="risk-sidebar" id="riskSidebar">
+        <div class="sidebar-title">Parallel Functions</div>
+        <!-- Risk panels rendered dynamically -->
+    </aside>
+</div>
+
+<script>
+/* ================================================================
+   COMMODITIES TRADING LIFECYCLE SIMULATOR
+   ================================================================
+   A single-file training tool that demonstrates the full lifecycle
+   of a commodities trade across six stages: Capture, Validation,
+   Confirmation, Clearing & Settlement, Reconciliation, and
+   Position Reporting.
+
+   All data is stored in-memory (no localStorage).
+   Prices are seeded with realistic values and jittered on load.
+   ================================================================ */
+
+// ============================================================
+// SECTION 1: REFERENCE DATA & CONSTANTS
+// ============================================================
+
+/**
+ * COMMODITIES — Reference data for each supported commodity.
+ * Fields: display name, symbol, unit, exchange, contract size,
+ * minimum tick size, seed base price, metal type (precious/base).
+ */
+const COMMODITIES = {
+    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious' },
+    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious' },
+    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious' },
+    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious' },
+    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base' },
+    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base' }
+};
+
+/** Sample counterparties with mock LEI and SSI data */
+const COUNTERPARTIES = {
+    'HSBC':                 { lei: '7LTWFZYICNSX8D621K86', swift: 'MRMDUS33', nostro: 'HSBC-NY-00142',   correspondent: 'HSBC Bank USA, NA' },
+    'JP Morgan':            { lei: '8I5DZWZKVSZI1NUHU748', swift: 'CHASUS33', nostro: 'JPM-NY-00287',    correspondent: 'JPMorgan Chase Bank, NA' },
+    'Standard Chartered':   { lei: 'U4LOSZMGC4FKEQ9RFO84', swift: 'SCBLGB2L', nostro: 'SCB-LN-00319',   correspondent: 'Standard Chartered Bank' },
+    'Goldman Sachs':        { lei: '784F5XWPLTWKTBV3E584', swift: 'GLONUS33', nostro: 'GS-NY-00456',    correspondent: 'Goldman Sachs & Co. LLC' },
+    'Citi':                 { lei: '6SHGI4ZSSLCXXQSBB395', swift: 'CITIUS33', nostro: 'CITI-NY-00503',  correspondent: 'Citibank, NA' }
+};
+
+/** Product types and their characteristics */
+const PRODUCT_TYPES = ['Spot', 'Forward', 'Future', 'Swap'];
+
+/** Lifecycle stage names */
+const STAGES = [
+    'Capture',
+    'Validation & Enrichment',
+    'Confirmation',
+    'Clearing & Settlement',
+    'Reconciliation',
+    'Position Reporting'
+];
+
+/** Fixed sample FX rates for enrichment */
+const FX_RATES = { 'GBP/USD': 1.2650, 'EUR/USD': 1.0850 };
+
+/** Internal books for enrichment */
+const BOOKS = ['PM-DESK-1', 'PM-DESK-2', 'BM-DESK-1', 'BM-DESK-2'];
+
+/** Trader initials for enrichment */
+const TRADER_INITIALS = ['JD', 'AR', 'KM', 'SP', 'TW'];
+
+/** Tooltip definitions for jargon terms */
+const TOOLTIPS = {
+    'T+2':              'Trade date plus two business days — standard spot settlement cycle',
+    'LEI':              'Legal Entity Identifier — 20-character code uniquely identifying a legal entity',
+    'SSI':              'Standard Settlement Instructions — pre-agreed payment and delivery details',
+    'Variation Margin': 'Daily mark-to-market cash adjustment to cover price movements on open futures',
+    'Initial Margin':   'Collateral deposited upfront to cover potential future losses on a position',
+    'LPMCL':            'London Precious Metals Clearing Limited — clears precious metal trades in London',
+    'LBMA':             'London Bullion Market Association — oversees London gold & silver OTC market',
+    'LPPM':             'London Platinum & Palladium Market — oversees PGM trading in London',
+    'LME':              'London Metal Exchange — world\'s largest base metals exchange',
+    'COMEX':            'Commodity Exchange — CME Group division for metals futures',
+    'NYMEX':            'New York Mercantile Exchange — CME Group division for precious metals futures',
+    'Notional':         'Total monetary value of a position: quantity x price x contract size',
+    'VaR':              'Value at Risk — estimated maximum loss at a given confidence level',
+    'MTM':              'Mark-to-Market — revaluing positions at current market prices',
+    'ISDA':             'International Swaps and Derivatives Association — sets OTC derivative standards',
+    'SWIFT MT6xx':      'SWIFT message type 6xx — used for precious metals trade confirmations',
+    'OTC':              'Over-the-Counter — bilateral trading outside of an exchange',
+    'CCP':              'Central Counterparty — entity that interposes itself between buyer and seller'
+};
+
+
+// ============================================================
+// SECTION 2: APPLICATION STATE
+// ============================================================
+
+/**
+ * Global application state — all data lives in memory.
+ * No localStorage is used.
+ */
+const state = {
+    trades: [],              // Array of all trade objects
+    currentTradeId: null,    // ID of the trade currently being viewed
+    currentView: 'newTrade', // Active view: 'newTrade', 'blotter', 'about'
+    tradeCounter: 0,         // Auto-increment for trade IDs
+    marketPrices: {},        // Current jittered market prices per commodity
+    editingCapture: false    // True when editing a disputed trade
+};
+
+
+// ============================================================
+// SECTION 3: UTILITY FUNCTIONS
+// ============================================================
+
+/** Format a number as USD currency */
+function formatUSD(n) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+}
+
+/** Format a number with commas and optional decimal places */
+function formatNum(n, decimals = 2) {
+    return new Intl.NumberFormat('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
+}
+
+/** Format a Date as YYYY-MM-DD string */
+function dateStr(d) {
+    const dt = new Date(d);
+    return dt.getFullYear() + '-' +
+        String(dt.getMonth() + 1).padStart(2, '0') + '-' +
+        String(dt.getDate()).padStart(2, '0');
+}
+
+/** Format a date as DD-Mon-YYYY (e.g. 24-Apr-2026) */
+function datePretty(d) {
+    const dt = new Date(d);
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return String(dt.getDate()).padStart(2, '0') + '-' + months[dt.getMonth()] + '-' + dt.getFullYear();
+}
+
+/** Check if a date falls on a weekend (Saturday=6, Sunday=0) */
+function isWeekend(d) {
+    const day = new Date(d).getDay();
+    return day === 0 || day === 6;
+}
+
+/** Check if a date is a business day (not a weekend). No holiday calendar used. */
+function isBusinessDay(d) {
+    return !isWeekend(d);
+}
+
+/**
+ * Add n business days to a date, skipping weekends.
+ * @param {Date|string} date - Starting date
+ * @param {number} n - Number of business days to add
+ * @returns {Date}
+ */
+function addBusinessDays(date, n) {
+    const d = new Date(date);
+    let count = 0;
+    while (count < n) {
+        d.setDate(d.getDate() + 1);
+        if (isBusinessDay(d)) count++;
+    }
+    return d;
+}
+
+/** Add n calendar months to a date */
+function addMonths(date, n) {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + n);
+    return d;
+}
+
+/** Adjust a date to the next business day if it falls on a weekend */
+function nextBusinessDay(d) {
+    const dt = new Date(d);
+    while (!isBusinessDay(dt)) dt.setDate(dt.getDate() + 1);
+    return dt;
+}
+
+/** Create a tooltip-wrapped span for a jargon term */
+function tip(term) {
+    const tooltip = TOOLTIPS[term] || '';
+    return `<span class="tip" data-tip="${tooltip}">${term}</span>`;
+}
+
+/** Generate today's date string */
+function today() {
+    return dateStr(new Date());
+}
+
+
+// ============================================================
+// SECTION 4: MARKET PRICE SIMULATION
+// ============================================================
+
+/**
+ * Apply a random +/- 0.5% jitter to each commodity's base price.
+ * Called on page load and periodically to simulate live market data.
+ */
+function jitterPrices() {
+    for (const [sym, data] of Object.entries(COMMODITIES)) {
+        const jitter = 1 + (Math.random() - 0.5) * 0.01; // +/- 0.5%
+        const raw = data.basePrice * jitter;
+        // Round to the nearest tick
+        state.marketPrices[sym] = Math.round(raw / data.tick) * data.tick;
+    }
+}
+
+/**
+ * Get the current market price for a commodity.
+ * @param {string} sym - Commodity symbol (Au, Ag, etc.)
+ * @returns {number}
+ */
+function getMarketPrice(sym) {
+    return state.marketPrices[sym] || COMMODITIES[sym].basePrice;
+}
+
+// Initialise prices on load
+jitterPrices();
+
+// Refresh prices every 5 seconds for live P&L updates
+setInterval(() => {
+    jitterPrices();
+    updateSidebar();
+    // If blotter is visible, re-render it for updated P&L
+    if (state.currentView === 'blotter') renderBlotterView();
+    // If viewing stage 6 of a trade, re-render
+    const t = getCurrentTrade();
+    if (t && t.stage === 6 && state.currentView === 'newTrade') renderStageContent(t);
+}, 5000);
+
+
+// ============================================================
+// SECTION 5: PRODUCT & VENUE LOGIC
+// ============================================================
+
+/**
+ * Determine the trading venue based on product type and commodity.
+ *
+ * Rules:
+ * - Spot/Forward precious metals: LBMA (Au, Ag) or LPPM (Pt, Pd)
+ * - Spot/Forward base metals: LME
+ * - Future: use the commodity's native exchange (COMEX, NYMEX, LME)
+ * - Swap: OTC
+ */
+function determineVenue(productType, commoditySym) {
+    const com = COMMODITIES[commoditySym];
+    if (productType === 'Swap') return 'OTC';
+    if (productType === 'Future') return com.exchange;
+    // Spot or Forward
+    if (com.type === 'precious') {
+        return (commoditySym === 'Au' || commoditySym === 'Ag') ? 'LBMA' : 'LPPM';
+    }
+    return 'LME';
+}
+
+/**
+ * Compute the default value date based on product type.
+ * - Spot: T+2
+ * - Forward: T+5 (user can change)
+ * - Future: first prompt date
+ * - Swap: effective date = T+2
+ */
+function defaultValueDate(productType, tradeDate) {
+    const td = new Date(tradeDate);
+    switch (productType) {
+        case 'Spot': return addBusinessDays(td, 2);
+        case 'Forward': return addBusinessDays(td, 5);
+        case 'Swap': return addBusinessDays(td, 2);
+        case 'Future': return addBusinessDays(td, 3);
+        default: return addBusinessDays(td, 2);
+    }
+}
+
+/**
+ * Generate futures prompt dates.
+ * Daily business days for the next 3 months, then monthly (3rd Wednesday)
+ * for months 4–12.
+ */
+function generatePromptDates(fromDate) {
+    const dates = [];
+    const start = new Date(fromDate);
+    const threeMonths = addMonths(start, 3);
+    // Daily business days for 3 months
+    const d = new Date(start);
+    d.setDate(d.getDate() + 3); // Start from T+3
+    while (d <= threeMonths) {
+        if (isBusinessDay(d)) {
+            dates.push(new Date(d));
+        }
+        d.setDate(d.getDate() + 1);
+    }
+    // Monthly for months 4–12: use 3rd Wednesday of each month
+    for (let m = 4; m <= 12; m++) {
+        const monthStart = addMonths(start, m);
+        // Find the 3rd Wednesday
+        const yr = monthStart.getFullYear();
+        const mo = monthStart.getMonth();
+        let wednesdayCount = 0;
+        for (let day = 1; day <= 28; day++) {
+            const dt = new Date(yr, mo, day);
+            if (dt.getDay() === 3) { // Wednesday
+                wednesdayCount++;
+                if (wednesdayCount === 3) {
+                    dates.push(dt);
+                    break;
+                }
+            }
+        }
+    }
+    return dates;
+}
+
+/**
+ * Generate monthly swap reset dates for a given tenor.
+ * @param {string} effectiveDate - Start date
+ * @param {number} tenorMonths - Number of months (3–12)
+ * @returns {Array<{start: Date, end: Date, fixingDate: Date}>}
+ */
+function generateSwapResets(effectiveDate, tenorMonths) {
+    const resets = [];
+    for (let i = 0; i < tenorMonths; i++) {
+        const periodStart = nextBusinessDay(addMonths(effectiveDate, i));
+        const periodEnd = nextBusinessDay(addMonths(effectiveDate, i + 1));
+        const fixingDate = nextBusinessDay(addMonths(effectiveDate, i)); // Fixing at start of period
+        resets.push({ start: periodStart, end: periodEnd, fixingDate });
+    }
+    return resets;
+}
+
+
+// ============================================================
+// SECTION 6: TRADE ID GENERATION
+// ============================================================
+
+/**
+ * Generate a unique internal trade ID in the format CMD-YYYYMMDD-NNNN.
+ * The counter increments globally across all trades in the session.
+ */
+function generateTradeId() {
+    state.tradeCounter++;
+    const d = today().replace(/-/g, '');
+    return 'CMD-' + d + '-' + String(state.tradeCounter).padStart(4, '0');
+}
+
+
+// ============================================================
+// SECTION 7: TRADE OBJECT CREATION
+// ============================================================
+
+/**
+ * Create a new trade object with all lifecycle fields initialised.
+ * The trade starts at Stage 1 (Capture).
+ */
+function createTradeObject(formData) {
+    const com = COMMODITIES[formData.commodity];
+    const price = parseFloat(formData.price);
+    const qty = parseFloat(formData.quantity);
+    let notional = qty * price * com.contractSize;
+    let swapResets = [];
+    let swapTenor = null;
+
+    // For swaps, notional = monthly notional * tenor
+    if (formData.productType === 'Swap') {
+        swapTenor = parseInt(formData.swapTenor) || 6;
+        swapResets = generateSwapResets(formData.valueDate, swapTenor);
+        notional = qty * price * com.contractSize * swapTenor;
+    }
+
+    return {
+        id: generateTradeId(),
+        tradeDate: formData.tradeDate,
+        counterparty: formData.counterparty,
+        buySell: formData.buySell,
+        productType: formData.productType,
+        commodity: formData.commodity,
+        quantity: qty,
+        price: price,
+        valueDate: formData.valueDate,
+        venue: determineVenue(formData.productType, formData.commodity),
+        notional: notional,
+        stage: 1,
+        // Swap fields
+        swapTenor: swapTenor,
+        swapResets: swapResets,
+        swapFixedRate: price,
+        // Future fields
+        futurePromptDate: formData.futurePromptDate || null,
+        // Enrichment (populated in Stage 2)
+        validationResults: [],
+        ssi: null,
+        book: null,
+        traderInitials: null,
+        lei: null,
+        fxRates: null,
+        // Confirmation (Stage 3)
+        confirmed: false,
+        disputed: false,
+        // Clearing (Stage 4)
+        clearer: null,
+        initialMargin: 0,
+        variationMargin: 0,
+        settlementInstructions: null,
+        settled: false,
+        // Reconciliation (Stage 5)
+        reconRun: false,
+        reconMatched: false,
+        reconBreak: false,
+        reconBreakResolved: false,
+        reconBreakField: null,
+        reconBreakValue: null,
+        // P&L
+        realisedPnL: 0
+    };
+}
+
+/** Get the currently viewed trade */
+function getCurrentTrade() {
+    return state.trades.find(t => t.id === state.currentTradeId) || null;
+}
+
+
+// ============================================================
+// SECTION 8: RENDER — NAVIGATION & VIEWS
+// ============================================================
+
+/** Switch between main views (New Trade, Blotter, About) */
+function showView(view) {
+    state.currentView = view;
+    // Update nav button states
+    document.querySelectorAll('.nav-btn:not(.seed-btn)').forEach(b => b.classList.remove('active'));
+    const navId = { newTrade: 'navNewTrade', blotter: 'navBlotter', about: 'navAbout' };
+    document.getElementById(navId[view])?.classList.add('active');
+
+    const main = document.getElementById('mainContent');
+    switch (view) {
+        case 'newTrade':
+            if (state.currentTradeId) {
+                const t = getCurrentTrade();
+                if (t) { renderTradeView(t); return; }
+            }
+            renderCaptureForm();
+            break;
+        case 'blotter':
+            renderBlotterView();
+            break;
+        case 'about':
+            renderAboutView();
+            break;
+    }
+}
+
+/** Start a new trade — show a blank capture form */
+function startNewTrade() {
+    state.currentTradeId = null;
+    state.editingCapture = false;
+    showView('newTrade');
+}
+
+/** View an existing trade at its current lifecycle stage */
+function viewTrade(tradeId) {
+    state.currentTradeId = tradeId;
+    state.currentView = 'newTrade';
+    document.querySelectorAll('.nav-btn:not(.seed-btn)').forEach(b => b.classList.remove('active'));
+    document.getElementById('navNewTrade').classList.add('active');
+    const t = getCurrentTrade();
+    if (t) renderTradeView(t);
+}
+
+
+// ============================================================
+// SECTION 9: RENDER — LIFECYCLE STEPPER
+// ============================================================
+
+/**
+ * Render the horizontal stepper showing all 6 lifecycle stages.
+ * The current stage is highlighted, prior stages are marked complete.
+ */
+function renderStepper(currentStage) {
+    let html = '<div class="stepper">';
+    STAGES.forEach((name, i) => {
+        const stageNum = i + 1;
+        let cls = 'step';
+        if (stageNum < currentStage) cls += ' completed';
+        else if (stageNum === currentStage) cls += ' active';
+
+        html += `<div class="${cls}">
+            <div class="step-circle">${stageNum < currentStage ? '&#10003;' : stageNum}</div>
+            <div class="step-label">${name}</div>
+        </div>`;
+        if (i < STAGES.length - 1) {
+            html += `<div class="step-line${stageNum < currentStage ? ' completed' : ''}"></div>`;
+        }
+    });
+    html += '</div>';
+    return `<div class="stepper-container">${html}</div>`;
+}
+
+
+// ============================================================
+// SECTION 10: RENDER — TRADE VIEW (routes to stage renderer)
+// ============================================================
+
+/** Render a trade at its current lifecycle stage */
+function renderTradeView(trade) {
+    const main = document.getElementById('mainContent');
+    let html = renderStepper(trade.stage);
+    html += '<div id="stageContent"></div>';
+    main.innerHTML = html;
+    renderStageContent(trade);
+}
+
+/** Render the stage-specific content for a trade */
+function renderStageContent(trade) {
+    const container = document.getElementById('stageContent');
+    if (!container) return;
+    switch (trade.stage) {
+        case 1: container.innerHTML = renderStage1(trade); break;
+        case 2: container.innerHTML = renderStage2(trade); break;
+        case 3: container.innerHTML = renderStage3(trade); break;
+        case 4: container.innerHTML = renderStage4(trade); break;
+        case 5: container.innerHTML = renderStage5(trade); break;
+        case 6: container.innerHTML = renderStage6(trade); break;
+    }
+}
+
+
+// ============================================================
+// SECTION 11: STAGE 1 — CAPTURE
+// ============================================================
+
+/**
+ * Render the trade capture form.
+ * If editing an existing (disputed) trade, pre-populate fields.
+ */
+function renderCaptureForm(existingTrade) {
+    const main = document.getElementById('mainContent');
+    const t = existingTrade || null;
+    const isEdit = !!t;
+    if (isEdit) {
+        let html = renderStepper(t.stage);
+        html += '<div id="stageContent">' + buildCaptureFormHTML(t, isEdit) + '</div>';
+        main.innerHTML = html;
+    } else {
+        // Fresh capture — no stepper yet
+        main.innerHTML = buildCaptureFormHTML(null, false);
+    }
+}
+
+/** Build the HTML for the capture form */
+function buildCaptureFormHTML(t, isEdit) {
+    const commodityOptions = Object.entries(COMMODITIES).map(([sym, c]) =>
+        `<option value="${sym}" ${t && t.commodity === sym ? 'selected' : ''}>${c.name} (${sym})</option>`
+    ).join('');
+
+    const cpOptions = Object.keys(COUNTERPARTIES).map(name =>
+        `<option value="${name}" ${t && t.counterparty === name ? 'selected' : ''}>${name}</option>`
+    ).join('');
+
+    const productOptions = PRODUCT_TYPES.map(pt =>
+        `<option value="${pt}" ${t && t.productType === pt ? 'selected' : ''}>${pt}</option>`
+    ).join('');
+
+    const defaultCom = t ? t.commodity : 'Au';
+    const defaultPrice = t ? t.price : getMarketPrice(defaultCom);
+    const defaultDate = t ? t.tradeDate : today();
+    const defaultValDate = t ? t.valueDate : dateStr(defaultValueDate('Spot', defaultDate));
+
+    return `
+    <div class="card">
+        <div class="card-title">${isEdit ? 'Edit & Resend Trade' : 'Stage 1: Trade Capture'}</div>
+        <form id="captureForm" onsubmit="handleCapture(event, ${isEdit ? "'" + t.id + "'" : 'null'})">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Trade Date</label>
+                    <input type="date" id="tradeDate" value="${defaultDate}" onchange="updateValueDate()" required>
+                </div>
+                <div class="form-group">
+                    <label>Counterparty</label>
+                    <select id="counterparty" required>${cpOptions}</select>
+                </div>
+                <div class="form-group">
+                    <label>Buy / Sell</label>
+                    <select id="buySell" required>
+                        <option value="Buy" ${t && t.buySell === 'Buy' ? 'selected' : ''}>Buy</option>
+                        <option value="Sell" ${t && t.buySell === 'Sell' ? 'selected' : ''}>Sell</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Product Type</label>
+                    <select id="productType" onchange="onProductTypeChange()" required>${productOptions}</select>
+                </div>
+                <div class="form-group">
+                    <label>Commodity</label>
+                    <select id="commodity" onchange="onCommodityChange()" required>${commodityOptions}</select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity (Lots/Contracts)</label>
+                    <input type="number" id="quantity" value="${t ? t.quantity : 1}" min="1" step="1" onchange="updateNotional()" oninput="updateNotional()" required>
+                </div>
+                <div class="form-group">
+                    <label id="priceLabel">Price (USD/${COMMODITIES[defaultCom].unit})</label>
+                    <input type="number" id="price" value="${defaultPrice}" step="${COMMODITIES[defaultCom].tick}" onchange="updateNotional()" oninput="updateNotional()" required>
+                </div>
+                <div class="form-group">
+                    <label>Value Date ${tip('T+2')}</label>
+                    <input type="date" id="valueDate" value="${defaultValDate}" required>
+                </div>
+                <div class="form-group">
+                    <label>Venue</label>
+                    <input type="text" id="venue" value="${t ? t.venue : determineVenue('Spot', defaultCom)}" readonly>
+                </div>
+
+                <!-- Future-specific: prompt date selector -->
+                <div class="form-group" id="futurePromptGroup" style="display:none">
+                    <label>Prompt Date (Delivery)</label>
+                    <select id="futurePromptDate" onchange="onPromptDateChange()"></select>
+                </div>
+
+                <!-- Swap-specific: tenor selector -->
+                <div class="form-group" id="swapTenorGroup" style="display:none">
+                    <label>Swap Tenor (Months)</label>
+                    <select id="swapTenor" onchange="updateNotional()">
+                        ${[3,4,5,6,7,8,9,10,11,12].map(m => `<option value="${m}" ${t && t.swapTenor === m ? 'selected' : ''}>${m} months</option>`).join('')}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Contract details (informational) -->
+            <div class="card mt-3" style="background: var(--bg-page); border: 1px solid var(--border-light);">
+                <div style="font-size:0.78rem; color: var(--text-muted);" id="contractInfo">
+                    ${renderContractInfo(defaultCom)}
+                </div>
+            </div>
+
+            <!-- Live notional calculation -->
+            <div class="notional-display" id="notionalDisplay">
+                <div class="notional-label">${tip('Notional')} Value</div>
+                <div class="notional-value" id="notionalValue">${formatUSD(defaultPrice * (t ? t.quantity : 1) * COMMODITIES[defaultCom].contractSize)}</div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">${isEdit ? 'Resend Trade' : 'Submit Trade'}</button>
+                ${isEdit ? '<button type="button" class="btn btn-outline" onclick="viewTrade(\'' + t.id + '\')">Cancel</button>' : ''}
+            </div>
+        </form>
+    </div>`;
+}
+
+/** Render contract detail info for the selected commodity */
+function renderContractInfo(sym) {
+    const c = COMMODITIES[sym];
+    return `<strong>${c.name} (${sym})</strong> &mdash; ${c.contractSize} ${c.unit}/contract &bull;
+            Exchange: ${tip(c.exchange)} &bull; Tick: $${c.tick} &bull;
+            Current market: <strong>${formatUSD(getMarketPrice(sym))}</strong>`;
+}
+
+/** Stage 1 render for an existing trade at stage 1 (just captured, or re-viewing) */
+function renderStage1(trade) {
+    return buildCaptureFormHTML(trade, state.editingCapture);
+}
+
+
+// ============================================================
+// SECTION 12: STAGE 1 — EVENT HANDLERS
+// ============================================================
+
+/** Called when product type changes — update UI accordingly */
+function onProductTypeChange() {
+    const pt = document.getElementById('productType').value;
+    const com = document.getElementById('commodity').value;
+    // Show/hide future prompt date selector
+    document.getElementById('futurePromptGroup').style.display = pt === 'Future' ? '' : 'none';
+    document.getElementById('swapTenorGroup').style.display = pt === 'Swap' ? '' : 'none';
+
+    if (pt === 'Future') populatePromptDates();
+
+    // Update venue
+    document.getElementById('venue').value = determineVenue(pt, com);
+    updateValueDate();
+    updateNotional();
+}
+
+/** Called when commodity changes — update price, venue, contract info */
+function onCommodityChange() {
+    const com = document.getElementById('commodity').value;
+    const pt = document.getElementById('productType').value;
+    document.getElementById('price').value = getMarketPrice(com);
+    document.getElementById('price').step = COMMODITIES[com].tick;
+    document.getElementById('venue').value = determineVenue(pt, com);
+    document.getElementById('contractInfo').innerHTML = renderContractInfo(com);
+    // Update the price label to reflect the correct unit (troy oz vs MT)
+    const priceLabel = document.getElementById('priceLabel');
+    if (priceLabel) priceLabel.textContent = 'Price (USD/' + COMMODITIES[com].unit + ')';
+    if (pt === 'Future') populatePromptDates();
+    updateNotional();
+}
+
+/** Update the value date based on product type and trade date */
+function updateValueDate() {
+    const pt = document.getElementById('productType').value;
+    const td = document.getElementById('tradeDate').value;
+    if (pt === 'Future') {
+        // Value date = selected prompt date
+        const pd = document.getElementById('futurePromptDate');
+        if (pd && pd.value) {
+            document.getElementById('valueDate').value = pd.value;
+        }
+    } else {
+        document.getElementById('valueDate').value = dateStr(defaultValueDate(pt, td));
+    }
+}
+
+/** Populate the futures prompt date dropdown */
+function populatePromptDates() {
+    const td = document.getElementById('tradeDate').value;
+    const dates = generatePromptDates(td);
+    const sel = document.getElementById('futurePromptDate');
+    sel.innerHTML = '';
+    let currentMonth = '';
+    let optGroup;
+    dates.forEach(d => {
+        const monthLabel = d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        if (monthLabel !== currentMonth) {
+            optGroup = document.createElement('optgroup');
+            optGroup.label = monthLabel;
+            sel.appendChild(optGroup);
+            currentMonth = monthLabel;
+        }
+        const opt = document.createElement('option');
+        opt.value = dateStr(d);
+        opt.text = datePretty(d);
+        optGroup.appendChild(opt);
+    });
+    onPromptDateChange();
+}
+
+/** When a prompt date is selected for futures */
+function onPromptDateChange() {
+    const pd = document.getElementById('futurePromptDate');
+    if (pd && pd.value) {
+        document.getElementById('valueDate').value = pd.value;
+    }
+}
+
+/** Update the live notional calculation */
+function updateNotional() {
+    const com = document.getElementById('commodity')?.value;
+    const price = parseFloat(document.getElementById('price')?.value) || 0;
+    const qty = parseFloat(document.getElementById('quantity')?.value) || 0;
+    const pt = document.getElementById('productType')?.value;
+    if (!com) return;
+    const cs = COMMODITIES[com].contractSize;
+    let notional = qty * price * cs;
+    if (pt === 'Swap') {
+        const tenor = parseInt(document.getElementById('swapTenor')?.value) || 6;
+        notional = qty * price * cs * tenor;
+    }
+    const el = document.getElementById('notionalValue');
+    if (el) el.textContent = formatUSD(notional);
+}
+
+/**
+ * Handle trade capture form submission.
+ * Creates a new trade or updates an existing one (after dispute).
+ */
+function handleCapture(event, editTradeId) {
+    event.preventDefault();
+    const formData = {
+        tradeDate: document.getElementById('tradeDate').value,
+        counterparty: document.getElementById('counterparty').value,
+        buySell: document.getElementById('buySell').value,
+        productType: document.getElementById('productType').value,
+        commodity: document.getElementById('commodity').value,
+        quantity: document.getElementById('quantity').value,
+        price: document.getElementById('price').value,
+        valueDate: document.getElementById('valueDate').value,
+        futurePromptDate: document.getElementById('futurePromptDate')?.value || null,
+        swapTenor: document.getElementById('swapTenor')?.value || null
+    };
+
+    let trade;
+    if (editTradeId) {
+        // Updating a disputed trade
+        trade = state.trades.find(t => t.id === editTradeId);
+        const com = COMMODITIES[formData.commodity];
+        trade.counterparty = formData.counterparty;
+        trade.buySell = formData.buySell;
+        trade.productType = formData.productType;
+        trade.commodity = formData.commodity;
+        trade.quantity = parseFloat(formData.quantity);
+        trade.price = parseFloat(formData.price);
+        trade.valueDate = formData.valueDate;
+        trade.venue = determineVenue(formData.productType, formData.commodity);
+        let notional = trade.quantity * trade.price * com.contractSize;
+        if (formData.productType === 'Swap') {
+            trade.swapTenor = parseInt(formData.swapTenor) || 6;
+            trade.swapResets = generateSwapResets(formData.valueDate, trade.swapTenor);
+            trade.swapFixedRate = trade.price;
+            notional *= trade.swapTenor;
+        }
+        trade.notional = notional;
+        trade.disputed = false;
+        trade.confirmed = false;
+        trade.stage = 2; // Go back to validation
+        state.editingCapture = false;
+    } else {
+        // New trade
+        trade = createTradeObject(formData);
+        trade.stage = 2; // Advance to validation
+        state.trades.push(trade);
+    }
+
+    state.currentTradeId = trade.id;
+    updateSidebar();
+    renderTradeView(trade);
+}
+
+
+// ============================================================
+// SECTION 13: STAGE 2 — VALIDATION & ENRICHMENT
+// ============================================================
+
+/**
+ * Run validation checks on a trade and auto-enrich with reference data.
+ * Returns an array of {label, pass, detail} objects.
+ */
+function runValidation(trade) {
+    const checks = [];
+    const td = new Date(trade.tradeDate);
+    const vd = new Date(trade.valueDate);
+
+    // 1. Value date > trade date
+    checks.push({
+        label: 'Value date is after trade date',
+        pass: vd > td,
+        detail: vd > td ? `${datePretty(trade.valueDate)} > ${datePretty(trade.tradeDate)}` : 'Value date must be after trade date'
+    });
+
+    // 2. T+2 check for spot
+    if (trade.productType === 'Spot') {
+        const t2 = addBusinessDays(td, 2);
+        const t2ok = dateStr(vd) === dateStr(t2);
+        checks.push({
+            label: `Spot settlement honours ${TOOLTIPS['T+2'] ? 'T+2' : 'T+2'} convention`,
+            pass: t2ok,
+            detail: t2ok ? `Value date ${datePretty(trade.valueDate)} = T+2` : `Expected ${datePretty(t2)}, got ${datePretty(trade.valueDate)}`
+        });
+    }
+
+    // 3. Value date is a business day
+    checks.push({
+        label: 'Value date is a business day (not weekend)',
+        pass: isBusinessDay(vd),
+        detail: isBusinessDay(vd) ? `${datePretty(trade.valueDate)} is a weekday` : 'Value date falls on a weekend'
+    });
+
+    // 4. Whole lots for exchange products
+    if (trade.productType === 'Future' || (trade.productType !== 'Swap' && trade.venue !== 'OTC')) {
+        const wholeLots = Number.isInteger(trade.quantity);
+        checks.push({
+            label: 'Quantity is in whole lots (exchange requirement)',
+            pass: wholeLots,
+            detail: wholeLots ? `${trade.quantity} lot(s)` : 'Fractional lots not allowed on exchange'
+        });
+    }
+
+    // 5. Counterparty SSI lookup (mocked — always passes)
+    const cpData = COUNTERPARTIES[trade.counterparty];
+    checks.push({
+        label: `Counterparty ${tip('SSI')} validated`,
+        pass: !!cpData,
+        detail: cpData ? `Nostro: ${cpData.nostro}, SWIFT: ${cpData.swift}` : 'SSI not found for counterparty'
+    });
+
+    // 6. LEI populated (mocked — always passes)
+    checks.push({
+        label: `${tip('LEI')} populated`,
+        pass: !!cpData?.lei,
+        detail: cpData ? `LEI: ${cpData.lei}` : 'LEI not found'
+    });
+
+    // 7. Internal trade ID generated
+    checks.push({
+        label: 'Internal trade ID generated',
+        pass: true,
+        detail: trade.id
+    });
+
+    trade.validationResults = checks;
+
+    // Auto-enrich the trade
+    trade.ssi = cpData || null;
+    trade.book = trade.commodity === 'Cu' || trade.commodity === 'Ni' ? 'BM-DESK-1' : 'PM-DESK-1';
+    trade.traderInitials = TRADER_INITIALS[Math.floor(Math.random() * TRADER_INITIALS.length)];
+    trade.lei = cpData?.lei || 'N/A';
+    trade.fxRates = { ...FX_RATES };
+
+    return checks;
+}
+
+/** Render Stage 2: Validation & Enrichment */
+function renderStage2(trade) {
+    // Run validation if not already done
+    if (!trade.validationResults || trade.validationResults.length === 0) {
+        runValidation(trade);
+    }
+
+    const allPass = trade.validationResults.every(c => c.pass);
+
+    let html = `<div class="card">
+        <div class="card-title">Stage 2: Validation & Enrichment</div>
+        <h4 style="margin-bottom:10px; color: var(--text-dark);">Validation Checklist</h4>
+        <ul class="check-list">`;
+
+    trade.validationResults.forEach(c => {
+        html += `<li class="check-item ${c.pass ? 'check-pass' : 'check-fail'}">
+            <span class="check-icon">${c.pass ? '&#10004;' : '&#10008;'}</span>
+            <span>${c.label}</span>
+            <span class="text-muted" style="margin-left:auto; font-size:0.78rem;">${c.detail}</span>
+        </li>`;
+    });
+
+    html += `</ul></div>`;
+
+    // Enrichment section
+    html += `<div class="card">
+        <div class="card-title">Auto-Enrichment</div>
+        <table class="enrich-table">
+            <tr><td>Trade ID</td><td>${trade.id}</td></tr>
+            <tr><td>Internal Book</td><td>${trade.book}</td></tr>
+            <tr><td>Trader Initials</td><td>${trade.traderInitials}</td></tr>
+            <tr><td>${tip('SSI')} — Nostro Account</td><td>${trade.ssi?.nostro || 'N/A'}</td></tr>
+            <tr><td>${tip('SSI')} — Correspondent</td><td>${trade.ssi?.correspondent || 'N/A'}</td></tr>
+            <tr><td>SWIFT BIC</td><td>${trade.ssi?.swift || 'N/A'}</td></tr>
+            <tr><td>${tip('LEI')}</td><td>${trade.lei}</td></tr>
+            <tr><td>FX Rate GBP/USD</td><td>${trade.fxRates?.['GBP/USD'] || 'N/A'}</td></tr>
+            <tr><td>FX Rate EUR/USD</td><td>${trade.fxRates?.['EUR/USD'] || 'N/A'}</td></tr>
+        </table>
+    </div>`;
+
+    // Advance button (only if all checks pass)
+    html += `<div class="btn-group">
+        <button class="btn btn-primary" ${allPass ? '' : 'disabled'} onclick="advanceStage('${trade.id}', 3)">
+            Move to Next Stage &rarr;
+        </button>
+        ${!allPass ? '<span class="text-danger" style="font-size:0.82rem; align-self:center;">Fix validation errors before proceeding</span>' : ''}
+    </div>`;
+
+    return html;
+}
+
+
+// ============================================================
+// SECTION 14: STAGE 3 — CONFIRMATION
+// ============================================================
+
+/**
+ * Generate a SWIFT MT6xx or ISDA-style confirmation message.
+ * The format depends on the product type.
+ */
+function generateConfirmation(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const totalQty = trade.quantity * com.contractSize;
+    const dir = trade.buySell;
+    const metalDir = dir === 'Buy' ? 'Receive' : 'Deliver';
+    const cashDir = dir === 'Buy' ? 'Pay' : 'Receive';
+
+    if (trade.productType === 'Swap') {
+        // ISDA-style confirmation for swaps
+        let msg = `================================================================
+     ${tip('ISDA')} COMMODITY SWAP CONFIRMATION
+================================================================
+
+Trade Reference:       ${trade.id}
+Trade Date:            ${datePretty(trade.tradeDate)}
+Effective Date:        ${datePretty(trade.swapResets[0]?.start || trade.valueDate)}
+Termination Date:      ${datePretty(trade.swapResets[trade.swapResets.length - 1]?.end || trade.valueDate)}
+Commodity:             ${com.name} (${trade.commodity})
+
+FIXED LEG:
+  Fixed Price Payer:   ${dir === 'Buy' ? 'Our House' : trade.counterparty}
+  Fixed Price:         ${formatUSD(trade.swapFixedRate)} per ${com.unit}
+  Quantity per Period: ${trade.quantity} lot(s) (${formatNum(totalQty, 0)} ${com.unit})
+  Payment Frequency:   Monthly
+
+FLOATING LEG:
+  Floating Price Payer: ${dir === 'Buy' ? trade.counterparty : 'Our House'}
+  Price Reference:      ${com.type === 'precious' ? tip('LBMA') + ' ' + com.name + ' Price PM' : tip('LME') + ' Official Settlement Price'}
+  Quantity per Period:  ${trade.quantity} lot(s) (${formatNum(totalQty, 0)} ${com.unit})
+  Reset Frequency:      Monthly
+
+RESET SCHEDULE:
+`;
+        trade.swapResets.forEach((r, i) => {
+            msg += `  Period ${i + 1}: ${datePretty(r.start)} to ${datePretty(r.end)}   Fixing: ${datePretty(r.fixingDate)}\n`;
+        });
+
+        msg += `
+Monthly ${tip('Notional')}:    ${formatUSD(trade.quantity * trade.swapFixedRate * com.contractSize)}
+Total Notional:        ${formatUSD(trade.notional)}
+Tenor:                 ${trade.swapTenor} months
+Settlement:            Cash settlement, net
+Venue:                 ${tip('OTC')} (bilateral)
+Counterparty ${tip('LEI')}:  ${trade.lei}
+Nostro Account:        ${trade.ssi?.nostro || 'N/A'}
+
+================================================================`;
+        return msg;
+    }
+
+    // SWIFT MT600-style for spot, forward, future
+    const isFuture = trade.productType === 'Future';
+    const mtType = isFuture ? 'MT601' : 'MT600';
+    const opType = isFuture ? 'FUTR' : (trade.productType === 'Forward' ? 'FWRD' : 'SPOT');
+
+    let msg = `================================================================
+     ${tip('SWIFT MT6xx')} CONFIRMATION — ${mtType}
+     PRECIOUS / BASE METAL TRADE CONFIRMATION
+================================================================
+
+:20:  Trade Reference       ${trade.id}
+:21:  Related Reference     ${trade.id}-001
+:22A: Type of Operation     ${opType} (${trade.productType})
+:82A: Party A (Our House)   OURTRDG / ${trade.book}
+:87A: Party B               ${trade.counterparty} / ${trade.ssi?.swift || 'N/A'}
+:30T: Trade Date             ${datePretty(trade.tradeDate)}
+:30V: Value Date             ${datePretty(trade.valueDate)}
+:26F: Settlement Type        ${trade.productType === 'Future' ? 'EXCHANGE' : 'PHYSICAL'}
+
+TRADE ECONOMICS:
+  Commodity:             ${com.name} (${trade.commodity})
+  Direction:             ${dir}
+  Quantity:              ${trade.quantity} lot(s) = ${formatNum(totalQty, 0)} ${com.unit}
+  Price:                 ${formatUSD(trade.price)} per ${com.unit}
+  ${tip('Notional')}:            ${formatUSD(trade.notional)}
+  Venue:                 ${tip(trade.venue) || trade.venue}
+${isFuture ? '  Prompt Date:           ' + datePretty(trade.futurePromptDate || trade.valueDate) + '\n' : ''}
+SETTLEMENT:
+  Metal ${metalDir}:       ${formatNum(totalQty, 0)} ${com.unit}
+  Cash ${cashDir}:         ${formatUSD(trade.notional)}
+
+COUNTERPARTY DETAILS:
+  ${tip('LEI')}:                  ${trade.lei}
+  ${tip('SSI')} Nostro:            ${trade.ssi?.nostro || 'N/A'}
+  Correspondent Bank:    ${trade.ssi?.correspondent || 'N/A'}
+  Trader:                ${trade.traderInitials}
+
+================================================================`;
+    return msg;
+}
+
+/** Render Stage 3: Confirmation */
+function renderStage3(trade) {
+    if (!trade.confirmationMessage) {
+        trade.confirmationMessage = generateConfirmation(trade);
+    }
+
+    let html = `<div class="card">
+        <div class="card-title">Stage 3: Trade Confirmation</div>
+        <p style="font-size:0.85rem; margin-bottom:12px; color: var(--text-body);">
+            The following confirmation has been generated and sent to <strong>${trade.counterparty}</strong>.
+            Awaiting counterparty response.
+        </p>
+        <div class="confirmation-msg">${trade.confirmationMessage}</div>`;
+
+    if (!trade.confirmed) {
+        html += `<div class="btn-group">
+            <button class="btn btn-success" onclick="confirmTrade('${trade.id}')">Counterparty Confirms</button>
+            <button class="btn btn-danger" onclick="disputeTrade('${trade.id}')">Counterparty Disputes</button>
+        </div>`;
+    } else {
+        html += `<p class="text-success fw-bold mt-2">&#10004; Counterparty has confirmed this trade.</p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="advanceStage('${trade.id}', 4)">Move to Next Stage &rarr;</button>
+        </div>`;
+    }
+
+    html += '</div>';
+    return html;
+}
+
+/** Handle counterparty confirmation */
+function confirmTrade(tradeId) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    trade.confirmed = true;
+    trade.confirmationMessage = generateConfirmation(trade);
+    renderStageContent(trade);
+}
+
+/** Handle counterparty dispute — allow editing and resend */
+function disputeTrade(tradeId) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    trade.disputed = true;
+    trade.stage = 3; // Stay at stage 3
+    state.editingCapture = true;
+    renderCaptureForm(trade);
+}
+
+
+// ============================================================
+// SECTION 15: STAGE 4 — CLEARING & SETTLEMENT
+// ============================================================
+
+/**
+ * Determine the clearing house and compute margin requirements.
+ *
+ * Exchange-traded: LME Clear (LME) or CME Clearing (COMEX/NYMEX)
+ * OTC precious metals: LPMCL
+ * OTC base metals: Bilateral
+ */
+function computeClearing(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const isExchange = trade.productType === 'Future';
+    const isSwap = trade.productType === 'Swap';
+
+    if (isExchange) {
+        trade.clearer = com.exchange === 'LME' ? 'LME Clear' : 'CME Clearing';
+        trade.initialMargin = trade.notional * 0.05; // 5% of notional
+        trade.variationMargin = 0; // Placeholder
+    } else if (isSwap || trade.productType === 'Forward' || trade.productType === 'Spot') {
+        if (com.type === 'precious') {
+            trade.clearer = tip('LPMCL');
+        } else {
+            trade.clearer = 'Bilateral (no CCP)';
+        }
+        trade.initialMargin = 0;
+        trade.variationMargin = 0;
+    }
+
+    // Settlement instructions
+    const totalQty = trade.quantity * com.contractSize;
+    const metalDir = trade.buySell === 'Buy' ? 'Receive' : 'Deliver';
+    const cashDir = trade.buySell === 'Buy' ? 'Pay' : 'Receive';
+
+    trade.settlementInstructions = {
+        cashAmount: trade.notional,
+        cashDirection: cashDir,
+        metalAmount: totalQty,
+        metalUnit: com.unit,
+        metalDirection: metalDir,
+        valueDate: trade.valueDate,
+        nostro: trade.ssi?.nostro || 'N/A',
+        correspondent: trade.ssi?.correspondent || 'N/A'
+    };
+}
+
+/** Render Stage 4: Clearing & Settlement */
+function renderStage4(trade) {
+    if (!trade.clearer) computeClearing(trade);
+
+    const com = COMMODITIES[trade.commodity];
+    const isExchange = trade.productType === 'Future';
+    const si = trade.settlementInstructions;
+
+    let html = `<div class="card">
+        <div class="card-title">Stage 4: Clearing & Settlement</div>
+
+        <h4 style="margin-bottom:8px;">Clearing Details</h4>
+        <table class="enrich-table">
+            <tr><td>Clearing Method</td><td>${isExchange ? 'Exchange Cleared (' + tip('CCP') + ')' : (com.type === 'precious' ? tip('LPMCL') + ' Clearing' : 'Bilateral')}</td></tr>
+            <tr><td>Clearer</td><td>${trade.clearer}</td></tr>`;
+
+    if (isExchange) {
+        html += `<tr><td>${tip('Initial Margin')} (5% of notional)</td><td class="fw-bold">${formatUSD(trade.initialMargin)}</td></tr>
+            <tr><td>${tip('Variation Margin')}</td><td class="text-muted">Calculated daily at close — currently $0 (trade date)</td></tr>`;
+    }
+
+    html += `</table></div>`;
+
+    // Settlement instructions
+    html += `<div class="card">
+        <div class="card-title">Settlement Instructions</div>
+        <div class="settlement-grid">
+            <div class="settlement-box">
+                <h4>Cash Leg</h4>
+                <div class="settlement-row"><span class="label">Direction</span><span class="value ${si.cashDirection === 'Pay' ? 'text-danger' : 'text-success'}">${si.cashDirection}</span></div>
+                <div class="settlement-row"><span class="label">Amount</span><span class="value">${formatUSD(si.cashAmount)}</span></div>
+                <div class="settlement-row"><span class="label">Currency</span><span class="value">USD</span></div>
+                <div class="settlement-row"><span class="label">Value Date</span><span class="value">${datePretty(si.valueDate)}</span></div>
+                <div class="settlement-row"><span class="label">Nostro</span><span class="value">${si.nostro}</span></div>
+            </div>
+            <div class="settlement-box">
+                <h4>Metal / Commodity Leg</h4>
+                <div class="settlement-row"><span class="label">Direction</span><span class="value ${si.metalDirection === 'Receive' ? 'text-success' : 'text-danger'}">${si.metalDirection}</span></div>
+                <div class="settlement-row"><span class="label">Amount</span><span class="value">${formatNum(si.metalAmount, com.unit === 'MT' ? 0 : 0)} ${si.metalUnit}</span></div>
+                <div class="settlement-row"><span class="label">Commodity</span><span class="value">${com.name} (${trade.commodity})</span></div>
+                <div class="settlement-row"><span class="label">Value Date</span><span class="value">${datePretty(si.valueDate)}</span></div>
+                <div class="settlement-row"><span class="label">Correspondent</span><span class="value">${si.correspondent}</span></div>
+            </div>
+        </div>
+    </div>`;
+
+    if (!trade.settled) {
+        html += `<div class="btn-group">
+            <button class="btn btn-success" onclick="settleTrade('${trade.id}')">Settle Trade</button>
+        </div>`;
+    } else {
+        html += `<p class="text-success fw-bold mt-2">&#10004; Trade has been settled.</p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="advanceStage('${trade.id}', 5)">Move to Next Stage &rarr;</button>
+        </div>`;
+    }
+
+    return html;
+}
+
+/** Handle trade settlement */
+function settleTrade(tradeId) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    trade.settled = true;
+    // Compute realised P&L (difference between trade price and current market price)
+    const com = COMMODITIES[trade.commodity];
+    const mktPrice = getMarketPrice(trade.commodity);
+    const multiplier = trade.quantity * com.contractSize;
+    if (trade.buySell === 'Buy') {
+        trade.realisedPnL = (mktPrice - trade.price) * multiplier;
+    } else {
+        trade.realisedPnL = (trade.price - mktPrice) * multiplier;
+    }
+    if (trade.productType === 'Swap') {
+        trade.realisedPnL *= trade.swapTenor;
+    }
+    updateSidebar();
+    renderStageContent(trade);
+}
+
+
+// ============================================================
+// SECTION 16: STAGE 5 — RECONCILIATION
+// ============================================================
+
+/**
+ * Run reconciliation across three systems: Front Office, Middle Office,
+ * and Clearer/Custodian. 95% chance of a clean match; 5% chance of a
+ * break (0.01 quantity difference) to demonstrate break detection.
+ */
+function runRecon(tradeId) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+
+    trade.reconRun = true;
+    // 5% chance of a break
+    if (Math.random() < 0.05) {
+        trade.reconMatched = false;
+        trade.reconBreak = true;
+        trade.reconBreakField = 'quantity';
+        trade.reconBreakValue = trade.quantity + 0.01; // Small discrepancy
+    } else {
+        trade.reconMatched = true;
+        trade.reconBreak = false;
+    }
+
+    renderStageContent(trade);
+}
+
+/** Resolve a reconciliation break */
+function resolveBreak(tradeId) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    trade.reconBreak = false;
+    trade.reconBreakResolved = true;
+    trade.reconMatched = true;
+    renderStageContent(trade);
+}
+
+/** Render Stage 5: Reconciliation */
+function renderStage5(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const totalQty = trade.quantity * com.contractSize;
+
+    // Build the three recon panels
+    const foQty = trade.quantity;
+    const moQty = trade.quantity;
+    let clearerQty = trade.quantity;
+    if (trade.reconBreak && !trade.reconBreakResolved) {
+        clearerQty = trade.reconBreakValue;
+    }
+
+    const panelClass = (isBreak) => {
+        if (!trade.reconRun) return '';
+        if (trade.reconMatched && !isBreak) return 'matched';
+        if (isBreak) return 'break-panel';
+        return 'matched';
+    };
+
+    const renderPanel = (title, qty, isBreak) => {
+        return `<div class="recon-panel ${panelClass(isBreak)}">
+            <div class="recon-panel-header">${title}</div>
+            <div class="recon-panel-body">
+                <table>
+                    <tr><td>Trade ID</td><td>${trade.id}</td></tr>
+                    <tr><td>Commodity</td><td>${com.name}</td></tr>
+                    <tr><td>Direction</td><td>${trade.buySell}</td></tr>
+                    <tr><td>Qty (lots)</td><td class="${isBreak ? 'text-danger fw-bold' : ''}">${formatNum(qty, 2)}</td></tr>
+                    <tr><td>Price</td><td>${formatUSD(trade.price)}</td></tr>
+                    <tr><td>Notional</td><td>${formatUSD(qty * trade.price * com.contractSize)}</td></tr>
+                </table>
+            </div>
+        </div>`;
+    };
+
+    const clearerBreak = trade.reconBreak && !trade.reconBreakResolved;
+
+    let html = `<div class="card">
+        <div class="card-title">Stage 5: Reconciliation</div>
+        <p style="font-size:0.85rem; margin-bottom:12px;">
+            Comparing positions across Front Office, Middle Office, and Clearer/Custodian systems.
+        </p>
+        <div class="recon-grid">
+            ${renderPanel('Front Office', foQty, false)}
+            ${renderPanel('Middle Office', moQty, false)}
+            ${renderPanel('Clearer / Custodian', clearerQty, clearerBreak)}
+        </div>`;
+
+    if (!trade.reconRun) {
+        html += `<div class="btn-group">
+            <button class="btn btn-primary" onclick="runRecon('${trade.id}')">Run Recon</button>
+        </div>`;
+    } else if (trade.reconBreak && !trade.reconBreakResolved) {
+        html += `<div style="background: var(--danger-bg); border: 1px solid var(--danger-border); border-radius: var(--radius); padding: 12px; margin-top: 12px;">
+            <strong class="text-danger">&#9888; Reconciliation Break Detected</strong>
+            <p style="font-size:0.82rem; margin-top:4px;">
+                Clearer/Custodian shows quantity <strong>${formatNum(clearerQty, 2)}</strong> lots
+                vs Front/Middle Office <strong>${formatNum(foQty, 2)}</strong> lots
+                (diff: ${formatNum(clearerQty - foQty, 2)} lots).
+            </p>
+            <button class="btn btn-warning btn-sm mt-2" onclick="resolveBreak('${trade.id}')">Resolve Break</button>
+        </div>`;
+    } else {
+        html += `<div style="background: var(--success-bg); border: 1px solid var(--success-border); border-radius: var(--radius); padding: 12px; margin-top: 12px;">
+            <strong class="text-success">&#10004; All three systems match${trade.reconBreakResolved ? ' (break resolved)' : ''}.</strong>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="advanceStage('${trade.id}', 6)">Move to Next Stage &rarr;</button>
+        </div>`;
+    }
+
+    html += '</div>';
+    return html;
+}
+
+
+// ============================================================
+// SECTION 17: STAGE 6 — POSITION REPORTING (Blotter)
+// ============================================================
+
+/** Render Stage 6: Position Reporting — shows the blotter with aggregate data */
+function renderStage6(trade) {
+    return renderBlotterHTML(trade?.id);
+}
+
+/** Render the blotter view (also used by the Blotter nav) */
+function renderBlotterView() {
+    document.getElementById('mainContent').innerHTML = renderBlotterHTML(null);
+}
+
+/** Build the blotter HTML (trade list + aggregation) */
+function renderBlotterHTML(highlightId) {
+    if (state.trades.length === 0) {
+        return `<div class="card"><div class="card-title">Position Blotter</div>
+            <p class="text-muted">No trades yet. Capture a new trade or click "Seed 5 Demo Trades" to populate.</p></div>`;
+    }
+
+    let html = `<div class="card">
+        <div class="card-title">Trade Blotter — Position Reporting</div>
+        <div style="overflow-x:auto;">
+        <table class="data-table">
+            <thead><tr>
+                <th>Trade ID</th><th>Commodity</th><th>B/S</th><th>Qty</th>
+                <th>Price</th><th>Notional</th><th>Counterparty</th>
+                <th>Value Date</th><th>Stage</th><th>Unrealised P&L</th><th></th>
+            </tr></thead><tbody>`;
+
+    state.trades.forEach(t => {
+        const com = COMMODITIES[t.commodity];
+        const mkt = getMarketPrice(t.commodity);
+        const mult = t.quantity * com.contractSize * (t.productType === 'Swap' ? (t.swapTenor || 1) : 1);
+        const unrealPnL = t.buySell === 'Buy'
+            ? (mkt - t.price) * mult
+            : (t.price - mkt) * mult;
+        const pnlClass = unrealPnL >= 0 ? 'text-success' : 'text-danger';
+        const rowClass = t.id === highlightId ? 'highlight' : '';
+
+        html += `<tr class="${rowClass}">
+            <td class="fw-bold">${t.id}</td>
+            <td>${com.name} (${t.commodity})</td>
+            <td><span class="badge ${t.buySell === 'Buy' ? 'badge-buy' : 'badge-sell'}">${t.buySell}</span></td>
+            <td>${t.quantity}</td>
+            <td>${formatUSD(t.price)}</td>
+            <td>${formatUSD(t.notional)}</td>
+            <td>${t.counterparty}</td>
+            <td>${datePretty(t.valueDate)}</td>
+            <td><span class="badge badge-stage">${STAGES[t.stage - 1]}</span></td>
+            <td class="${pnlClass} fw-bold">${formatUSD(unrealPnL)}</td>
+            <td><button class="btn btn-outline btn-sm" onclick="viewTrade('${t.id}')">View</button></td>
+        </tr>`;
+    });
+
+    html += '</tbody></table></div></div>';
+
+    // Aggregate panel: total notional and net position per commodity
+    const agg = {};
+    state.trades.forEach(t => {
+        const com = COMMODITIES[t.commodity];
+        if (!agg[t.commodity]) {
+            agg[t.commodity] = { name: com.name, symbol: t.commodity, totalNotional: 0, netQty: 0, unit: com.unit, contractSize: com.contractSize };
+        }
+        agg[t.commodity].totalNotional += t.notional;
+        const sign = t.buySell === 'Buy' ? 1 : -1;
+        agg[t.commodity].netQty += sign * t.quantity;
+    });
+
+    html += `<div class="card">
+        <div class="card-title">Aggregate Positions</div>
+        <div class="agg-grid">`;
+
+    for (const [sym, a] of Object.entries(agg)) {
+        const posLabel = a.netQty > 0 ? 'Long' : (a.netQty < 0 ? 'Short' : 'Flat');
+        const posClass = a.netQty > 0 ? 'long' : (a.netQty < 0 ? 'short' : 'flat');
+        html += `<div class="agg-card">
+            <div class="agg-card-label">${a.name} (${sym})</div>
+            <div class="agg-card-value">${formatUSD(a.totalNotional)}</div>
+            <div class="agg-card-sub ${posClass}">Net: ${a.netQty > 0 ? '+' : ''}${a.netQty} lots &mdash; ${posLabel}</div>
+        </div>`;
+    }
+
+    html += '</div></div>';
+    return html;
+}
+
+
+// ============================================================
+// SECTION 18: STAGE ADVANCEMENT
+// ============================================================
+
+/**
+ * Advance a trade to the next lifecycle stage.
+ * Triggers stage-specific setup (validation, clearing, etc.) as needed.
+ */
+function advanceStage(tradeId, toStage) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    trade.stage = toStage;
+
+    // Stage-specific setup
+    if (toStage === 2) runValidation(trade);
+    if (toStage === 3) trade.confirmationMessage = generateConfirmation(trade);
+    if (toStage === 4) computeClearing(trade);
+
+    updateSidebar();
+    renderTradeView(trade);
+}
+
+
+// ============================================================
+// SECTION 19: RIGHT SIDEBAR — RISK & VALUATION PANELS
+// ============================================================
+
+/**
+ * Update the four risk panels in the right sidebar.
+ * These panels aggregate data across all trades in memory.
+ */
+function updateSidebar() {
+    const sidebar = document.getElementById('riskSidebar');
+
+    // 1. VALUATION — Daily MTM P&L
+    let totalMtmPnL = 0;
+    state.trades.forEach(t => {
+        const com = COMMODITIES[t.commodity];
+        const mkt = getMarketPrice(t.commodity);
+        const mult = t.quantity * com.contractSize * (t.productType === 'Swap' ? (t.swapTenor || 1) : 1);
+        const pnl = t.buySell === 'Buy' ? (mkt - t.price) * mult : (t.price - mkt) * mult;
+        totalMtmPnL += pnl;
+    });
+
+    // 2. MARKET RISK — Total notional & VaR
+    let totalNotional = 0;
+    state.trades.forEach(t => { totalNotional += t.notional; });
+    const var95 = totalNotional * 0.02; // 2% of notional
+
+    // 3. CREDIT RISK — Exposure per counterparty
+    const creditLimit = 50000000; // $50M
+    const cpExposure = {};
+    state.trades.forEach(t => {
+        if (!cpExposure[t.counterparty]) cpExposure[t.counterparty] = 0;
+        cpExposure[t.counterparty] += t.notional;
+    });
+
+    // 4. ACCOUNTING — Cumulative realised P&L
+    let totalRealisedPnL = 0;
+    state.trades.filter(t => t.settled).forEach(t => {
+        totalRealisedPnL += t.realisedPnL;
+    });
+
+    const pnlClass = (v) => v >= 0 ? 'positive' : 'negative';
+
+    sidebar.innerHTML = `
+    <div class="sidebar-title">Parallel Functions</div>
+
+    <!-- Valuation Panel -->
+    <div class="risk-panel">
+        <div class="risk-panel-title">${tip('MTM')} Valuation</div>
+        <div class="risk-row">
+            <span>Daily Mark-to-Market P&L</span>
+            <span class="risk-value ${pnlClass(totalMtmPnL)}">${formatUSD(totalMtmPnL)}</span>
+        </div>
+        <div class="risk-row">
+            <span>Open Positions</span>
+            <span class="risk-value">${state.trades.filter(t => !t.settled).length}</span>
+        </div>
+    </div>
+
+    <!-- Market Risk Panel -->
+    <div class="risk-panel">
+        <div class="risk-panel-title">Market Risk</div>
+        <div class="risk-row">
+            <span>Total Notional Exposure</span>
+            <span class="risk-value">${formatUSD(totalNotional)}</span>
+        </div>
+        <div class="risk-row">
+            <span>${tip('VaR')} (2% of notional)</span>
+            <span class="risk-value negative">${formatUSD(var95)}</span>
+        </div>
+    </div>
+
+    <!-- Credit Risk Panel -->
+    <div class="risk-panel">
+        <div class="risk-panel-title">Credit Risk</div>
+        ${Object.entries(cpExposure).map(([cp, exp]) => {
+            const pct = (exp / creditLimit) * 100;
+            const barClass = pct > 100 ? 'red' : (pct > 80 ? 'amber' : 'safe');
+            const warn = pct > 100 ? ' <span class="text-danger fw-bold">LIMIT BREACH</span>' : (pct > 80 ? ' <span class="text-warning fw-bold">WARNING</span>' : '');
+            return `<div class="credit-bar-container">
+                <div class="credit-bar-label">
+                    <span>${cp}${warn}</span>
+                    <span>${formatUSD(exp)} / ${formatUSD(creditLimit)}</span>
+                </div>
+                <div class="credit-bar">
+                    <div class="credit-bar-fill ${barClass}" style="width: ${Math.min(pct, 100)}%"></div>
+                </div>
+            </div>`;
+        }).join('')}
+        ${Object.keys(cpExposure).length === 0 ? '<span class="text-muted" style="font-size:0.78rem;">No counterparty exposure</span>' : ''}
+    </div>
+
+    <!-- Accounting Panel -->
+    <div class="risk-panel">
+        <div class="risk-panel-title">Accounting</div>
+        <div class="risk-row">
+            <span>Cumulative Realised P&L</span>
+            <span class="risk-value ${pnlClass(totalRealisedPnL)}">${formatUSD(totalRealisedPnL)}</span>
+        </div>
+        <div class="risk-row">
+            <span>Settled Trades</span>
+            <span class="risk-value">${state.trades.filter(t => t.settled).length}</span>
+        </div>
+    </div>`;
+}
+
+
+// ============================================================
+// SECTION 20: ABOUT THE LIFECYCLE — Educational view
+// ============================================================
+
+/** Render the "About the Lifecycle" educational page */
+function renderAboutView() {
+    const main = document.getElementById('mainContent');
+    main.innerHTML = `
+    <div class="card">
+        <div class="card-title">About the Commodities Trade Lifecycle</div>
+        <p style="font-size:0.88rem; color: var(--text-body); margin-bottom:20px;">
+            Every commodities trade — whether a simple gold spot purchase or a complex nickel swap —
+            follows a structured lifecycle from initial capture through to final position reporting.
+            This simulator walks you through each stage.
+        </p>
+
+        <div class="about-section">
+            <h3><span class="stage-badge">1</span> Trade Capture</h3>
+            <p>The trade begins when a dealer books it into the trading system. Key fields include the commodity,
+            direction (buy/sell), quantity, price, counterparty, product type (spot, forward, future, or swap),
+            and value date. The system auto-calculates the notional value and assigns the correct trading venue.</p>
+        </div>
+
+        <div class="about-section">
+            <h3><span class="stage-badge">2</span> Validation & Enrichment</h3>
+            <p>Before a trade can proceed, it must pass automated validation checks: correct settlement dates
+            (${tip('T+2')} for spot), whole-lot quantities for exchange products, valid ${tip('SSI')},
+            and a populated ${tip('LEI')}. The system then enriches the trade with reference data — internal
+            book allocation, trader identification, and cross-currency FX rates.</p>
+        </div>
+
+        <div class="about-section">
+            <h3><span class="stage-badge">3</span> Confirmation</h3>
+            <p>A formal confirmation message — structured as a ${tip('SWIFT MT6xx')} message for physical metals
+            or an ${tip('ISDA')} confirmation for swaps — is generated and sent to the counterparty. Both sides
+            must agree on every economic detail (commodity, quantity, price, dates) before the trade moves forward.
+            If the counterparty disputes, the trade returns for amendment and re-confirmation.</p>
+        </div>
+
+        <div class="about-section">
+            <h3><span class="stage-badge">4</span> Clearing & Settlement</h3>
+            <p>Exchange-traded futures are cleared through a ${tip('CCP')} such as LME Clear or CME Clearing,
+            which requires posting ${tip('Initial Margin')} and daily ${tip('Variation Margin')}. ${tip('OTC')}
+            precious metal trades may clear through ${tip('LPMCL')}, while base metals typically settle bilaterally.
+            Settlement involves the simultaneous exchange of cash (payment) and metal (delivery).</p>
+        </div>
+
+        <div class="about-section">
+            <h3><span class="stage-badge">5</span> Reconciliation</h3>
+            <p>Post-settlement, positions are reconciled across three independent systems: the Front Office
+            trading book, the Middle Office risk system, and the Clearer/Custodian's records. Any discrepancy
+            (a "break") must be investigated and resolved — common causes include timing differences, quantity
+            rounding, or data entry errors.</p>
+        </div>
+
+        <div class="about-section">
+            <h3><span class="stage-badge">6</span> Position Reporting</h3>
+            <p>The final stage provides a consolidated view of all positions: a trade blotter with unrealised
+            P&L (mark-to-market against current prices), aggregate notional exposure per commodity, and net
+            long/short positions. This data feeds into daily risk reports, regulatory filings, and
+            management dashboards.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Parallel Functions (Right Panel)</div>
+        <p style="font-size:0.88rem;">Throughout the lifecycle, four parallel functions operate continuously:</p>
+        <ul style="margin: 10px 0 0 20px; font-size:0.88rem; line-height: 2;">
+            <li><strong>Valuation</strong> — Daily ${tip('MTM')} P&L across all open positions</li>
+            <li><strong>Market Risk</strong> — Total notional exposure and ${tip('VaR')} estimation</li>
+            <li><strong>Credit Risk</strong> — Counterparty exposure monitoring against limits</li>
+            <li><strong>Accounting</strong> — Cumulative realised P&L from settled trades</li>
+        </ul>
+    </div>`;
+}
+
+
+// ============================================================
+// SECTION 21: DEMO SEED — Pre-populate with sample trades
+// ============================================================
+
+/**
+ * Seed 5 demo trades at various lifecycle stages so the user can
+ * immediately explore the blotter and risk panels.
+ */
+function seedDemoTrades() {
+    // Clear any existing trades
+    state.trades = [];
+    state.tradeCounter = 0;
+
+    const td = today();
+
+    // ---- Trade 1: Gold Spot Buy — fully completed (Stage 6) ----
+    const t1 = createTradeObject({
+        tradeDate: td, counterparty: 'HSBC', buySell: 'Buy',
+        productType: 'Spot', commodity: 'Au', quantity: '2',
+        price: String(getMarketPrice('Au') - 15), // Bought slightly below market
+        valueDate: dateStr(addBusinessDays(td, 2))
+    });
+    t1.stage = 6;
+    runValidation(t1);
+    t1.confirmed = true;
+    computeClearing(t1);
+    t1.settled = true;
+    t1.reconRun = true;
+    t1.reconMatched = true;
+    t1.realisedPnL = 15 * 2 * 100; // $15 gain * 200 oz
+    state.trades.push(t1);
+
+    // ---- Trade 2: Silver Future Sell — at Clearing (Stage 4) ----
+    const t2 = createTradeObject({
+        tradeDate: td, counterparty: 'JP Morgan', buySell: 'Sell',
+        productType: 'Future', commodity: 'Ag', quantity: '3',
+        price: String(getMarketPrice('Ag')),
+        valueDate: dateStr(addBusinessDays(td, 30)),
+        futurePromptDate: dateStr(addBusinessDays(td, 30))
+    });
+    t2.stage = 4;
+    runValidation(t2);
+    t2.confirmed = true;
+    t2.confirmationMessage = generateConfirmation(t2);
+    computeClearing(t2);
+    state.trades.push(t2);
+
+    // ---- Trade 3: Copper Forward Buy — at Confirmation (Stage 3) ----
+    const t3 = createTradeObject({
+        tradeDate: td, counterparty: 'Standard Chartered', buySell: 'Buy',
+        productType: 'Forward', commodity: 'Cu', quantity: '1',
+        price: String(getMarketPrice('Cu')),
+        valueDate: dateStr(addBusinessDays(td, 10))
+    });
+    t3.stage = 3;
+    runValidation(t3);
+    t3.confirmationMessage = generateConfirmation(t3);
+    state.trades.push(t3);
+
+    // ---- Trade 4: Platinum Swap — at Validation (Stage 2) ----
+    const t4 = createTradeObject({
+        tradeDate: td, counterparty: 'Goldman Sachs', buySell: 'Buy',
+        productType: 'Swap', commodity: 'Pt', quantity: '1',
+        price: String(getMarketPrice('Pt')),
+        valueDate: dateStr(addBusinessDays(td, 2)),
+        swapTenor: '6'
+    });
+    t4.stage = 2;
+    runValidation(t4);
+    state.trades.push(t4);
+
+    // ---- Trade 5: Nickel Spot Sell — at Capture (Stage 1) ----
+    const t5 = createTradeObject({
+        tradeDate: td, counterparty: 'Citi', buySell: 'Sell',
+        productType: 'Spot', commodity: 'Ni', quantity: '2',
+        price: String(getMarketPrice('Ni')),
+        valueDate: dateStr(addBusinessDays(td, 2))
+    });
+    t5.stage = 1;
+    state.trades.push(t5);
+
+    updateSidebar();
+    showView('blotter');
+}
+
+
+// ============================================================
+// SECTION 22: INITIALIZATION
+// ============================================================
+
+/** Boot the application on page load */
+function init() {
+    jitterPrices();
+    updateSidebar();
+    startNewTrade();
+}
+
+// Run on DOM ready
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<!--
+================================================================
+LIFECYCLE STAGE EXPLANATIONS — How Each Stage Maps to Real-World
+Commodity Operations
+================================================================
+
+This section provides a brief commentary on how the six lifecycle
+stages implemented in this simulator correspond to actual processes
+in a physical commodities trading house or bank metals desk.
+
+STAGE 1 — CAPTURE
+In the real world, trade capture happens via electronic platforms
+(e.g., LMEselect, CME Globex), voice broking, or direct dealer
+negotiation. The trade is booked into an ETRM (Energy Trading and
+Risk Management) system such as Endur, Aspect, or a proprietary
+platform. Key data includes the commodity, tenor, quantity in
+standardised lot sizes, and the counterparty.
+
+STAGE 2 — VALIDATION & ENRICHMENT
+Operations and middle-office teams verify trade details against
+market conventions (T+2 for spot, business-day rules, lot sizes).
+Static data enrichment pulls from reference databases: SSIs from
+SWIFT's SWIFTRef, LEIs from the GLEIF database, internal book
+mappings, and trader authorisation checks.
+
+STAGE 3 — CONFIRMATION
+For OTC precious metals, confirmations follow LBMA/LPPM
+guidelines and may use SWIFT MT600/MT604 messages. For exchange-
+traded futures, the exchange itself acts as the confirmation
+mechanism (matched trades). For swaps, ISDA Master Agreement terms
+govern, and electronic matching platforms like MarkitWire or
+Traiana are common.
+
+STAGE 4 — CLEARING & SETTLEMENT
+Exchange futures clear through CCPs (LME Clear, CME Clearing
+House) with daily margining. OTC precious metals in London clear
+via LPMCL's AURUM system (for gold) or Platinum/Palladium
+clearing. Base metal forwards settle via LME warrants. Cash
+settlement flows through correspondent banking networks.
+
+STAGE 5 — RECONCILIATION
+Daily reconciliation ("rec") processes compare positions across
+front-office booking systems, middle-office risk engines, and
+custodian/clearer statements. Breaks are escalated according to
+severity thresholds. Common tools include Duco, Gresham's Clareti,
+or proprietary rec engines. Timely break resolution is a
+regulatory requirement.
+
+STAGE 6 — POSITION REPORTING
+End-of-day position reports feed into regulatory reporting (EMIR,
+MiFID II transaction reporting, CFTC large trader reports), internal
+risk dashboards (VaR, stress tests, concentration limits), P&L
+attribution, and management MI. The blotter view in this simulator
+is a simplified version of what a real-time position-keeping
+system provides.
+
+PARALLEL FUNCTIONS
+Throughout the lifecycle, valuation (daily MTM), market risk
+(VaR computation), credit risk (counterparty exposure vs. limits),
+and accounting (realised P&L, accruals) operate as independent
+but interconnected processes, typically managed by separate teams
+with distinct system access and controls.
+================================================================
+-->
+</body>
+</html>
