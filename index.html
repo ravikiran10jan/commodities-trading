@@ -455,6 +455,82 @@
         .swap-schedule table { width: 100%; }
 
         /* ============================================================
+           OPTION-SPECIFIC STYLES
+           ============================================================ */
+        .option-fields-group {
+            grid-column: 1 / -1;
+            border-left: 3px solid var(--accent);
+            padding-left: 16px;
+            margin: 8px 0;
+        }
+        .option-fields-group .form-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .option-section-label {
+            font-size: 0.78rem; font-weight: 700; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.4px;
+            margin-bottom: 10px;
+        }
+        .greeks-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px; margin: 8px 0;
+        }
+        .greek-card {
+            background: var(--bg-page); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 8px; text-align: center;
+        }
+        .greek-label { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .greek-value { font-size: 1rem; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; }
+        .badge-itm { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+        .badge-atm { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning-border); }
+        .badge-otm { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+        .barrier-alive { background: var(--success-bg); color: var(--success); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+        .barrier-knocked { background: var(--danger-bg); color: var(--danger); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+
+        /* ============================================================
+           MARKET DATA LAYOUT
+           ============================================================ */
+        .market-data-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px; margin-bottom: 16px;
+        }
+        .market-data-grid .card { margin-bottom: 0; }
+        .vol-surface-table {
+            width: 100%; border-collapse: collapse; font-size: 0.78rem;
+        }
+        .vol-surface-table th {
+            background: var(--primary); color: #fff;
+            padding: 6px 8px; font-weight: 600; text-align: center;
+        }
+        .vol-surface-table td {
+            padding: 6px 8px; text-align: center;
+            border: 1px solid var(--border-light);
+            font-variant-numeric: tabular-nums;
+        }
+        .vol-cell-low { background: #ebf8ff; }
+        .vol-cell-mid { background: #fefcbf; }
+        .vol-cell-high { background: #fed7d7; }
+        .static-data-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .static-data-grid .card { margin-bottom: 0; }
+        .fixing-schedule-table { width: 100%; font-size: 0.78rem; }
+        .fixing-schedule-table td { padding: 4px 6px; border-bottom: 1px solid var(--border-light); }
+        .fixing-fixed { color: var(--success); font-weight: 600; }
+        .fixing-pending { color: var(--text-muted); }
+        .premium-display {
+            background: #faf5ff; border: 1px solid #e9d8fd;
+            border-radius: var(--radius); padding: 12px 16px;
+            margin-top: 8px;
+        }
+        .premium-label { font-size: 0.78rem; color: #6b46c1; font-weight: 600; }
+        .premium-value { font-size: 1.2rem; font-weight: 700; color: #553c9a; }
+        .change-positive { color: var(--success); font-weight: 600; }
+        .change-negative { color: var(--danger); font-weight: 600; }
+
+        /* ============================================================
            UTILITY CLASSES
            ============================================================ */
         .text-success { color: var(--success) !important; }
@@ -490,8 +566,9 @@
     <div class="nav-links">
         <button class="nav-btn active" id="navNewTrade" onclick="startNewTrade()">New Trade</button>
         <button class="nav-btn" id="navBlotter" onclick="showView('blotter')">Blotter</button>
+        <button class="nav-btn" id="navMarketData" onclick="showView('marketData')">Market Data</button>
         <button class="nav-btn" id="navAbout" onclick="showView('about')">About the Lifecycle</button>
-        <button class="nav-btn seed-btn" onclick="seedDemoTrades()">Seed 5 Demo Trades</button>
+        <button class="nav-btn seed-btn" onclick="seedDemoTrades()">Seed 7 Demo Trades</button>
     </div>
 </nav>
 
@@ -525,11 +602,6 @@
 // SECTION 1: REFERENCE DATA & CONSTANTS
 // ============================================================
 
-/**
- * COMMODITIES — Reference data for each supported commodity.
- * Fields: display name, symbol, unit, exchange, contract size,
- * minimum tick size, seed base price, metal type (precious/base).
- */
 const COMMODITIES = {
     Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious' },
     Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious' },
@@ -539,7 +611,6 @@ const COMMODITIES = {
     Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base' }
 };
 
-/** Sample counterparties with mock LEI and SSI data */
 const COUNTERPARTIES = {
     'HSBC':                 { lei: '7LTWFZYICNSX8D621K86', swift: 'MRMDUS33', nostro: 'HSBC-NY-00142',   correspondent: 'HSBC Bank USA, NA' },
     'JP Morgan':            { lei: '8I5DZWZKVSZI1NUHU748', swift: 'CHASUS33', nostro: 'JPM-NY-00287',    correspondent: 'JPMorgan Chase Bank, NA' },
@@ -548,10 +619,8 @@ const COUNTERPARTIES = {
     'Citi':                 { lei: '6SHGI4ZSSLCXXQSBB395', swift: 'CITIUS33', nostro: 'CITI-NY-00503',  correspondent: 'Citibank, NA' }
 };
 
-/** Product types and their characteristics */
-const PRODUCT_TYPES = ['Spot', 'Forward', 'Future', 'Swap'];
+const PRODUCT_TYPES = ['Spot', 'Forward', 'Future', 'Swap', 'Vanilla Option', 'Asian Option', 'Barrier Option'];
 
-/** Lifecycle stage names */
 const STAGES = [
     'Capture',
     'Validation & Enrichment',
@@ -561,16 +630,10 @@ const STAGES = [
     'Position Reporting'
 ];
 
-/** Fixed sample FX rates for enrichment */
 const FX_RATES = { 'GBP/USD': 1.2650, 'EUR/USD': 1.0850 };
-
-/** Internal books for enrichment */
 const BOOKS = ['PM-DESK-1', 'PM-DESK-2', 'BM-DESK-1', 'BM-DESK-2'];
-
-/** Trader initials for enrichment */
 const TRADER_INITIALS = ['JD', 'AR', 'KM', 'SP', 'TW'];
 
-/** Tooltip definitions for jargon terms */
 const TOOLTIPS = {
     'T+2':              'Trade date plus two business days — standard spot settlement cycle',
     'LEI':              'Legal Entity Identifier — 20-character code uniquely identifying a legal entity',
@@ -589,7 +652,27 @@ const TOOLTIPS = {
     'ISDA':             'International Swaps and Derivatives Association — sets OTC derivative standards',
     'SWIFT MT6xx':      'SWIFT message type 6xx — used for precious metals trade confirmations',
     'OTC':              'Over-the-Counter — bilateral trading outside of an exchange',
-    'CCP':              'Central Counterparty — entity that interposes itself between buyer and seller'
+    'CCP':              'Central Counterparty — entity that interposes itself between buyer and seller',
+    'Strike Price':     'The pre-agreed price at which the option buyer can buy (call) or sell (put) the commodity',
+    'Premium':          'The upfront cost paid by the option buyer to the seller for the right to exercise',
+    'Expiry Date':      'The last date on which the option can be exercised',
+    'American':         'Option style allowing exercise at any time before or on the expiry date',
+    'European':         'Option style allowing exercise only on the expiry date',
+    'ITM':              'In-The-Money — option with positive intrinsic value if exercised now',
+    'ATM':              'At-The-Money — option whose strike equals the current market price',
+    'OTM':              'Out-of-The-Money — option with no intrinsic value; exercise would result in a loss',
+    'Delta':            'Rate of change of option price relative to a $1 change in the underlying',
+    'Gamma':            'Rate of change of Delta — measures convexity of option value',
+    'Vega':             'Sensitivity of option price to a 1% change in implied volatility',
+    'Theta':            'Daily time decay — how much the option loses in value per day',
+    'Black-76':         'Industry-standard pricing model for commodity options on futures contracts',
+    'Asian Option':     'Exotic option whose payoff depends on the average price over a period',
+    'Barrier Option':   'Exotic option that activates or deactivates when price crosses a barrier level',
+    'Moneyness':        'Describes whether an option is ITM, ATM, or OTM relative to the current price',
+    'Implied Vol':      'The market\'s expectation of future price volatility, implied from option prices',
+    'Knock-Out':        'Barrier option that ceases to exist if the underlying reaches the barrier level',
+    'Knock-In':         'Barrier option that only activates if the underlying reaches the barrier level',
+    'SPAN':             'Standard Portfolio Analysis of Risk — CME\'s margin methodology for derivatives'
 };
 
 
@@ -597,17 +680,14 @@ const TOOLTIPS = {
 // SECTION 2: APPLICATION STATE
 // ============================================================
 
-/**
- * Global application state — all data lives in memory.
- * No localStorage is used.
- */
 const state = {
-    trades: [],              // Array of all trade objects
-    currentTradeId: null,    // ID of the trade currently being viewed
-    currentView: 'newTrade', // Active view: 'newTrade', 'blotter', 'about'
-    tradeCounter: 0,         // Auto-increment for trade IDs
-    marketPrices: {},        // Current jittered market prices per commodity
-    editingCapture: false    // True when editing a disputed trade
+    trades: [],
+    currentTradeId: null,
+    currentView: 'newTrade',
+    tradeCounter: 0,
+    marketPrices: {},
+    editingCapture: false,
+    marketData: null
 };
 
 
@@ -615,17 +695,18 @@ const state = {
 // SECTION 3: UTILITY FUNCTIONS
 // ============================================================
 
-/** Format a number as USD currency */
 function formatUSD(n) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
 }
 
-/** Format a number with commas and optional decimal places */
 function formatNum(n, decimals = 2) {
     return new Intl.NumberFormat('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
 }
 
-/** Format a Date as YYYY-MM-DD string */
+function formatPct(n) {
+    return (n * 100).toFixed(2) + '%';
+}
+
 function dateStr(d) {
     const dt = new Date(d);
     return dt.getFullYear() + '-' +
@@ -633,30 +714,21 @@ function dateStr(d) {
         String(dt.getDate()).padStart(2, '0');
 }
 
-/** Format a date as DD-Mon-YYYY (e.g. 24-Apr-2026) */
 function datePretty(d) {
     const dt = new Date(d);
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return String(dt.getDate()).padStart(2, '0') + '-' + months[dt.getMonth()] + '-' + dt.getFullYear();
 }
 
-/** Check if a date falls on a weekend (Saturday=6, Sunday=0) */
 function isWeekend(d) {
     const day = new Date(d).getDay();
     return day === 0 || day === 6;
 }
 
-/** Check if a date is a business day (not a weekend). No holiday calendar used. */
 function isBusinessDay(d) {
     return !isWeekend(d);
 }
 
-/**
- * Add n business days to a date, skipping weekends.
- * @param {Date|string} date - Starting date
- * @param {number} n - Number of business days to add
- * @returns {Date}
- */
 function addBusinessDays(date, n) {
     const d = new Date(date);
     let count = 0;
@@ -667,27 +739,23 @@ function addBusinessDays(date, n) {
     return d;
 }
 
-/** Add n calendar months to a date */
 function addMonths(date, n) {
     const d = new Date(date);
     d.setMonth(d.getMonth() + n);
     return d;
 }
 
-/** Adjust a date to the next business day if it falls on a weekend */
 function nextBusinessDay(d) {
     const dt = new Date(d);
     while (!isBusinessDay(dt)) dt.setDate(dt.getDate() + 1);
     return dt;
 }
 
-/** Create a tooltip-wrapped span for a jargon term */
 function tip(term) {
     const tooltip = TOOLTIPS[term] || '';
     return `<span class="tip" data-tip="${tooltip}">${term}</span>`;
 }
 
-/** Generate today's date string */
 function today() {
     return dateStr(new Date());
 }
@@ -697,38 +765,32 @@ function today() {
 // SECTION 4: MARKET PRICE SIMULATION
 // ============================================================
 
-/**
- * Apply a random +/- 0.5% jitter to each commodity's base price.
- * Called on page load and periodically to simulate live market data.
- */
 function jitterPrices() {
     for (const [sym, data] of Object.entries(COMMODITIES)) {
-        const jitter = 1 + (Math.random() - 0.5) * 0.01; // +/- 0.5%
+        const jitter = 1 + (Math.random() - 0.5) * 0.01;
         const raw = data.basePrice * jitter;
-        // Round to the nearest tick
         state.marketPrices[sym] = Math.round(raw / data.tick) * data.tick;
     }
 }
 
-/**
- * Get the current market price for a commodity.
- * @param {string} sym - Commodity symbol (Au, Ag, etc.)
- * @returns {number}
- */
 function getMarketPrice(sym) {
     return state.marketPrices[sym] || COMMODITIES[sym].basePrice;
 }
 
-// Initialise prices on load
 jitterPrices();
 
-// Refresh prices every 5 seconds for live P&L updates
 setInterval(() => {
     jitterPrices();
+    refreshMarketData();
     updateSidebar();
-    // If blotter is visible, re-render it for updated P&L
+    // Update option Greeks and barrier status for all option trades
+    state.trades.forEach(t => {
+        if (isOptionType(t.productType) && t.stage >= 2) {
+            updateOptionMetrics(t);
+        }
+    });
     if (state.currentView === 'blotter') renderBlotterView();
-    // If viewing stage 6 of a trade, re-render
+    if (state.currentView === 'marketData') renderMarketDataView();
     const t = getCurrentTrade();
     if (t && t.stage === 6 && state.currentView === 'newTrade') renderStageContent(t);
 }, 5000);
@@ -738,33 +800,16 @@ setInterval(() => {
 // SECTION 5: PRODUCT & VENUE LOGIC
 // ============================================================
 
-/**
- * Determine the trading venue based on product type and commodity.
- *
- * Rules:
- * - Spot/Forward precious metals: LBMA (Au, Ag) or LPPM (Pt, Pd)
- * - Spot/Forward base metals: LME
- * - Future: use the commodity's native exchange (COMEX, NYMEX, LME)
- * - Swap: OTC
- */
 function determineVenue(productType, commoditySym) {
     const com = COMMODITIES[commoditySym];
-    if (productType === 'Swap') return 'OTC';
-    if (productType === 'Future') return com.exchange;
-    // Spot or Forward
+    if (productType === 'Swap' || productType === 'Asian Option' || productType === 'Barrier Option') return 'OTC';
+    if (productType === 'Future' || productType === 'Vanilla Option') return com.exchange;
     if (com.type === 'precious') {
         return (commoditySym === 'Au' || commoditySym === 'Ag') ? 'LBMA' : 'LPPM';
     }
     return 'LME';
 }
 
-/**
- * Compute the default value date based on product type.
- * - Spot: T+2
- * - Forward: T+5 (user can change)
- * - Future: first prompt date
- * - Swap: effective date = T+2
- */
 function defaultValueDate(productType, tradeDate) {
     const td = new Date(tradeDate);
     switch (productType) {
@@ -772,61 +817,45 @@ function defaultValueDate(productType, tradeDate) {
         case 'Forward': return addBusinessDays(td, 5);
         case 'Swap': return addBusinessDays(td, 2);
         case 'Future': return addBusinessDays(td, 3);
+        case 'Vanilla Option': return addBusinessDays(td, 1);
+        case 'Asian Option': return addBusinessDays(td, 2);
+        case 'Barrier Option': return addBusinessDays(td, 2);
         default: return addBusinessDays(td, 2);
     }
 }
 
-/**
- * Generate futures prompt dates.
- * Daily business days for the next 3 months, then monthly (3rd Wednesday)
- * for months 4–12.
- */
 function generatePromptDates(fromDate) {
     const dates = [];
     const start = new Date(fromDate);
     const threeMonths = addMonths(start, 3);
-    // Daily business days for 3 months
     const d = new Date(start);
-    d.setDate(d.getDate() + 3); // Start from T+3
+    d.setDate(d.getDate() + 3);
     while (d <= threeMonths) {
-        if (isBusinessDay(d)) {
-            dates.push(new Date(d));
-        }
+        if (isBusinessDay(d)) dates.push(new Date(d));
         d.setDate(d.getDate() + 1);
     }
-    // Monthly for months 4–12: use 3rd Wednesday of each month
     for (let m = 4; m <= 12; m++) {
         const monthStart = addMonths(start, m);
-        // Find the 3rd Wednesday
         const yr = monthStart.getFullYear();
         const mo = monthStart.getMonth();
         let wednesdayCount = 0;
         for (let day = 1; day <= 28; day++) {
             const dt = new Date(yr, mo, day);
-            if (dt.getDay() === 3) { // Wednesday
+            if (dt.getDay() === 3) {
                 wednesdayCount++;
-                if (wednesdayCount === 3) {
-                    dates.push(dt);
-                    break;
-                }
+                if (wednesdayCount === 3) { dates.push(dt); break; }
             }
         }
     }
     return dates;
 }
 
-/**
- * Generate monthly swap reset dates for a given tenor.
- * @param {string} effectiveDate - Start date
- * @param {number} tenorMonths - Number of months (3–12)
- * @returns {Array<{start: Date, end: Date, fixingDate: Date}>}
- */
 function generateSwapResets(effectiveDate, tenorMonths) {
     const resets = [];
     for (let i = 0; i < tenorMonths; i++) {
         const periodStart = nextBusinessDay(addMonths(effectiveDate, i));
         const periodEnd = nextBusinessDay(addMonths(effectiveDate, i + 1));
-        const fixingDate = nextBusinessDay(addMonths(effectiveDate, i)); // Fixing at start of period
+        const fixingDate = nextBusinessDay(addMonths(effectiveDate, i));
         resets.push({ start: periodStart, end: periodEnd, fixingDate });
     }
     return resets;
@@ -837,10 +866,6 @@ function generateSwapResets(effectiveDate, tenorMonths) {
 // SECTION 6: TRADE ID GENERATION
 // ============================================================
 
-/**
- * Generate a unique internal trade ID in the format CMD-YYYYMMDD-NNNN.
- * The counter increments globally across all trades in the session.
- */
 function generateTradeId() {
     state.tradeCounter++;
     const d = today().replace(/-/g, '');
@@ -852,10 +877,6 @@ function generateTradeId() {
 // SECTION 7: TRADE OBJECT CREATION
 // ============================================================
 
-/**
- * Create a new trade object with all lifecycle fields initialised.
- * The trade starts at Stage 1 (Capture).
- */
 function createTradeObject(formData) {
     const com = COMMODITIES[formData.commodity];
     const price = parseFloat(formData.price);
@@ -864,11 +885,19 @@ function createTradeObject(formData) {
     let swapResets = [];
     let swapTenor = null;
 
-    // For swaps, notional = monthly notional * tenor
     if (formData.productType === 'Swap') {
         swapTenor = parseInt(formData.swapTenor) || 6;
         swapResets = generateSwapResets(formData.valueDate, swapTenor);
         notional = qty * price * com.contractSize * swapTenor;
+    }
+
+    const isOpt = isOptionType(formData.productType);
+    const strike = isOpt ? (parseFloat(formData.strike) || price) : null;
+    const premium = isOpt ? (parseFloat(formData.premium) || 0) : null;
+    const premiumTotal = isOpt ? premium * qty * com.contractSize : null;
+
+    if (isOpt) {
+        notional = qty * strike * com.contractSize;
     }
 
     return {
@@ -890,6 +919,29 @@ function createTradeObject(formData) {
         swapFixedRate: price,
         // Future fields
         futurePromptDate: formData.futurePromptDate || null,
+        // Option fields
+        callPut: isOpt ? (formData.callPut || 'Call') : null,
+        strike: strike,
+        premium: premium,
+        premiumTotal: premiumTotal,
+        expiryDate: isOpt ? (formData.expiryDate || dateStr(addBusinessDays(formData.tradeDate, 30))) : null,
+        exerciseStyle: isOpt ? (formData.exerciseStyle || 'European') : null,
+        optionGreeks: null,
+        optionTheoPrice: null,
+        moneyness: null,
+        // Asian option fields
+        averagingStart: formData.productType === 'Asian Option' ? (formData.averagingStart || null) : null,
+        averagingEnd: formData.productType === 'Asian Option' ? (formData.averagingEnd || null) : null,
+        fixingFrequency: formData.productType === 'Asian Option' ? (formData.fixingFrequency || 'Monthly') : null,
+        fixingSource: formData.productType === 'Asian Option' ? (formData.fixingSource || 'LBMA PM') : null,
+        fixingSchedule: null,
+        averagePrice: null,
+        // Barrier option fields
+        barrierType: formData.productType === 'Barrier Option' ? (formData.barrierType || 'Up-and-Out') : null,
+        barrierLevel: formData.productType === 'Barrier Option' ? (parseFloat(formData.barrierLevel) || null) : null,
+        barrierMonitoring: formData.productType === 'Barrier Option' ? (formData.barrierMonitoring || 'Continuous') : null,
+        rebateAmount: formData.productType === 'Barrier Option' ? (parseFloat(formData.rebateAmount) || 0) : null,
+        barrierStatus: formData.productType === 'Barrier Option' ? 'ALIVE' : null,
         // Enrichment (populated in Stage 2)
         validationResults: [],
         ssi: null,
@@ -900,6 +952,7 @@ function createTradeObject(formData) {
         // Confirmation (Stage 3)
         confirmed: false,
         disputed: false,
+        confirmationMessage: null,
         // Clearing (Stage 4)
         clearer: null,
         initialMargin: 0,
@@ -918,7 +971,6 @@ function createTradeObject(formData) {
     };
 }
 
-/** Get the currently viewed trade */
 function getCurrentTrade() {
     return state.trades.find(t => t.id === state.currentTradeId) || null;
 }
@@ -928,12 +980,10 @@ function getCurrentTrade() {
 // SECTION 8: RENDER — NAVIGATION & VIEWS
 // ============================================================
 
-/** Switch between main views (New Trade, Blotter, About) */
 function showView(view) {
     state.currentView = view;
-    // Update nav button states
     document.querySelectorAll('.nav-btn:not(.seed-btn)').forEach(b => b.classList.remove('active'));
-    const navId = { newTrade: 'navNewTrade', blotter: 'navBlotter', about: 'navAbout' };
+    const navId = { newTrade: 'navNewTrade', blotter: 'navBlotter', about: 'navAbout', marketData: 'navMarketData' };
     document.getElementById(navId[view])?.classList.add('active');
 
     const main = document.getElementById('mainContent');
@@ -951,17 +1001,18 @@ function showView(view) {
         case 'about':
             renderAboutView();
             break;
+        case 'marketData':
+            renderMarketDataView();
+            break;
     }
 }
 
-/** Start a new trade — show a blank capture form */
 function startNewTrade() {
     state.currentTradeId = null;
     state.editingCapture = false;
     showView('newTrade');
 }
 
-/** View an existing trade at its current lifecycle stage */
 function viewTrade(tradeId) {
     state.currentTradeId = tradeId;
     state.currentView = 'newTrade';
@@ -976,10 +1027,6 @@ function viewTrade(tradeId) {
 // SECTION 9: RENDER — LIFECYCLE STEPPER
 // ============================================================
 
-/**
- * Render the horizontal stepper showing all 6 lifecycle stages.
- * The current stage is highlighted, prior stages are marked complete.
- */
 function renderStepper(currentStage) {
     let html = '<div class="stepper">';
     STAGES.forEach((name, i) => {
@@ -1005,7 +1052,6 @@ function renderStepper(currentStage) {
 // SECTION 10: RENDER — TRADE VIEW (routes to stage renderer)
 // ============================================================
 
-/** Render a trade at its current lifecycle stage */
 function renderTradeView(trade) {
     const main = document.getElementById('mainContent');
     let html = renderStepper(trade.stage);
@@ -1014,7 +1060,6 @@ function renderTradeView(trade) {
     renderStageContent(trade);
 }
 
-/** Render the stage-specific content for a trade */
 function renderStageContent(trade) {
     const container = document.getElementById('stageContent');
     if (!container) return;
@@ -1033,10 +1078,6 @@ function renderStageContent(trade) {
 // SECTION 11: STAGE 1 — CAPTURE
 // ============================================================
 
-/**
- * Render the trade capture form.
- * If editing an existing (disputed) trade, pre-populate fields.
- */
 function renderCaptureForm(existingTrade) {
     const main = document.getElementById('mainContent');
     const t = existingTrade || null;
@@ -1046,12 +1087,10 @@ function renderCaptureForm(existingTrade) {
         html += '<div id="stageContent">' + buildCaptureFormHTML(t, isEdit) + '</div>';
         main.innerHTML = html;
     } else {
-        // Fresh capture — no stepper yet
         main.innerHTML = buildCaptureFormHTML(null, false);
     }
 }
 
-/** Build the HTML for the capture form */
 function buildCaptureFormHTML(t, isEdit) {
     const commodityOptions = Object.entries(COMMODITIES).map(([sym, c]) =>
         `<option value="${sym}" ${t && t.commodity === sym ? 'selected' : ''}>${c.name} (${sym})</option>`
@@ -1069,6 +1108,7 @@ function buildCaptureFormHTML(t, isEdit) {
     const defaultPrice = t ? t.price : getMarketPrice(defaultCom);
     const defaultDate = t ? t.tradeDate : today();
     const defaultValDate = t ? t.valueDate : dateStr(defaultValueDate('Spot', defaultDate));
+    const isOpt = t ? isOptionType(t.productType) : false;
 
     return `
     <div class="card">
@@ -1128,6 +1168,104 @@ function buildCaptureFormHTML(t, isEdit) {
                         ${[3,4,5,6,7,8,9,10,11,12].map(m => `<option value="${m}" ${t && t.swapTenor === m ? 'selected' : ''}>${m} months</option>`).join('')}
                     </select>
                 </div>
+
+                <!-- Option Common Fields -->
+                <div class="option-fields-group" id="optionCommonGroup" style="display:${isOpt ? 'block' : 'none'}">
+                    <div class="option-section-label">Option Parameters</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Call / Put</label>
+                            <select id="callPut" onchange="updateNotional()">
+                                <option value="Call" ${t && t.callPut === 'Call' ? 'selected' : ''}>Call</option>
+                                <option value="Put" ${t && t.callPut === 'Put' ? 'selected' : ''}>Put</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>${tip('Strike Price')} (USD/${COMMODITIES[defaultCom].unit})</label>
+                            <input type="number" id="strikePrice" value="${t && t.strike ? t.strike : defaultPrice}" step="${COMMODITIES[defaultCom].tick}" onchange="onStrikeChange()" oninput="onStrikeChange()" required>
+                        </div>
+                        <div class="form-group">
+                            <label>${tip('Premium')} per unit (USD)</label>
+                            <input type="number" id="premiumInput" value="${t && t.premium ? t.premium : ''}" step="0.01" onchange="updateNotional()" oninput="updateNotional()">
+                        </div>
+                        <div class="form-group">
+                            <label>${tip('Expiry Date')}</label>
+                            <input type="date" id="expiryDate" value="${t && t.expiryDate ? t.expiryDate : dateStr(addBusinessDays(defaultDate, 30))}">
+                        </div>
+                        <div class="form-group">
+                            <label>Exercise Style</label>
+                            <select id="exerciseStyle">
+                                <option value="European" ${t && t.exerciseStyle === 'European' ? 'selected' : ''}>${tip('European')}</option>
+                                <option value="American" ${t && t.exerciseStyle === 'American' ? 'selected' : ''}>${tip('American')}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>${tip('Moneyness')}</label>
+                            <input type="text" id="moneynessDisplay" value="${isOpt && t ? (t.moneyness || 'ATM') : 'ATM'}" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asian Option Fields -->
+                <div class="option-fields-group" id="asianGroup" style="display:${t && t.productType === 'Asian Option' ? 'block' : 'none'}">
+                    <div class="option-section-label">${tip('Asian Option')} Parameters</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Averaging Period Start</label>
+                            <input type="date" id="averagingStart" value="${t && t.averagingStart ? t.averagingStart : dateStr(addBusinessDays(defaultDate, 5))}">
+                        </div>
+                        <div class="form-group">
+                            <label>Averaging Period End</label>
+                            <input type="date" id="averagingEnd" value="${t && t.averagingEnd ? t.averagingEnd : dateStr(addMonths(defaultDate, 3))}">
+                        </div>
+                        <div class="form-group">
+                            <label>Fixing Frequency</label>
+                            <select id="fixingFrequency">
+                                <option value="Daily" ${t && t.fixingFrequency === 'Daily' ? 'selected' : ''}>Daily</option>
+                                <option value="Weekly" ${t && t.fixingFrequency === 'Weekly' ? 'selected' : ''}>Weekly</option>
+                                <option value="Monthly" ${t && t.fixingFrequency === 'Monthly' ? 'selected' : ''}>Monthly</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fixing Source</label>
+                            <select id="fixingSource">
+                                <option value="LBMA PM" ${t && t.fixingSource === 'LBMA PM' ? 'selected' : ''}>LBMA PM Fix</option>
+                                <option value="LME Close" ${t && t.fixingSource === 'LME Close' ? 'selected' : ''}>LME Official Close</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barrier Option Fields -->
+                <div class="option-fields-group" id="barrierGroup" style="display:${t && t.productType === 'Barrier Option' ? 'block' : 'none'}">
+                    <div class="option-section-label">${tip('Barrier Option')} Parameters</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Barrier Type</label>
+                            <select id="barrierType">
+                                <option value="Up-and-Out" ${t && t.barrierType === 'Up-and-Out' ? 'selected' : ''}>Up-and-Out (${tip('Knock-Out')})</option>
+                                <option value="Down-and-Out" ${t && t.barrierType === 'Down-and-Out' ? 'selected' : ''}>Down-and-Out (${tip('Knock-Out')})</option>
+                                <option value="Up-and-In" ${t && t.barrierType === 'Up-and-In' ? 'selected' : ''}>Up-and-In (${tip('Knock-In')})</option>
+                                <option value="Down-and-In" ${t && t.barrierType === 'Down-and-In' ? 'selected' : ''}>Down-and-In (${tip('Knock-In')})</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Barrier Level (USD)</label>
+                            <input type="number" id="barrierLevel" value="${t && t.barrierLevel ? t.barrierLevel : ''}" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Monitoring</label>
+                            <select id="barrierMonitoring">
+                                <option value="Continuous" ${t && t.barrierMonitoring === 'Continuous' ? 'selected' : ''}>Continuous</option>
+                                <option value="Discrete" ${t && t.barrierMonitoring === 'Discrete' ? 'selected' : ''}>Discrete (Daily Close)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Rebate Amount (USD)</label>
+                            <input type="number" id="rebateAmount" value="${t && t.rebateAmount ? t.rebateAmount : 0}" step="0.01" min="0">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Contract details (informational) -->
@@ -1143,6 +1281,12 @@ function buildCaptureFormHTML(t, isEdit) {
                 <div class="notional-value" id="notionalValue">${formatUSD(defaultPrice * (t ? t.quantity : 1) * COMMODITIES[defaultCom].contractSize)}</div>
             </div>
 
+            <!-- Premium display for options -->
+            <div class="premium-display" id="premiumDisplay" style="display:${isOpt ? 'block' : 'none'}">
+                <div class="premium-label">Total ${tip('Premium')}</div>
+                <div class="premium-value" id="premiumValue">${isOpt && t && t.premiumTotal ? formatUSD(t.premiumTotal) : '$0.00'}</div>
+            </div>
+
             <div class="btn-group">
                 <button type="submit" class="btn btn-primary">${isEdit ? 'Resend Trade' : 'Submit Trade'}</button>
                 ${isEdit ? '<button type="button" class="btn btn-outline" onclick="viewTrade(\'' + t.id + '\')">Cancel</button>' : ''}
@@ -1151,7 +1295,6 @@ function buildCaptureFormHTML(t, isEdit) {
     </div>`;
 }
 
-/** Render contract detail info for the selected commodity */
 function renderContractInfo(sym) {
     const c = COMMODITIES[sym];
     return `<strong>${c.name} (${sym})</strong> &mdash; ${c.contractSize} ${c.unit}/contract &bull;
@@ -1159,7 +1302,6 @@ function renderContractInfo(sym) {
             Current market: <strong>${formatUSD(getMarketPrice(sym))}</strong>`;
 }
 
-/** Stage 1 render for an existing trade at stage 1 (just captured, or re-viewing) */
 function renderStage1(trade) {
     return buildCaptureFormHTML(trade, state.editingCapture);
 }
@@ -1169,23 +1311,34 @@ function renderStage1(trade) {
 // SECTION 12: STAGE 1 — EVENT HANDLERS
 // ============================================================
 
-/** Called when product type changes — update UI accordingly */
 function onProductTypeChange() {
     const pt = document.getElementById('productType').value;
     const com = document.getElementById('commodity').value;
-    // Show/hide future prompt date selector
+
     document.getElementById('futurePromptGroup').style.display = pt === 'Future' ? '' : 'none';
     document.getElementById('swapTenorGroup').style.display = pt === 'Swap' ? '' : 'none';
 
+    const isOpt = isOptionType(pt);
+    document.getElementById('optionCommonGroup').style.display = isOpt ? 'block' : 'none';
+    document.getElementById('asianGroup').style.display = pt === 'Asian Option' ? 'block' : 'none';
+    document.getElementById('barrierGroup').style.display = pt === 'Barrier Option' ? 'block' : 'none';
+    document.getElementById('premiumDisplay').style.display = isOpt ? 'block' : 'none';
+
     if (pt === 'Future') populatePromptDates();
 
-    // Update venue
+    if (isOpt) {
+        const spot = getMarketPrice(com);
+        const strikeEl = document.getElementById('strikePrice');
+        if (strikeEl && !strikeEl.value) strikeEl.value = spot;
+        // Auto-estimate premium via Black-76
+        autoEstimatePremium();
+    }
+
     document.getElementById('venue').value = determineVenue(pt, com);
     updateValueDate();
     updateNotional();
 }
 
-/** Called when commodity changes — update price, venue, contract info */
 function onCommodityChange() {
     const com = document.getElementById('commodity').value;
     const pt = document.getElementById('productType').value;
@@ -1193,19 +1346,57 @@ function onCommodityChange() {
     document.getElementById('price').step = COMMODITIES[com].tick;
     document.getElementById('venue').value = determineVenue(pt, com);
     document.getElementById('contractInfo').innerHTML = renderContractInfo(com);
-    // Update the price label to reflect the correct unit (troy oz vs MT)
     const priceLabel = document.getElementById('priceLabel');
     if (priceLabel) priceLabel.textContent = 'Price (USD/' + COMMODITIES[com].unit + ')';
     if (pt === 'Future') populatePromptDates();
+    if (isOptionType(pt)) {
+        document.getElementById('strikePrice').value = getMarketPrice(com);
+        document.getElementById('strikePrice').step = COMMODITIES[com].tick;
+        autoEstimatePremium();
+    }
     updateNotional();
 }
 
-/** Update the value date based on product type and trade date */
+function onStrikeChange() {
+    const com = document.getElementById('commodity')?.value;
+    const callPut = document.getElementById('callPut')?.value || 'Call';
+    const strike = parseFloat(document.getElementById('strikePrice')?.value) || 0;
+    if (!com || !strike) return;
+    const spot = getMarketPrice(com);
+    const moneyness = computeMoneyness(callPut, spot, strike);
+    const mDisplay = document.getElementById('moneynessDisplay');
+    if (mDisplay) mDisplay.value = moneyness;
+    autoEstimatePremium();
+    updateNotional();
+}
+
+function autoEstimatePremium() {
+    const com = document.getElementById('commodity')?.value;
+    const pt = document.getElementById('productType')?.value;
+    if (!com || !isOptionType(pt)) return;
+
+    const strike = parseFloat(document.getElementById('strikePrice')?.value) || getMarketPrice(com);
+    const expiryDate = document.getElementById('expiryDate')?.value;
+    const callPut = document.getElementById('callPut')?.value || 'Call';
+    if (!expiryDate) return;
+
+    const F = getMarketPrice(com);
+    const T = timeToExpiry(expiryDate);
+    const r = MARKET_DATA_CONFIG.riskFreeRate;
+    const sigma = lookupImpliedVol(com, strike, T);
+    const theo = black76Price(F, strike, T, r, sigma, callPut);
+
+    const premiumEl = document.getElementById('premiumInput');
+    if (premiumEl && (!premiumEl.value || premiumEl.value === '0')) {
+        premiumEl.value = Math.max(0.01, theo).toFixed(2);
+    }
+    updateNotional();
+}
+
 function updateValueDate() {
     const pt = document.getElementById('productType').value;
     const td = document.getElementById('tradeDate').value;
     if (pt === 'Future') {
-        // Value date = selected prompt date
         const pd = document.getElementById('futurePromptDate');
         if (pd && pd.value) {
             document.getElementById('valueDate').value = pd.value;
@@ -1215,7 +1406,6 @@ function updateValueDate() {
     }
 }
 
-/** Populate the futures prompt date dropdown */
 function populatePromptDates() {
     const td = document.getElementById('tradeDate').value;
     const dates = generatePromptDates(td);
@@ -1239,7 +1429,6 @@ function populatePromptDates() {
     onPromptDateChange();
 }
 
-/** When a prompt date is selected for futures */
 function onPromptDateChange() {
     const pd = document.getElementById('futurePromptDate');
     if (pd && pd.value) {
@@ -1247,7 +1436,6 @@ function onPromptDateChange() {
     }
 }
 
-/** Update the live notional calculation */
 function updateNotional() {
     const com = document.getElementById('commodity')?.value;
     const price = parseFloat(document.getElementById('price')?.value) || 0;
@@ -1260,32 +1448,52 @@ function updateNotional() {
         const tenor = parseInt(document.getElementById('swapTenor')?.value) || 6;
         notional = qty * price * cs * tenor;
     }
+    if (isOptionType(pt)) {
+        const strike = parseFloat(document.getElementById('strikePrice')?.value) || price;
+        notional = qty * strike * cs;
+        const premium = parseFloat(document.getElementById('premiumInput')?.value) || 0;
+        const premTotal = premium * qty * cs;
+        const premEl = document.getElementById('premiumValue');
+        if (premEl) premEl.textContent = formatUSD(premTotal);
+    }
     const el = document.getElementById('notionalValue');
     if (el) el.textContent = formatUSD(notional);
 }
 
-/**
- * Handle trade capture form submission.
- * Creates a new trade or updates an existing one (after dispute).
- */
 function handleCapture(event, editTradeId) {
     event.preventDefault();
+    const pt = document.getElementById('productType').value;
     const formData = {
         tradeDate: document.getElementById('tradeDate').value,
         counterparty: document.getElementById('counterparty').value,
         buySell: document.getElementById('buySell').value,
-        productType: document.getElementById('productType').value,
+        productType: pt,
         commodity: document.getElementById('commodity').value,
         quantity: document.getElementById('quantity').value,
         price: document.getElementById('price').value,
         valueDate: document.getElementById('valueDate').value,
         futurePromptDate: document.getElementById('futurePromptDate')?.value || null,
-        swapTenor: document.getElementById('swapTenor')?.value || null
+        swapTenor: document.getElementById('swapTenor')?.value || null,
+        // Option fields
+        callPut: document.getElementById('callPut')?.value || null,
+        strike: document.getElementById('strikePrice')?.value || null,
+        premium: document.getElementById('premiumInput')?.value || null,
+        expiryDate: document.getElementById('expiryDate')?.value || null,
+        exerciseStyle: document.getElementById('exerciseStyle')?.value || null,
+        // Asian
+        averagingStart: document.getElementById('averagingStart')?.value || null,
+        averagingEnd: document.getElementById('averagingEnd')?.value || null,
+        fixingFrequency: document.getElementById('fixingFrequency')?.value || null,
+        fixingSource: document.getElementById('fixingSource')?.value || null,
+        // Barrier
+        barrierType: document.getElementById('barrierType')?.value || null,
+        barrierLevel: document.getElementById('barrierLevel')?.value || null,
+        barrierMonitoring: document.getElementById('barrierMonitoring')?.value || null,
+        rebateAmount: document.getElementById('rebateAmount')?.value || null
     };
 
     let trade;
     if (editTradeId) {
-        // Updating a disputed trade
         trade = state.trades.find(t => t.id === editTradeId);
         const com = COMMODITIES[formData.commodity];
         trade.counterparty = formData.counterparty;
@@ -1303,15 +1511,36 @@ function handleCapture(event, editTradeId) {
             trade.swapFixedRate = trade.price;
             notional *= trade.swapTenor;
         }
+        if (isOptionType(formData.productType)) {
+            trade.callPut = formData.callPut;
+            trade.strike = parseFloat(formData.strike) || trade.price;
+            trade.premium = parseFloat(formData.premium) || 0;
+            trade.premiumTotal = trade.premium * trade.quantity * com.contractSize;
+            trade.expiryDate = formData.expiryDate;
+            trade.exerciseStyle = formData.exerciseStyle;
+            notional = trade.quantity * trade.strike * com.contractSize;
+            if (formData.productType === 'Asian Option') {
+                trade.averagingStart = formData.averagingStart;
+                trade.averagingEnd = formData.averagingEnd;
+                trade.fixingFrequency = formData.fixingFrequency;
+                trade.fixingSource = formData.fixingSource;
+            }
+            if (formData.productType === 'Barrier Option') {
+                trade.barrierType = formData.barrierType;
+                trade.barrierLevel = parseFloat(formData.barrierLevel) || 0;
+                trade.barrierMonitoring = formData.barrierMonitoring;
+                trade.rebateAmount = parseFloat(formData.rebateAmount) || 0;
+                trade.barrierStatus = 'ALIVE';
+            }
+        }
         trade.notional = notional;
         trade.disputed = false;
         trade.confirmed = false;
-        trade.stage = 2; // Go back to validation
+        trade.stage = 2;
         state.editingCapture = false;
     } else {
-        // New trade
         trade = createTradeObject(formData);
-        trade.stage = 2; // Advance to validation
+        trade.stage = 2;
         state.trades.push(trade);
     }
 
@@ -1325,42 +1554,34 @@ function handleCapture(event, editTradeId) {
 // SECTION 13: STAGE 2 — VALIDATION & ENRICHMENT
 // ============================================================
 
-/**
- * Run validation checks on a trade and auto-enrich with reference data.
- * Returns an array of {label, pass, detail} objects.
- */
 function runValidation(trade) {
     const checks = [];
     const td = new Date(trade.tradeDate);
     const vd = new Date(trade.valueDate);
 
-    // 1. Value date > trade date
     checks.push({
         label: 'Value date is after trade date',
         pass: vd > td,
         detail: vd > td ? `${datePretty(trade.valueDate)} > ${datePretty(trade.tradeDate)}` : 'Value date must be after trade date'
     });
 
-    // 2. T+2 check for spot
     if (trade.productType === 'Spot') {
         const t2 = addBusinessDays(td, 2);
         const t2ok = dateStr(vd) === dateStr(t2);
         checks.push({
-            label: `Spot settlement honours ${TOOLTIPS['T+2'] ? 'T+2' : 'T+2'} convention`,
+            label: `Spot settlement honours T+2 convention`,
             pass: t2ok,
             detail: t2ok ? `Value date ${datePretty(trade.valueDate)} = T+2` : `Expected ${datePretty(t2)}, got ${datePretty(trade.valueDate)}`
         });
     }
 
-    // 3. Value date is a business day
     checks.push({
         label: 'Value date is a business day (not weekend)',
         pass: isBusinessDay(vd),
         detail: isBusinessDay(vd) ? `${datePretty(trade.valueDate)} is a weekday` : 'Value date falls on a weekend'
     });
 
-    // 4. Whole lots for exchange products
-    if (trade.productType === 'Future' || (trade.productType !== 'Swap' && trade.venue !== 'OTC')) {
+    if (trade.productType === 'Future' || (trade.productType !== 'Swap' && !isOptionType(trade.productType) && trade.venue !== 'OTC')) {
         const wholeLots = Number.isInteger(trade.quantity);
         checks.push({
             label: 'Quantity is in whole lots (exchange requirement)',
@@ -1369,7 +1590,6 @@ function runValidation(trade) {
         });
     }
 
-    // 5. Counterparty SSI lookup (mocked — always passes)
     const cpData = COUNTERPARTIES[trade.counterparty];
     checks.push({
         label: `Counterparty ${tip('SSI')} validated`,
@@ -1377,35 +1597,86 @@ function runValidation(trade) {
         detail: cpData ? `Nostro: ${cpData.nostro}, SWIFT: ${cpData.swift}` : 'SSI not found for counterparty'
     });
 
-    // 6. LEI populated (mocked — always passes)
     checks.push({
         label: `${tip('LEI')} populated`,
         pass: !!cpData?.lei,
         detail: cpData ? `LEI: ${cpData.lei}` : 'LEI not found'
     });
 
-    // 7. Internal trade ID generated
     checks.push({
         label: 'Internal trade ID generated',
         pass: true,
         detail: trade.id
     });
 
+    // Option-specific validations
+    if (isOptionType(trade.productType)) {
+        checks.push({
+            label: `${tip('Strike Price')} is positive`,
+            pass: trade.strike > 0,
+            detail: trade.strike > 0 ? `Strike: ${formatUSD(trade.strike)}` : 'Strike must be > 0'
+        });
+
+        checks.push({
+            label: `${tip('Premium')} is positive`,
+            pass: trade.premium > 0,
+            detail: trade.premium > 0 ? `Premium: ${formatUSD(trade.premium)}/unit` : 'Premium must be > 0'
+        });
+
+        const expDate = new Date(trade.expiryDate);
+        const expAfterTrade = expDate > td;
+        checks.push({
+            label: `${tip('Expiry Date')} is after trade date`,
+            pass: expAfterTrade,
+            detail: expAfterTrade ? `Expiry: ${datePretty(trade.expiryDate)}` : 'Expiry must be after trade date'
+        });
+
+        if (trade.productType === 'Barrier Option') {
+            const spot = getMarketPrice(trade.commodity);
+            const barrierValid = trade.barrierLevel > 0 && trade.barrierLevel !== trade.strike;
+            const directionValid = trade.barrierType.startsWith('Up') ? trade.barrierLevel > spot : trade.barrierLevel < spot;
+            checks.push({
+                label: 'Barrier level valid (not equal to strike, correct direction)',
+                pass: barrierValid && directionValid,
+                detail: barrierValid && directionValid
+                    ? `Barrier: ${formatUSD(trade.barrierLevel)} (${trade.barrierType}), Spot: ${formatUSD(spot)}`
+                    : `Barrier ${formatUSD(trade.barrierLevel)} invalid for ${trade.barrierType} (spot: ${formatUSD(spot)})`
+            });
+        }
+
+        if (trade.productType === 'Asian Option') {
+            const avgStart = new Date(trade.averagingStart);
+            const avgEnd = new Date(trade.averagingEnd);
+            const avgValid = avgEnd > avgStart;
+            checks.push({
+                label: 'Averaging period is valid (end > start)',
+                pass: avgValid,
+                detail: avgValid ? `${datePretty(trade.averagingStart)} to ${datePretty(trade.averagingEnd)}` : 'Averaging end must be after start'
+            });
+        }
+    }
+
     trade.validationResults = checks;
 
-    // Auto-enrich the trade
+    // Auto-enrich
     trade.ssi = cpData || null;
     trade.book = trade.commodity === 'Cu' || trade.commodity === 'Ni' ? 'BM-DESK-1' : 'PM-DESK-1';
     trade.traderInitials = TRADER_INITIALS[Math.floor(Math.random() * TRADER_INITIALS.length)];
     trade.lei = cpData?.lei || 'N/A';
     trade.fxRates = { ...FX_RATES };
 
+    // Option enrichment
+    if (isOptionType(trade.productType)) {
+        updateOptionMetrics(trade);
+        if (trade.productType === 'Asian Option' && trade.averagingStart && trade.averagingEnd) {
+            trade.fixingSchedule = generateFixingSchedule(trade.averagingStart, trade.averagingEnd, trade.fixingFrequency);
+        }
+    }
+
     return checks;
 }
 
-/** Render Stage 2: Validation & Enrichment */
 function renderStage2(trade) {
-    // Run validation if not already done
     if (!trade.validationResults || trade.validationResults.length === 0) {
         runValidation(trade);
     }
@@ -1427,7 +1698,6 @@ function renderStage2(trade) {
 
     html += `</ul></div>`;
 
-    // Enrichment section
     html += `<div class="card">
         <div class="card-title">Auto-Enrichment</div>
         <table class="enrich-table">
@@ -1443,7 +1713,55 @@ function renderStage2(trade) {
         </table>
     </div>`;
 
-    // Advance button (only if all checks pass)
+    // Option-specific enrichment display
+    if (isOptionType(trade.productType) && trade.optionGreeks) {
+        html += `<div class="card">
+            <div class="card-title">${tip('Black-76')} Pricing & Greeks</div>
+            <table class="enrich-table">
+                <tr><td>Theoretical Price</td><td>${formatUSD(trade.optionTheoPrice || 0)} per unit</td></tr>
+                <tr><td>${tip('Moneyness')}</td><td><span class="badge badge-${(trade.moneyness || 'ATM').toLowerCase()}">${trade.moneyness || 'ATM'}</span></td></tr>
+                <tr><td>${tip('Implied Vol')}</td><td>${formatPct(lookupImpliedVol(trade.commodity, trade.strike, timeToExpiry(trade.expiryDate)))}</td></tr>
+            </table>
+            <div class="greeks-grid mt-2">
+                <div class="greek-card"><div class="greek-label">${tip('Delta')}</div><div class="greek-value">${trade.optionGreeks.delta.toFixed(4)}</div></div>
+                <div class="greek-card"><div class="greek-label">${tip('Gamma')}</div><div class="greek-value">${trade.optionGreeks.gamma.toFixed(6)}</div></div>
+                <div class="greek-card"><div class="greek-label">${tip('Vega')}</div><div class="greek-value">${trade.optionGreeks.vega.toFixed(4)}</div></div>
+                <div class="greek-card"><div class="greek-label">${tip('Theta')}</div><div class="greek-value">${trade.optionGreeks.theta.toFixed(4)}</div></div>
+            </div>
+        </div>`;
+
+        if (trade.productType === 'Barrier Option') {
+            const statusClass = trade.barrierStatus === 'ALIVE' ? 'barrier-alive' : 'barrier-knocked';
+            html += `<div class="card">
+                <div class="card-title">${tip('Barrier Option')} Status</div>
+                <table class="enrich-table">
+                    <tr><td>Barrier Type</td><td>${trade.barrierType}</td></tr>
+                    <tr><td>Barrier Level</td><td>${formatUSD(trade.barrierLevel)}</td></tr>
+                    <tr><td>Monitoring</td><td>${trade.barrierMonitoring}</td></tr>
+                    <tr><td>Status</td><td><span class="${statusClass}">${trade.barrierStatus}</span></td></tr>
+                    <tr><td>Rebate</td><td>${formatUSD(trade.rebateAmount)}</td></tr>
+                </table>
+            </div>`;
+        }
+
+        if (trade.productType === 'Asian Option' && trade.fixingSchedule) {
+            html += `<div class="card">
+                <div class="card-title">${tip('Asian Option')} Fixing Schedule</div>
+                <p style="font-size:0.82rem; margin-bottom:8px;">Frequency: ${trade.fixingFrequency} | Source: ${trade.fixingSource} | Fixings: ${trade.fixingSchedule.length}</p>
+                <table class="fixing-schedule-table">
+                    <tr><th style="text-align:left; padding:4px 6px;">Date</th><th style="text-align:left; padding:4px 6px;">Status</th><th style="text-align:left; padding:4px 6px;">Price</th></tr>`;
+            trade.fixingSchedule.slice(0, 12).forEach(f => {
+                html += `<tr><td>${datePretty(f.date)}</td>
+                    <td class="${f.status === 'fixed' ? 'fixing-fixed' : 'fixing-pending'}">${f.status}</td>
+                    <td>${f.fixedPrice ? formatUSD(f.fixedPrice) : '—'}</td></tr>`;
+            });
+            if (trade.fixingSchedule.length > 12) {
+                html += `<tr><td colspan="3" class="text-muted">... and ${trade.fixingSchedule.length - 12} more fixings</td></tr>`;
+            }
+            html += `</table></div>`;
+        }
+    }
+
     html += `<div class="btn-group">
         <button class="btn btn-primary" ${allPass ? '' : 'disabled'} onclick="advanceStage('${trade.id}', 3)">
             Move to Next Stage &rarr;
@@ -1459,10 +1777,6 @@ function renderStage2(trade) {
 // SECTION 14: STAGE 3 — CONFIRMATION
 // ============================================================
 
-/**
- * Generate a SWIFT MT6xx or ISDA-style confirmation message.
- * The format depends on the product type.
- */
 function generateConfirmation(trade) {
     const com = COMMODITIES[trade.commodity];
     const totalQty = trade.quantity * com.contractSize;
@@ -1471,7 +1785,6 @@ function generateConfirmation(trade) {
     const cashDir = dir === 'Buy' ? 'Pay' : 'Receive';
 
     if (trade.productType === 'Swap') {
-        // ISDA-style confirmation for swaps
         let msg = `================================================================
      ${tip('ISDA')} COMMODITY SWAP CONFIRMATION
 ================================================================
@@ -1513,12 +1826,144 @@ Nostro Account:        ${trade.ssi?.nostro || 'N/A'}
         return msg;
     }
 
+    // Vanilla Option — SWIFT MT601-style
+    if (trade.productType === 'Vanilla Option') {
+        return `================================================================
+     ${tip('SWIFT MT6xx')} CONFIRMATION — MT601
+     COMMODITY OPTION CONFIRMATION
+================================================================
+
+:20:  Trade Reference       ${trade.id}
+:21:  Related Reference     ${trade.id}-001
+:22A: Type of Operation     OPTN (Vanilla Option)
+:82A: Party A (Our House)   OURTRDG / ${trade.book}
+:87A: Party B               ${trade.counterparty} / ${trade.ssi?.swift || 'N/A'}
+:30T: Trade Date             ${datePretty(trade.tradeDate)}
+
+OPTION ECONOMICS:
+  Commodity:             ${com.name} (${trade.commodity})
+  Direction:             ${dir} (${trade.callPut})
+  ${tip('Strike Price')}:          ${formatUSD(trade.strike)} per ${com.unit}
+  ${tip('Premium')}:              ${formatUSD(trade.premium)} per ${com.unit}
+  Total Premium:         ${formatUSD(trade.premiumTotal)}
+  Quantity:              ${trade.quantity} lot(s) = ${formatNum(totalQty, 0)} ${com.unit}
+  ${tip('Notional')}:            ${formatUSD(trade.notional)}
+  ${tip('Expiry Date')}:         ${datePretty(trade.expiryDate)}
+  Exercise Style:        ${tip(trade.exerciseStyle)}
+  ${tip('Moneyness')}:           ${trade.moneyness || 'ATM'}
+
+GREEKS SNAPSHOT:
+  ${tip('Delta')}:  ${trade.optionGreeks ? trade.optionGreeks.delta.toFixed(4) : 'N/A'}
+  ${tip('Gamma')}:  ${trade.optionGreeks ? trade.optionGreeks.gamma.toFixed(6) : 'N/A'}
+  ${tip('Vega')}:   ${trade.optionGreeks ? trade.optionGreeks.vega.toFixed(4) : 'N/A'}
+  ${tip('Theta')}:  ${trade.optionGreeks ? trade.optionGreeks.theta.toFixed(4) : 'N/A'}
+
+SETTLEMENT ON EXERCISE:
+  Delivery:            Futures position (${com.exchange})
+  Venue:               ${tip(trade.venue) || trade.venue}
+
+COUNTERPARTY DETAILS:
+  ${tip('LEI')}:                  ${trade.lei}
+  ${tip('SSI')} Nostro:            ${trade.ssi?.nostro || 'N/A'}
+  Correspondent Bank:    ${trade.ssi?.correspondent || 'N/A'}
+  Trader:                ${trade.traderInitials}
+
+================================================================`;
+    }
+
+    // Asian Option — ISDA-style
+    if (trade.productType === 'Asian Option') {
+        let msg = `================================================================
+     ${tip('ISDA')} ASIAN OPTION CONFIRMATION
+================================================================
+
+Trade Reference:       ${trade.id}
+Trade Date:            ${datePretty(trade.tradeDate)}
+Commodity:             ${com.name} (${trade.commodity})
+Direction:             ${dir} (${trade.callPut})
+
+OPTION ECONOMICS:
+  ${tip('Strike Price')}:          ${formatUSD(trade.strike)} per ${com.unit}
+  ${tip('Premium')}:              ${formatUSD(trade.premium)} per ${com.unit}
+  Total Premium:         ${formatUSD(trade.premiumTotal)}
+  Quantity:              ${trade.quantity} lot(s) = ${formatNum(totalQty, 0)} ${com.unit}
+  ${tip('Notional')}:            ${formatUSD(trade.notional)}
+  ${tip('Expiry Date')}:         ${datePretty(trade.expiryDate)}
+  Exercise Style:        ${tip(trade.exerciseStyle)}
+
+AVERAGING SPECIFICATION:
+  Type:                  Arithmetic Average Price
+  Period Start:          ${datePretty(trade.averagingStart)}
+  Period End:            ${datePretty(trade.averagingEnd)}
+  Frequency:             ${trade.fixingFrequency}
+  Source:                ${trade.fixingSource}
+  Number of Fixings:     ${trade.fixingSchedule ? trade.fixingSchedule.length : 'TBD'}
+
+  Premium Discount Note: Asian options trade at a discount to
+  vanilla due to averaging effect reducing effective volatility.
+
+SETTLEMENT:
+  Cash settlement based on average price vs strike
+  Venue:                 ${tip('OTC')} (bilateral)
+
+COUNTERPARTY DETAILS:
+  ${tip('LEI')}:                  ${trade.lei}
+  Nostro Account:        ${trade.ssi?.nostro || 'N/A'}
+  Trader:                ${trade.traderInitials}
+
+================================================================`;
+        return msg;
+    }
+
+    // Barrier Option — ISDA-style
+    if (trade.productType === 'Barrier Option') {
+        return `================================================================
+     ${tip('ISDA')} BARRIER OPTION CONFIRMATION
+================================================================
+
+Trade Reference:       ${trade.id}
+Trade Date:            ${datePretty(trade.tradeDate)}
+Commodity:             ${com.name} (${trade.commodity})
+Direction:             ${dir} (${trade.callPut})
+
+OPTION ECONOMICS:
+  ${tip('Strike Price')}:          ${formatUSD(trade.strike)} per ${com.unit}
+  ${tip('Premium')}:              ${formatUSD(trade.premium)} per ${com.unit}
+  Total Premium:         ${formatUSD(trade.premiumTotal)}
+  Quantity:              ${trade.quantity} lot(s) = ${formatNum(totalQty, 0)} ${com.unit}
+  ${tip('Notional')}:            ${formatUSD(trade.notional)}
+  ${tip('Expiry Date')}:         ${datePretty(trade.expiryDate)}
+  Exercise Style:        ${tip(trade.exerciseStyle)}
+
+BARRIER SPECIFICATION:
+  Barrier Type:          ${trade.barrierType}
+  Barrier Level:         ${formatUSD(trade.barrierLevel)}
+  Monitoring:            ${trade.barrierMonitoring}
+  Rebate Amount:         ${formatUSD(trade.rebateAmount)}
+  Current Status:        ${trade.barrierStatus}
+
+  Conditional Payoff:    If barrier is ${trade.barrierType.includes('Out') ? 'NOT breached' : 'breached'},
+  option pays max(${trade.callPut === 'Call' ? 'Spot - Strike' : 'Strike - Spot'}, 0) x Qty.
+  ${trade.barrierType.includes('Out') ? 'If knocked out, only rebate is paid.' : 'If not knocked in, option expires worthless.'}
+
+SETTLEMENT:
+  Cash settlement
+  Venue:                 ${tip('OTC')} (bilateral)
+
+COUNTERPARTY DETAILS:
+  ${tip('LEI')}:                  ${trade.lei}
+  Nostro Account:        ${trade.ssi?.nostro || 'N/A'}
+  Trader:                ${trade.traderInitials}
+
+================================================================`;
+    }
+
     // SWIFT MT600-style for spot, forward, future
     const isFuture = trade.productType === 'Future';
     const mtType = isFuture ? 'MT601' : 'MT600';
     const opType = isFuture ? 'FUTR' : (trade.productType === 'Forward' ? 'FWRD' : 'SPOT');
 
-    let msg = `================================================================
+    return `================================================================
      ${tip('SWIFT MT6xx')} CONFIRMATION — ${mtType}
      PRECIOUS / BASE METAL TRADE CONFIRMATION
 ================================================================
@@ -1551,10 +1996,8 @@ COUNTERPARTY DETAILS:
   Trader:                ${trade.traderInitials}
 
 ================================================================`;
-    return msg;
 }
 
-/** Render Stage 3: Confirmation */
 function renderStage3(trade) {
     if (!trade.confirmationMessage) {
         trade.confirmationMessage = generateConfirmation(trade);
@@ -1584,7 +2027,6 @@ function renderStage3(trade) {
     return html;
 }
 
-/** Handle counterparty confirmation */
 function confirmTrade(tradeId) {
     const trade = state.trades.find(t => t.id === tradeId);
     if (!trade) return;
@@ -1593,12 +2035,11 @@ function confirmTrade(tradeId) {
     renderStageContent(trade);
 }
 
-/** Handle counterparty dispute — allow editing and resend */
 function disputeTrade(tradeId) {
     const trade = state.trades.find(t => t.id === tradeId);
     if (!trade) return;
     trade.disputed = true;
-    trade.stage = 3; // Stay at stage 3
+    trade.stage = 3;
     state.editingCapture = true;
     renderCaptureForm(trade);
 }
@@ -1608,22 +2049,31 @@ function disputeTrade(tradeId) {
 // SECTION 15: STAGE 4 — CLEARING & SETTLEMENT
 // ============================================================
 
-/**
- * Determine the clearing house and compute margin requirements.
- *
- * Exchange-traded: LME Clear (LME) or CME Clearing (COMEX/NYMEX)
- * OTC precious metals: LPMCL
- * OTC base metals: Bilateral
- */
 function computeClearing(trade) {
     const com = COMMODITIES[trade.commodity];
-    const isExchange = trade.productType === 'Future';
+    const isExchange = trade.productType === 'Future' || trade.productType === 'Vanilla Option';
     const isSwap = trade.productType === 'Swap';
+    const isOpt = isOptionType(trade.productType);
 
     if (isExchange) {
         trade.clearer = com.exchange === 'LME' ? 'LME Clear' : 'CME Clearing';
-        trade.initialMargin = trade.notional * 0.05; // 5% of notional
-        trade.variationMargin = 0; // Placeholder
+        if (isOpt) {
+            // Option buyer: margin = premium paid. Seller: 10% notional + premium
+            trade.initialMargin = trade.buySell === 'Buy'
+                ? trade.premiumTotal
+                : trade.notional * 0.10 + trade.premiumTotal;
+        } else {
+            trade.initialMargin = trade.notional * 0.05;
+        }
+        trade.variationMargin = 0;
+    } else if (trade.productType === 'Asian Option' || trade.productType === 'Barrier Option') {
+        if (com.type === 'precious') {
+            trade.clearer = tip('LPMCL');
+        } else {
+            trade.clearer = 'Bilateral (no CCP)';
+        }
+        trade.initialMargin = trade.premiumTotal || 0;
+        trade.variationMargin = 0;
     } else if (isSwap || trade.productType === 'Forward' || trade.productType === 'Spot') {
         if (com.type === 'precious') {
             trade.clearer = tip('LPMCL');
@@ -1634,29 +2084,30 @@ function computeClearing(trade) {
         trade.variationMargin = 0;
     }
 
-    // Settlement instructions
     const totalQty = trade.quantity * com.contractSize;
     const metalDir = trade.buySell === 'Buy' ? 'Receive' : 'Deliver';
     const cashDir = trade.buySell === 'Buy' ? 'Pay' : 'Receive';
 
     trade.settlementInstructions = {
-        cashAmount: trade.notional,
+        cashAmount: isOpt ? trade.premiumTotal : trade.notional,
         cashDirection: cashDir,
         metalAmount: totalQty,
         metalUnit: com.unit,
         metalDirection: metalDir,
         valueDate: trade.valueDate,
         nostro: trade.ssi?.nostro || 'N/A',
-        correspondent: trade.ssi?.correspondent || 'N/A'
+        correspondent: trade.ssi?.correspondent || 'N/A',
+        isOption: isOpt,
+        settlementType: isOpt ? 'Cash (Premium)' : (trade.productType === 'Swap' ? 'Cash (Net)' : 'Physical')
     };
 }
 
-/** Render Stage 4: Clearing & Settlement */
 function renderStage4(trade) {
     if (!trade.clearer) computeClearing(trade);
 
     const com = COMMODITIES[trade.commodity];
-    const isExchange = trade.productType === 'Future';
+    const isExchange = trade.productType === 'Future' || trade.productType === 'Vanilla Option';
+    const isOpt = isOptionType(trade.productType);
     const si = trade.settlementInstructions;
 
     let html = `<div class="card">
@@ -1665,21 +2116,26 @@ function renderStage4(trade) {
         <h4 style="margin-bottom:8px;">Clearing Details</h4>
         <table class="enrich-table">
             <tr><td>Clearing Method</td><td>${isExchange ? 'Exchange Cleared (' + tip('CCP') + ')' : (com.type === 'precious' ? tip('LPMCL') + ' Clearing' : 'Bilateral')}</td></tr>
-            <tr><td>Clearer</td><td>${trade.clearer}</td></tr>`;
+            <tr><td>Clearer</td><td>${trade.clearer}</td></tr>
+            <tr><td>Settlement Type</td><td>${si.settlementType}</td></tr>`;
 
     if (isExchange) {
-        html += `<tr><td>${tip('Initial Margin')} (5% of notional)</td><td class="fw-bold">${formatUSD(trade.initialMargin)}</td></tr>
-            <tr><td>${tip('Variation Margin')}</td><td class="text-muted">Calculated daily at close — currently $0 (trade date)</td></tr>`;
+        html += `<tr><td>${tip('Initial Margin')}</td><td class="fw-bold">${formatUSD(trade.initialMargin)}</td></tr>`;
+        if (!isOpt) {
+            html += `<tr><td>${tip('Variation Margin')}</td><td class="text-muted">Calculated daily at close — currently $0 (trade date)</td></tr>`;
+        }
+    }
+    if (isOpt) {
+        html += `<tr><td>Premium Settlement</td><td class="fw-bold">${formatUSD(trade.premiumTotal)}</td></tr>`;
     }
 
     html += `</table></div>`;
 
-    // Settlement instructions
     html += `<div class="card">
         <div class="card-title">Settlement Instructions</div>
         <div class="settlement-grid">
             <div class="settlement-box">
-                <h4>Cash Leg</h4>
+                <h4>${isOpt ? 'Premium Leg' : 'Cash Leg'}</h4>
                 <div class="settlement-row"><span class="label">Direction</span><span class="value ${si.cashDirection === 'Pay' ? 'text-danger' : 'text-success'}">${si.cashDirection}</span></div>
                 <div class="settlement-row"><span class="label">Amount</span><span class="value">${formatUSD(si.cashAmount)}</span></div>
                 <div class="settlement-row"><span class="label">Currency</span><span class="value">USD</span></div>
@@ -1687,11 +2143,11 @@ function renderStage4(trade) {
                 <div class="settlement-row"><span class="label">Nostro</span><span class="value">${si.nostro}</span></div>
             </div>
             <div class="settlement-box">
-                <h4>Metal / Commodity Leg</h4>
-                <div class="settlement-row"><span class="label">Direction</span><span class="value ${si.metalDirection === 'Receive' ? 'text-success' : 'text-danger'}">${si.metalDirection}</span></div>
-                <div class="settlement-row"><span class="label">Amount</span><span class="value">${formatNum(si.metalAmount, com.unit === 'MT' ? 0 : 0)} ${si.metalUnit}</span></div>
+                <h4>${isOpt ? 'Underlying (on exercise)' : 'Metal / Commodity Leg'}</h4>
+                <div class="settlement-row"><span class="label">${isOpt ? 'Exercise' : 'Direction'}</span><span class="value ${si.metalDirection === 'Receive' ? 'text-success' : 'text-danger'}">${isOpt ? trade.callPut + ' — ' + si.metalDirection : si.metalDirection}</span></div>
+                <div class="settlement-row"><span class="label">Amount</span><span class="value">${formatNum(si.metalAmount, 0)} ${si.metalUnit}</span></div>
                 <div class="settlement-row"><span class="label">Commodity</span><span class="value">${com.name} (${trade.commodity})</span></div>
-                <div class="settlement-row"><span class="label">Value Date</span><span class="value">${datePretty(si.valueDate)}</span></div>
+                <div class="settlement-row"><span class="label">${isOpt ? 'Expiry' : 'Value Date'}</span><span class="value">${datePretty(isOpt ? trade.expiryDate : si.valueDate)}</span></div>
                 <div class="settlement-row"><span class="label">Correspondent</span><span class="value">${si.correspondent}</span></div>
             </div>
         </div>
@@ -1711,22 +2167,42 @@ function renderStage4(trade) {
     return html;
 }
 
-/** Handle trade settlement */
 function settleTrade(tradeId) {
     const trade = state.trades.find(t => t.id === tradeId);
     if (!trade) return;
     trade.settled = true;
-    // Compute realised P&L (difference between trade price and current market price)
     const com = COMMODITIES[trade.commodity];
     const mktPrice = getMarketPrice(trade.commodity);
     const multiplier = trade.quantity * com.contractSize;
-    if (trade.buySell === 'Buy') {
-        trade.realisedPnL = (mktPrice - trade.price) * multiplier;
+
+    if (isOptionType(trade.productType)) {
+        // Option P&L
+        let payoff = 0;
+        if (trade.productType === 'Asian Option') {
+            payoff = computeAsianPayoff(trade);
+        } else if (trade.productType === 'Barrier Option') {
+            const status = computeBarrierStatus(trade);
+            trade.barrierStatus = status;
+            if (status === 'KNOCKED-OUT') {
+                payoff = trade.rebateAmount * multiplier;
+            } else if (status === 'KNOCKED-IN' || status === 'ALIVE') {
+                if (trade.callPut === 'Call') payoff = Math.max(mktPrice - trade.strike, 0) * multiplier;
+                else payoff = Math.max(trade.strike - mktPrice, 0) * multiplier;
+            }
+        } else {
+            if (trade.callPut === 'Call') payoff = Math.max(mktPrice - trade.strike, 0) * multiplier;
+            else payoff = Math.max(trade.strike - mktPrice, 0) * multiplier;
+        }
+        trade.realisedPnL = trade.buySell === 'Buy' ? payoff - trade.premiumTotal : trade.premiumTotal - payoff;
     } else {
-        trade.realisedPnL = (trade.price - mktPrice) * multiplier;
-    }
-    if (trade.productType === 'Swap') {
-        trade.realisedPnL *= trade.swapTenor;
+        if (trade.buySell === 'Buy') {
+            trade.realisedPnL = (mktPrice - trade.price) * multiplier;
+        } else {
+            trade.realisedPnL = (trade.price - mktPrice) * multiplier;
+        }
+        if (trade.productType === 'Swap') {
+            trade.realisedPnL *= trade.swapTenor;
+        }
     }
     updateSidebar();
     renderStageContent(trade);
@@ -1737,22 +2213,16 @@ function settleTrade(tradeId) {
 // SECTION 16: STAGE 5 — RECONCILIATION
 // ============================================================
 
-/**
- * Run reconciliation across three systems: Front Office, Middle Office,
- * and Clearer/Custodian. 95% chance of a clean match; 5% chance of a
- * break (0.01 quantity difference) to demonstrate break detection.
- */
 function runRecon(tradeId) {
     const trade = state.trades.find(t => t.id === tradeId);
     if (!trade) return;
 
     trade.reconRun = true;
-    // 5% chance of a break
     if (Math.random() < 0.05) {
         trade.reconMatched = false;
         trade.reconBreak = true;
         trade.reconBreakField = 'quantity';
-        trade.reconBreakValue = trade.quantity + 0.01; // Small discrepancy
+        trade.reconBreakValue = trade.quantity + 0.01;
     } else {
         trade.reconMatched = true;
         trade.reconBreak = false;
@@ -1761,7 +2231,6 @@ function runRecon(tradeId) {
     renderStageContent(trade);
 }
 
-/** Resolve a reconciliation break */
 function resolveBreak(tradeId) {
     const trade = state.trades.find(t => t.id === tradeId);
     if (!trade) return;
@@ -1771,12 +2240,9 @@ function resolveBreak(tradeId) {
     renderStageContent(trade);
 }
 
-/** Render Stage 5: Reconciliation */
 function renderStage5(trade) {
     const com = COMMODITIES[trade.commodity];
-    const totalQty = trade.quantity * com.contractSize;
 
-    // Build the three recon panels
     const foQty = trade.quantity;
     const moQty = trade.quantity;
     let clearerQty = trade.quantity;
@@ -1801,7 +2267,7 @@ function renderStage5(trade) {
                     <tr><td>Direction</td><td>${trade.buySell}</td></tr>
                     <tr><td>Qty (lots)</td><td class="${isBreak ? 'text-danger fw-bold' : ''}">${formatNum(qty, 2)}</td></tr>
                     <tr><td>Price</td><td>${formatUSD(trade.price)}</td></tr>
-                    <tr><td>Notional</td><td>${formatUSD(qty * trade.price * com.contractSize)}</td></tr>
+                    <tr><td>${isOptionType(trade.productType) ? 'Strike' : 'Notional'}</td><td>${formatUSD(isOptionType(trade.productType) ? trade.strike : qty * trade.price * com.contractSize)}</td></tr>
                 </table>
             </div>
         </div>`;
@@ -1852,21 +2318,18 @@ function renderStage5(trade) {
 // SECTION 17: STAGE 6 — POSITION REPORTING (Blotter)
 // ============================================================
 
-/** Render Stage 6: Position Reporting — shows the blotter with aggregate data */
 function renderStage6(trade) {
     return renderBlotterHTML(trade?.id);
 }
 
-/** Render the blotter view (also used by the Blotter nav) */
 function renderBlotterView() {
     document.getElementById('mainContent').innerHTML = renderBlotterHTML(null);
 }
 
-/** Build the blotter HTML (trade list + aggregation) */
 function renderBlotterHTML(highlightId) {
     if (state.trades.length === 0) {
         return `<div class="card"><div class="card-title">Position Blotter</div>
-            <p class="text-muted">No trades yet. Capture a new trade or click "Seed 5 Demo Trades" to populate.</p></div>`;
+            <p class="text-muted">No trades yet. Capture a new trade or click "Seed 7 Demo Trades" to populate.</p></div>`;
     }
 
     let html = `<div class="card">
@@ -1874,27 +2337,47 @@ function renderBlotterHTML(highlightId) {
         <div style="overflow-x:auto;">
         <table class="data-table">
             <thead><tr>
-                <th>Trade ID</th><th>Commodity</th><th>B/S</th><th>Qty</th>
-                <th>Price</th><th>Notional</th><th>Counterparty</th>
+                <th>Trade ID</th><th>Commodity</th><th>B/S</th><th>Product</th><th>Qty</th>
+                <th>Price</th><th>Strike</th><th>Premium</th><th>Type Detail</th>
+                <th>Notional</th><th>Counterparty</th>
                 <th>Value Date</th><th>Stage</th><th>Unrealised P&L</th><th></th>
             </tr></thead><tbody>`;
 
     state.trades.forEach(t => {
         const com = COMMODITIES[t.commodity];
         const mkt = getMarketPrice(t.commodity);
-        const mult = t.quantity * com.contractSize * (t.productType === 'Swap' ? (t.swapTenor || 1) : 1);
-        const unrealPnL = t.buySell === 'Buy'
-            ? (mkt - t.price) * mult
-            : (t.price - mkt) * mult;
+        const isOpt = isOptionType(t.productType);
+        let unrealPnL;
+        if (isOpt) {
+            const theo = t.optionTheoPrice || 0;
+            const prem = t.premium || 0;
+            unrealPnL = t.buySell === 'Buy'
+                ? (theo - prem) * t.quantity * com.contractSize
+                : (prem - theo) * t.quantity * com.contractSize;
+        } else {
+            const mult = t.quantity * com.contractSize * (t.productType === 'Swap' ? (t.swapTenor || 1) : 1);
+            unrealPnL = t.buySell === 'Buy'
+                ? (mkt - t.price) * mult
+                : (t.price - mkt) * mult;
+        }
         const pnlClass = unrealPnL >= 0 ? 'text-success' : 'text-danger';
         const rowClass = t.id === highlightId ? 'highlight' : '';
+
+        let typeDetail = '---';
+        if (isOpt) typeDetail = t.callPut;
+        else if (t.productType === 'Swap') typeDetail = t.swapTenor + 'M';
+        else if (t.productType === 'Future') typeDetail = t.futurePromptDate ? datePretty(t.futurePromptDate) : '---';
 
         html += `<tr class="${rowClass}">
             <td class="fw-bold">${t.id}</td>
             <td>${com.name} (${t.commodity})</td>
             <td><span class="badge ${t.buySell === 'Buy' ? 'badge-buy' : 'badge-sell'}">${t.buySell}</span></td>
+            <td>${t.productType}</td>
             <td>${t.quantity}</td>
             <td>${formatUSD(t.price)}</td>
+            <td>${isOpt ? formatUSD(t.strike) : '---'}</td>
+            <td>${isOpt ? formatUSD(t.premium) : '---'}</td>
+            <td>${typeDetail}</td>
             <td>${formatUSD(t.notional)}</td>
             <td>${t.counterparty}</td>
             <td>${datePretty(t.valueDate)}</td>
@@ -1906,7 +2389,7 @@ function renderBlotterHTML(highlightId) {
 
     html += '</tbody></table></div></div>';
 
-    // Aggregate panel: total notional and net position per commodity
+    // Aggregate panel
     const agg = {};
     state.trades.forEach(t => {
         const com = COMMODITIES[t.commodity];
@@ -1941,16 +2424,11 @@ function renderBlotterHTML(highlightId) {
 // SECTION 18: STAGE ADVANCEMENT
 // ============================================================
 
-/**
- * Advance a trade to the next lifecycle stage.
- * Triggers stage-specific setup (validation, clearing, etc.) as needed.
- */
 function advanceStage(tradeId, toStage) {
     const trade = state.trades.find(t => t.id === tradeId);
     if (!trade) return;
     trade.stage = toStage;
 
-    // Stage-specific setup
     if (toStage === 2) runValidation(trade);
     if (toStage === 3) trade.confirmationMessage = generateConfirmation(trade);
     if (toStage === 4) computeClearing(trade);
@@ -1964,37 +2442,38 @@ function advanceStage(tradeId, toStage) {
 // SECTION 19: RIGHT SIDEBAR — RISK & VALUATION PANELS
 // ============================================================
 
-/**
- * Update the four risk panels in the right sidebar.
- * These panels aggregate data across all trades in memory.
- */
 function updateSidebar() {
     const sidebar = document.getElementById('riskSidebar');
 
-    // 1. VALUATION — Daily MTM P&L
     let totalMtmPnL = 0;
     state.trades.forEach(t => {
         const com = COMMODITIES[t.commodity];
         const mkt = getMarketPrice(t.commodity);
-        const mult = t.quantity * com.contractSize * (t.productType === 'Swap' ? (t.swapTenor || 1) : 1);
-        const pnl = t.buySell === 'Buy' ? (mkt - t.price) * mult : (t.price - mkt) * mult;
-        totalMtmPnL += pnl;
+        if (isOptionType(t.productType)) {
+            const theo = t.optionTheoPrice || 0;
+            const prem = t.premium || 0;
+            const pnl = t.buySell === 'Buy'
+                ? (theo - prem) * t.quantity * com.contractSize
+                : (prem - theo) * t.quantity * com.contractSize;
+            totalMtmPnL += pnl;
+        } else {
+            const mult = t.quantity * com.contractSize * (t.productType === 'Swap' ? (t.swapTenor || 1) : 1);
+            const pnl = t.buySell === 'Buy' ? (mkt - t.price) * mult : (t.price - mkt) * mult;
+            totalMtmPnL += pnl;
+        }
     });
 
-    // 2. MARKET RISK — Total notional & VaR
     let totalNotional = 0;
     state.trades.forEach(t => { totalNotional += t.notional; });
-    const var95 = totalNotional * 0.02; // 2% of notional
+    const var95 = totalNotional * 0.02;
 
-    // 3. CREDIT RISK — Exposure per counterparty
-    const creditLimit = 50000000; // $50M
+    const creditLimit = 50000000;
     const cpExposure = {};
     state.trades.forEach(t => {
         if (!cpExposure[t.counterparty]) cpExposure[t.counterparty] = 0;
         cpExposure[t.counterparty] += t.notional;
     });
 
-    // 4. ACCOUNTING — Cumulative realised P&L
     let totalRealisedPnL = 0;
     state.trades.filter(t => t.settled).forEach(t => {
         totalRealisedPnL += t.realisedPnL;
@@ -2002,10 +2481,22 @@ function updateSidebar() {
 
     const pnlClass = (v) => v >= 0 ? 'positive' : 'negative';
 
+    // Greeks aggregation for options
+    const optionTrades = state.trades.filter(t => isOptionType(t.productType) && t.optionGreeks);
+    let aggDelta = 0, aggGamma = 0, aggVega = 0, aggTheta = 0;
+    optionTrades.forEach(t => {
+        const com = COMMODITIES[t.commodity];
+        const mult = t.quantity * com.contractSize;
+        const sign = t.buySell === 'Buy' ? 1 : -1;
+        aggDelta += sign * t.optionGreeks.delta * mult;
+        aggGamma += sign * t.optionGreeks.gamma * mult;
+        aggVega += sign * t.optionGreeks.vega * mult;
+        aggTheta += sign * t.optionGreeks.theta * mult;
+    });
+
     sidebar.innerHTML = `
     <div class="sidebar-title">Parallel Functions</div>
 
-    <!-- Valuation Panel -->
     <div class="risk-panel">
         <div class="risk-panel-title">${tip('MTM')} Valuation</div>
         <div class="risk-row">
@@ -2018,7 +2509,6 @@ function updateSidebar() {
         </div>
     </div>
 
-    <!-- Market Risk Panel -->
     <div class="risk-panel">
         <div class="risk-panel-title">Market Risk</div>
         <div class="risk-row">
@@ -2031,7 +2521,6 @@ function updateSidebar() {
         </div>
     </div>
 
-    <!-- Credit Risk Panel -->
     <div class="risk-panel">
         <div class="risk-panel-title">Credit Risk</div>
         ${Object.entries(cpExposure).map(([cp, exp]) => {
@@ -2051,7 +2540,6 @@ function updateSidebar() {
         ${Object.keys(cpExposure).length === 0 ? '<span class="text-muted" style="font-size:0.78rem;">No counterparty exposure</span>' : ''}
     </div>
 
-    <!-- Accounting Panel -->
     <div class="risk-panel">
         <div class="risk-panel-title">Accounting</div>
         <div class="risk-row">
@@ -2062,7 +2550,27 @@ function updateSidebar() {
             <span>Settled Trades</span>
             <span class="risk-value">${state.trades.filter(t => t.settled).length}</span>
         </div>
-    </div>`;
+    </div>
+
+    ${optionTrades.length > 0 ? `<div class="risk-panel">
+        <div class="risk-panel-title">Portfolio Greeks</div>
+        <div class="risk-row">
+            <span>${tip('Delta')} Exposure</span>
+            <span class="risk-value ${pnlClass(aggDelta)}">${formatNum(aggDelta, 2)}</span>
+        </div>
+        <div class="risk-row">
+            <span>${tip('Gamma')}</span>
+            <span class="risk-value">${formatNum(aggGamma, 4)}</span>
+        </div>
+        <div class="risk-row">
+            <span>${tip('Vega')} (per 1% vol)</span>
+            <span class="risk-value">${formatUSD(aggVega)}</span>
+        </div>
+        <div class="risk-row">
+            <span>${tip('Theta')} (per day)</span>
+            <span class="risk-value ${pnlClass(aggTheta)}">${formatUSD(aggTheta)}</span>
+        </div>
+    </div>` : ''}`;
 }
 
 
@@ -2070,74 +2578,101 @@ function updateSidebar() {
 // SECTION 20: ABOUT THE LIFECYCLE — Educational view
 // ============================================================
 
-/** Render the "About the Lifecycle" educational page */
 function renderAboutView() {
     const main = document.getElementById('mainContent');
     main.innerHTML = `
     <div class="card">
         <div class="card-title">About the Commodities Trade Lifecycle</div>
         <p style="font-size:0.88rem; color: var(--text-body); margin-bottom:20px;">
-            Every commodities trade — whether a simple gold spot purchase or a complex nickel swap —
-            follows a structured lifecycle from initial capture through to final position reporting.
-            This simulator walks you through each stage.
+            Every commodities trade — whether a simple gold spot purchase, a complex nickel swap, or an
+            exotic barrier option — follows a structured lifecycle from initial capture through to final
+            position reporting. This simulator walks you through each stage.
         </p>
 
         <div class="about-section">
             <h3><span class="stage-badge">1</span> Trade Capture</h3>
             <p>The trade begins when a dealer books it into the trading system. Key fields include the commodity,
-            direction (buy/sell), quantity, price, counterparty, product type (spot, forward, future, or swap),
-            and value date. The system auto-calculates the notional value and assigns the correct trading venue.</p>
+            direction (buy/sell), quantity, price, counterparty, product type (spot, forward, future, swap,
+            or option), and value date. For options, additional parameters include strike price, premium,
+            expiry date, and exercise style. The system auto-calculates the notional value and assigns the
+            correct trading venue.</p>
         </div>
 
         <div class="about-section">
             <h3><span class="stage-badge">2</span> Validation & Enrichment</h3>
             <p>Before a trade can proceed, it must pass automated validation checks: correct settlement dates
             (${tip('T+2')} for spot), whole-lot quantities for exchange products, valid ${tip('SSI')},
-            and a populated ${tip('LEI')}. The system then enriches the trade with reference data — internal
-            book allocation, trader identification, and cross-currency FX rates.</p>
+            and a populated ${tip('LEI')}. For options, additional checks verify strike, premium, expiry,
+            and barrier levels. The system enriches the trade with reference data and computes option Greeks
+            using the ${tip('Black-76')} model.</p>
         </div>
 
         <div class="about-section">
             <h3><span class="stage-badge">3</span> Confirmation</h3>
-            <p>A formal confirmation message — structured as a ${tip('SWIFT MT6xx')} message for physical metals
-            or an ${tip('ISDA')} confirmation for swaps — is generated and sent to the counterparty. Both sides
-            must agree on every economic detail (commodity, quantity, price, dates) before the trade moves forward.
-            If the counterparty disputes, the trade returns for amendment and re-confirmation.</p>
+            <p>A formal confirmation message — ${tip('SWIFT MT6xx')} for physical metals, ${tip('ISDA')}
+            confirmation for swaps and exotic options — is generated and sent to the counterparty. Option
+            confirmations include Greeks snapshots, moneyness, and exercise terms. Both sides must agree
+            on every economic detail before the trade moves forward.</p>
         </div>
 
         <div class="about-section">
             <h3><span class="stage-badge">4</span> Clearing & Settlement</h3>
-            <p>Exchange-traded futures are cleared through a ${tip('CCP')} such as LME Clear or CME Clearing,
-            which requires posting ${tip('Initial Margin')} and daily ${tip('Variation Margin')}. ${tip('OTC')}
-            precious metal trades may clear through ${tip('LPMCL')}, while base metals typically settle bilaterally.
-            Settlement involves the simultaneous exchange of cash (payment) and metal (delivery).</p>
+            <p>Exchange-traded futures and vanilla options are cleared through a ${tip('CCP')} such as LME Clear
+            or CME Clearing, which requires posting ${tip('Initial Margin')}. ${tip('OTC')} exotic options
+            (Asian, Barrier) may clear through ${tip('LPMCL')} or settle bilaterally. Option buyers pay
+            premium upfront; settlement on exercise delivers a futures position or cash.</p>
         </div>
 
         <div class="about-section">
             <h3><span class="stage-badge">5</span> Reconciliation</h3>
-            <p>Post-settlement, positions are reconciled across three independent systems: the Front Office
-            trading book, the Middle Office risk system, and the Clearer/Custodian's records. Any discrepancy
-            (a "break") must be investigated and resolved — common causes include timing differences, quantity
-            rounding, or data entry errors.</p>
+            <p>Post-settlement, positions are reconciled across Front Office, Middle Office, and
+            Clearer/Custodian systems. Any discrepancy must be investigated and resolved.</p>
         </div>
 
         <div class="about-section">
             <h3><span class="stage-badge">6</span> Position Reporting</h3>
-            <p>The final stage provides a consolidated view of all positions: a trade blotter with unrealised
-            P&L (mark-to-market against current prices), aggregate notional exposure per commodity, and net
-            long/short positions. This data feeds into daily risk reports, regulatory filings, and
-            management dashboards.</p>
+            <p>The final stage provides a consolidated view of all positions including options with
+            unrealised P&L (Black-76 theo vs premium for options), aggregate Greeks exposure,
+            and net long/short positions.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Option Types Supported</div>
+        <div class="about-section">
+            <h3>Plain Vanilla Options</h3>
+            <p>Standard call/put options on commodity futures. Priced using the ${tip('Black-76')} model.
+            Available as ${tip('American')} or ${tip('European')} exercise style. Exchange-cleared via
+            CME/LME. Greeks (${tip('Delta')}, ${tip('Gamma')}, ${tip('Vega')}, ${tip('Theta')}) are
+            computed and displayed in real-time.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('Asian Option')}s</h3>
+            <p>Exotic options whose payoff depends on the arithmetic average price over a fixing period,
+            rather than the spot price at expiry. Popular for producer hedging as they smooth out
+            price volatility. Fixing schedules can be daily, weekly, or monthly, sourced from
+            ${tip('LBMA')} PM or ${tip('LME')} Close. Trade at a discount to vanilla due to the
+            averaging effect reducing effective volatility.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('Barrier Option')}s</h3>
+            <p>Exotic options that activate (${tip('Knock-In')}) or deactivate (${tip('Knock-Out')})
+            when the underlying price crosses a specified barrier level. Types include Up-and-Out,
+            Down-and-Out, Up-and-In, and Down-and-In. Cheaper than vanilla options due to the
+            conditional nature. If knocked out, only a rebate is paid. Monitoring can be continuous
+            or discrete (daily close).</p>
         </div>
     </div>
 
     <div class="card">
         <div class="card-title">Parallel Functions (Right Panel)</div>
-        <p style="font-size:0.88rem;">Throughout the lifecycle, four parallel functions operate continuously:</p>
+        <p style="font-size:0.88rem;">Throughout the lifecycle, five parallel functions operate continuously:</p>
         <ul style="margin: 10px 0 0 20px; font-size:0.88rem; line-height: 2;">
             <li><strong>Valuation</strong> — Daily ${tip('MTM')} P&L across all open positions</li>
             <li><strong>Market Risk</strong> — Total notional exposure and ${tip('VaR')} estimation</li>
             <li><strong>Credit Risk</strong> — Counterparty exposure monitoring against limits</li>
             <li><strong>Accounting</strong> — Cumulative realised P&L from settled trades</li>
+            <li><strong>Portfolio Greeks</strong> — Aggregate ${tip('Delta')}, ${tip('Gamma')}, ${tip('Vega')}, ${tip('Theta')} across option positions</li>
         </ul>
     </div>`;
 }
@@ -2147,22 +2682,17 @@ function renderAboutView() {
 // SECTION 21: DEMO SEED — Pre-populate with sample trades
 // ============================================================
 
-/**
- * Seed 5 demo trades at various lifecycle stages so the user can
- * immediately explore the blotter and risk panels.
- */
 function seedDemoTrades() {
-    // Clear any existing trades
     state.trades = [];
     state.tradeCounter = 0;
 
     const td = today();
 
-    // ---- Trade 1: Gold Spot Buy — fully completed (Stage 6) ----
+    // Trade 1: Gold Spot Buy — fully completed (Stage 6)
     const t1 = createTradeObject({
         tradeDate: td, counterparty: 'HSBC', buySell: 'Buy',
         productType: 'Spot', commodity: 'Au', quantity: '2',
-        price: String(getMarketPrice('Au') - 15), // Bought slightly below market
+        price: String(getMarketPrice('Au') - 15),
         valueDate: dateStr(addBusinessDays(td, 2))
     });
     t1.stage = 6;
@@ -2172,10 +2702,10 @@ function seedDemoTrades() {
     t1.settled = true;
     t1.reconRun = true;
     t1.reconMatched = true;
-    t1.realisedPnL = 15 * 2 * 100; // $15 gain * 200 oz
+    t1.realisedPnL = 15 * 2 * 100;
     state.trades.push(t1);
 
-    // ---- Trade 2: Silver Future Sell — at Clearing (Stage 4) ----
+    // Trade 2: Silver Future Sell — at Clearing (Stage 4)
     const t2 = createTradeObject({
         tradeDate: td, counterparty: 'JP Morgan', buySell: 'Sell',
         productType: 'Future', commodity: 'Ag', quantity: '3',
@@ -2190,7 +2720,7 @@ function seedDemoTrades() {
     computeClearing(t2);
     state.trades.push(t2);
 
-    // ---- Trade 3: Copper Forward Buy — at Confirmation (Stage 3) ----
+    // Trade 3: Copper Forward Buy — at Confirmation (Stage 3)
     const t3 = createTradeObject({
         tradeDate: td, counterparty: 'Standard Chartered', buySell: 'Buy',
         productType: 'Forward', commodity: 'Cu', quantity: '1',
@@ -2202,7 +2732,7 @@ function seedDemoTrades() {
     t3.confirmationMessage = generateConfirmation(t3);
     state.trades.push(t3);
 
-    // ---- Trade 4: Platinum Swap — at Validation (Stage 2) ----
+    // Trade 4: Platinum Swap — at Validation (Stage 2)
     const t4 = createTradeObject({
         tradeDate: td, counterparty: 'Goldman Sachs', buySell: 'Buy',
         productType: 'Swap', commodity: 'Pt', quantity: '1',
@@ -2214,7 +2744,7 @@ function seedDemoTrades() {
     runValidation(t4);
     state.trades.push(t4);
 
-    // ---- Trade 5: Nickel Spot Sell — at Capture (Stage 1) ----
+    // Trade 5: Nickel Spot Sell — at Capture (Stage 1)
     const t5 = createTradeObject({
         tradeDate: td, counterparty: 'Citi', buySell: 'Sell',
         productType: 'Spot', commodity: 'Ni', quantity: '2',
@@ -2223,6 +2753,45 @@ function seedDemoTrades() {
     });
     t5.stage = 1;
     state.trades.push(t5);
+
+    // Trade 6: Gold Vanilla Call — at Confirmation (Stage 3), slightly ITM
+    const auSpot = getMarketPrice('Au');
+    const t6 = createTradeObject({
+        tradeDate: td, counterparty: 'HSBC', buySell: 'Buy',
+        productType: 'Vanilla Option', commodity: 'Au', quantity: '2',
+        price: String(auSpot),
+        valueDate: dateStr(addBusinessDays(td, 1)),
+        callPut: 'Call',
+        strike: String(auSpot - 30),
+        premium: String(Math.max(35, auSpot * 0.008).toFixed(2)),
+        expiryDate: dateStr(addBusinessDays(td, 30)),
+        exerciseStyle: 'European'
+    });
+    t6.stage = 3;
+    runValidation(t6);
+    t6.confirmationMessage = generateConfirmation(t6);
+    state.trades.push(t6);
+
+    // Trade 7: Copper Asian Put — at Validation (Stage 2), slightly OTM
+    const cuSpot = getMarketPrice('Cu');
+    const t7 = createTradeObject({
+        tradeDate: td, counterparty: 'Goldman Sachs', buySell: 'Buy',
+        productType: 'Asian Option', commodity: 'Cu', quantity: '1',
+        price: String(cuSpot),
+        valueDate: dateStr(addBusinessDays(td, 2)),
+        callPut: 'Put',
+        strike: String(cuSpot - 200),
+        premium: String(Math.max(50, cuSpot * 0.005).toFixed(2)),
+        expiryDate: dateStr(addMonths(td, 3)),
+        exerciseStyle: 'European',
+        averagingStart: dateStr(addBusinessDays(td, 5)),
+        averagingEnd: dateStr(addMonths(td, 3)),
+        fixingFrequency: 'Monthly',
+        fixingSource: 'LME Close'
+    });
+    t7.stage = 2;
+    runValidation(t7);
+    state.trades.push(t7);
 
     updateSidebar();
     showView('blotter');
@@ -2233,15 +2802,480 @@ function seedDemoTrades() {
 // SECTION 22: INITIALIZATION
 // ============================================================
 
-/** Boot the application on page load */
 function init() {
     jitterPrices();
+    refreshMarketData();
     updateSidebar();
     startNewTrade();
 }
 
-// Run on DOM ready
 document.addEventListener('DOMContentLoaded', init);
+
+
+// ============================================================
+// SECTION 23: BLACK-76 PRICING ENGINE
+// ============================================================
+
+function cumulativeNormalDist(x) {
+    const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;
+    const a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+    const sign = x < 0 ? -1 : 1;
+    const t = 1.0 / (1.0 + p * Math.abs(x));
+    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x / 2);
+    return 0.5 * (1.0 + sign * y);
+}
+
+function standardNormalPDF(x) {
+    return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+}
+
+function timeToExpiry(expiryDate) {
+    const now = new Date();
+    const exp = new Date(expiryDate);
+    const diffMs = exp - now;
+    const years = diffMs / (365.25 * 24 * 60 * 60 * 1000);
+    return Math.max(years, 1 / 365);
+}
+
+function black76Price(F, K, T, r, sigma, callPut) {
+    if (T <= 0) T = 1 / 365;
+    if (sigma <= 0) sigma = 0.01;
+    const sqrtT = Math.sqrt(T);
+    const d1 = (Math.log(F / K) + (sigma * sigma / 2) * T) / (sigma * sqrtT);
+    const d2 = d1 - sigma * sqrtT;
+    const df = Math.exp(-r * T);
+    if (callPut === 'Call') {
+        return df * (F * cumulativeNormalDist(d1) - K * cumulativeNormalDist(d2));
+    } else {
+        return df * (K * cumulativeNormalDist(-d2) - F * cumulativeNormalDist(-d1));
+    }
+}
+
+function black76Greeks(F, K, T, r, sigma, callPut) {
+    if (T <= 0) T = 1 / 365;
+    if (sigma <= 0) sigma = 0.01;
+    const sqrtT = Math.sqrt(T);
+    const d1 = (Math.log(F / K) + (sigma * sigma / 2) * T) / (sigma * sqrtT);
+    const d2 = d1 - sigma * sqrtT;
+    const df = Math.exp(-r * T);
+
+    let delta, theta;
+    if (callPut === 'Call') {
+        delta = df * cumulativeNormalDist(d1);
+        theta = (-F * df * standardNormalPDF(d1) * sigma / (2 * sqrtT)
+                 + r * df * (F * cumulativeNormalDist(d1) - K * cumulativeNormalDist(d2))) / 365;
+    } else {
+        delta = -df * cumulativeNormalDist(-d1);
+        theta = (-F * df * standardNormalPDF(d1) * sigma / (2 * sqrtT)
+                 - r * df * (K * cumulativeNormalDist(-d2) - F * cumulativeNormalDist(-d1))) / 365;
+    }
+
+    const gamma = df * standardNormalPDF(d1) / (F * sigma * sqrtT);
+    const vega = F * df * standardNormalPDF(d1) * sqrtT / 100;
+
+    return { delta, gamma, vega, theta };
+}
+
+
+// ============================================================
+// SECTION 24: OPTION HELPER FUNCTIONS
+// ============================================================
+
+function isOptionType(productType) {
+    return ['Vanilla Option', 'Asian Option', 'Barrier Option'].includes(productType);
+}
+
+function computeMoneyness(callPut, spot, strike) {
+    const ratio = spot / strike;
+    if (Math.abs(ratio - 1) < 0.02) return 'ATM';
+    if (callPut === 'Call') return spot > strike ? 'ITM' : 'OTM';
+    return spot < strike ? 'ITM' : 'OTM';
+}
+
+function computeBarrierStatus(trade) {
+    if (trade.productType !== 'Barrier Option') return null;
+    const spot = getMarketPrice(trade.commodity);
+    const barrier = trade.barrierLevel;
+    const bt = trade.barrierType;
+    if (bt === 'Up-and-Out' || bt === 'Up-and-In') {
+        if (spot >= barrier) return bt.includes('Out') ? 'KNOCKED-OUT' : 'KNOCKED-IN';
+    } else {
+        if (spot <= barrier) return bt.includes('Out') ? 'KNOCKED-OUT' : 'KNOCKED-IN';
+    }
+    return 'ALIVE';
+}
+
+function generateFixingSchedule(startDate, endDate, frequency) {
+    const fixings = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let d = new Date(start);
+    while (d <= end) {
+        if (isBusinessDay(d)) {
+            fixings.push({ date: dateStr(d), status: 'pending', fixedPrice: null });
+        }
+        if (frequency === 'Monthly') {
+            d = addMonths(d, 1);
+            d = nextBusinessDay(d);
+        } else if (frequency === 'Weekly') {
+            d.setDate(d.getDate() + 7);
+        } else {
+            d.setDate(d.getDate() + 1);
+        }
+    }
+    return fixings;
+}
+
+function computeAveragePrice(fixings) {
+    const fixed = fixings.filter(f => f.fixedPrice !== null);
+    if (fixed.length === 0) return 0;
+    return fixed.reduce((sum, f) => sum + f.fixedPrice, 0) / fixed.length;
+}
+
+function computeAsianPayoff(trade) {
+    const avg = computeAveragePrice(trade.fixingSchedule || []);
+    const com = COMMODITIES[trade.commodity];
+    const qty = trade.quantity * com.contractSize;
+    if (!avg) {
+        // If no fixings yet, use current price as proxy
+        const spot = getMarketPrice(trade.commodity);
+        if (trade.callPut === 'Call') return Math.max(spot - trade.strike, 0) * qty;
+        return Math.max(trade.strike - spot, 0) * qty;
+    }
+    if (trade.callPut === 'Call') return Math.max(avg - trade.strike, 0) * qty;
+    return Math.max(trade.strike - avg, 0) * qty;
+}
+
+function updateOptionMetrics(trade) {
+    if (!isOptionType(trade.productType)) return;
+    const F = getMarketPrice(trade.commodity);
+    const K = trade.strike;
+    const T = timeToExpiry(trade.expiryDate);
+    const r = MARKET_DATA_CONFIG.riskFreeRate;
+    const sigma = lookupImpliedVol(trade.commodity, K, T);
+
+    trade.optionTheoPrice = black76Price(F, K, T, r, sigma, trade.callPut);
+    trade.optionGreeks = black76Greeks(F, K, T, r, sigma, trade.callPut);
+    trade.moneyness = computeMoneyness(trade.callPut, F, K);
+
+    if (trade.productType === 'Barrier Option') {
+        trade.barrierStatus = computeBarrierStatus(trade);
+    }
+}
+
+
+// ============================================================
+// SECTION 25: MARKET DATA GENERATION
+// ============================================================
+
+const MARKET_DATA_CONFIG = {
+    riskFreeRate: 0.0525,
+    sofrRate: 0.0530,
+    fxRates: { 'GBP/USD': 1.2650, 'EUR/USD': 1.0850 },
+    baseVols: { Au: 0.15, Ag: 0.25, Pt: 0.22, Pd: 0.30, Cu: 0.20, Ni: 0.28 },
+    convenienceYields: { Au: 0.005, Ag: 0.01, Pt: 0.008, Pd: 0.012, Cu: 0.03, Ni: 0.025 },
+    tenors: ['1M', '3M', '6M', '12M'],
+    tenorYears: { '1M': 1/12, '3M': 3/12, '6M': 6/12, '12M': 1.0 },
+    strikePercents: [90, 95, 100, 105, 110]
+};
+
+function generateForwardCurves() {
+    const curves = {};
+    const r = MARKET_DATA_CONFIG.riskFreeRate;
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const spot = getMarketPrice(sym);
+        const y = MARKET_DATA_CONFIG.convenienceYields[sym];
+        curves[sym] = { spot: spot };
+        MARKET_DATA_CONFIG.tenors.forEach(tenor => {
+            const T = MARKET_DATA_CONFIG.tenorYears[tenor];
+            curves[sym][tenor] = spot * Math.exp((r - y) * T);
+        });
+    }
+    return curves;
+}
+
+function generateVolSurface() {
+    const surface = {};
+    for (const [sym] of Object.entries(COMMODITIES)) {
+        const baseVol = MARKET_DATA_CONFIG.baseVols[sym];
+        surface[sym] = {};
+        MARKET_DATA_CONFIG.strikePercents.forEach(pct => {
+            surface[sym][pct] = {};
+            MARKET_DATA_CONFIG.tenors.forEach(tenor => {
+                const T = MARKET_DATA_CONFIG.tenorYears[tenor];
+                const skew = Math.abs(pct - 100) * 0.001;
+                const termAdj = (1 - T) * 0.01;
+                const jitter = (Math.random() - 0.5) * 0.005;
+                surface[sym][pct][tenor] = Math.max(0.05, baseVol + skew + termAdj + jitter);
+            });
+        });
+    }
+    return surface;
+}
+
+function generateMarginRequirements() {
+    const margins = {};
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const spot = getMarketPrice(sym);
+        const notionalPerLot = spot * com.contractSize;
+        margins[sym] = {
+            initial: notionalPerLot * 0.10,
+            maintenance: notionalPerLot * 0.075,
+            spanRate: 0.10
+        };
+    }
+    return margins;
+}
+
+function refreshMarketData() {
+    state.marketData = {
+        riskFreeRate: MARKET_DATA_CONFIG.riskFreeRate,
+        sofrRate: MARKET_DATA_CONFIG.sofrRate,
+        fxRates: { ...MARKET_DATA_CONFIG.fxRates },
+        forwardCurves: generateForwardCurves(),
+        volSurface: generateVolSurface(),
+        marginRequirements: generateMarginRequirements(),
+        lastUpdated: new Date()
+    };
+}
+
+function lookupImpliedVol(commodity, strike, tenorYears) {
+    if (!state.marketData || !state.marketData.volSurface[commodity]) {
+        return MARKET_DATA_CONFIG.baseVols[commodity] || 0.20;
+    }
+    const spot = getMarketPrice(commodity);
+    const pct = Math.round((strike / spot) * 100);
+    const closestPct = MARKET_DATA_CONFIG.strikePercents.reduce((prev, curr) =>
+        Math.abs(curr - pct) < Math.abs(prev - pct) ? curr : prev
+    );
+    let closestTenor = '3M';
+    let minDiff = Infinity;
+    for (const [t, y] of Object.entries(MARKET_DATA_CONFIG.tenorYears)) {
+        const diff = Math.abs(y - tenorYears);
+        if (diff < minDiff) { minDiff = diff; closestTenor = t; }
+    }
+    return state.marketData.volSurface[commodity]?.[closestPct]?.[closestTenor] || MARKET_DATA_CONFIG.baseVols[commodity];
+}
+
+
+// ============================================================
+// SECTION 26: MARKET DATA TAB — Rendering
+// ============================================================
+
+function renderMarketDataView() {
+    if (!state.marketData) refreshMarketData();
+    const md = state.marketData;
+    const main = document.getElementById('mainContent');
+
+    let html = `<div class="card">
+        <div class="card-title">Market Data & Static Data</div>
+        <p style="font-size:0.82rem; color: var(--text-muted);">Live market data refreshes every 5 seconds. Last updated: ${md.lastUpdated.toLocaleTimeString()}</p>
+    </div>`;
+
+    // Panel 1: Spot Prices
+    html += `<div class="market-data-grid">
+        <div class="card">
+            <div class="card-title">Spot Prices</div>
+            <table class="data-table">
+                <thead><tr><th>Symbol</th><th>Commodity</th><th>Spot Price</th><th>Change</th><th>Exchange</th><th>Unit</th></tr></thead>
+                <tbody>`;
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const spot = getMarketPrice(sym);
+        const change = ((spot - com.basePrice) / com.basePrice * 100);
+        const changeClass = change >= 0 ? 'change-positive' : 'change-negative';
+        html += `<tr>
+            <td class="fw-bold">${sym}</td>
+            <td>${com.name}</td>
+            <td class="fw-bold">${formatUSD(spot)}</td>
+            <td class="${changeClass}">${change >= 0 ? '+' : ''}${change.toFixed(3)}%</td>
+            <td>${com.exchange}</td>
+            <td>${com.unit}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    // Panel 2: Interest Rates & FX
+    html += `<div class="card">
+        <div class="card-title">Interest Rates & FX</div>
+        <table class="enrich-table">
+            <tr><td>Risk-Free Rate</td><td class="fw-bold">${formatPct(md.riskFreeRate)}</td></tr>
+            <tr><td>SOFR Rate</td><td class="fw-bold">${formatPct(md.sofrRate)}</td></tr>
+            <tr><td>GBP/USD</td><td class="fw-bold">${md.fxRates['GBP/USD'].toFixed(4)}</td></tr>
+            <tr><td>EUR/USD</td><td class="fw-bold">${md.fxRates['EUR/USD'].toFixed(4)}</td></tr>
+        </table>
+    </div></div>`;
+
+    // Panel 3: Forward Curves
+    html += `<div class="card">
+        <div class="card-title">Forward Curves (Cost-of-Carry Model)</div>
+        <table class="data-table">
+            <thead><tr><th>Commodity</th><th>Spot</th><th>1M</th><th>3M</th><th>6M</th><th>12M</th><th>Structure</th></tr></thead>
+            <tbody>`;
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const fc = md.forwardCurves[sym];
+        const spread12m = fc['12M'] - fc.spot;
+        const structure = spread12m > 0 ? '<span class="text-success">Contango</span>' : '<span class="text-danger">Backwardation</span>';
+        html += `<tr>
+            <td class="fw-bold">${com.name} (${sym})</td>
+            <td>${formatUSD(fc.spot)}</td>
+            <td>${formatUSD(fc['1M'])}</td>
+            <td>${formatUSD(fc['3M'])}</td>
+            <td>${formatUSD(fc['6M'])}</td>
+            <td>${formatUSD(fc['12M'])}</td>
+            <td>${structure}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    // Panel 4: Vol Surface
+    html += `<div class="card">
+        <div class="card-title">${tip('Implied Vol')} Surface</div>
+        <div style="margin-bottom:10px;">
+            <select id="volSurfaceCommodity" onchange="renderVolSurfaceTable()" style="padding:6px 10px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem;">
+                ${Object.entries(COMMODITIES).map(([sym, c]) => `<option value="${sym}">${c.name} (${sym})</option>`).join('')}
+            </select>
+        </div>
+        <div id="volSurfaceContainer"></div>
+    </div>`;
+
+    // Static Data Section
+    html += `<div class="card"><div class="card-title">Static Data</div></div>`;
+
+    html += `<div class="static-data-grid">`;
+
+    // Sub-panel A: Contract Specs
+    html += `<div class="card">
+        <div class="card-title">Contract Specifications</div>
+        <table class="data-table">
+            <thead><tr><th>Commodity</th><th>Exchange</th><th>Contract Size</th><th>Unit</th><th>Tick</th><th>Type</th></tr></thead>
+            <tbody>`;
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        html += `<tr>
+            <td class="fw-bold">${com.name} (${sym})</td>
+            <td>${com.exchange}</td>
+            <td>${formatNum(com.contractSize, 0)}</td>
+            <td>${com.unit}</td>
+            <td>$${com.tick}</td>
+            <td>${com.type}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    // Sub-panel B: Counterparty Reference
+    html += `<div class="card">
+        <div class="card-title">Counterparty Reference Data</div>
+        <table class="data-table">
+            <thead><tr><th>Counterparty</th><th>${tip('LEI')}</th><th>SWIFT BIC</th><th>Nostro</th></tr></thead>
+            <tbody>`;
+    for (const [name, cp] of Object.entries(COUNTERPARTIES)) {
+        html += `<tr>
+            <td class="fw-bold">${name}</td>
+            <td style="font-size:0.72rem;">${cp.lei}</td>
+            <td>${cp.swift}</td>
+            <td>${cp.nostro}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    // Sub-panel C: Holiday Calendar
+    html += `<div class="card">
+        <div class="card-title">Holiday Calendar</div>
+        ${renderMiniCalendar(new Date())}
+        ${renderMiniCalendar(addMonths(new Date(), 1))}
+    </div>`;
+
+    // Sub-panel D: Margin Requirements
+    html += `<div class="card">
+        <div class="card-title">${tip('SPAN')} Margin Requirements</div>
+        <table class="data-table">
+            <thead><tr><th>Commodity</th><th>${tip('Initial Margin')}</th><th>Maintenance</th><th>SPAN Rate</th></tr></thead>
+            <tbody>`;
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const mr = md.marginRequirements[sym];
+        html += `<tr>
+            <td class="fw-bold">${com.name} (${sym})</td>
+            <td>${formatUSD(mr.initial)}</td>
+            <td>${formatUSD(mr.maintenance)}</td>
+            <td>${formatPct(mr.spanRate)}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    html += `</div>`; // close static-data-grid
+
+    main.innerHTML = html;
+
+    // Render initial vol surface
+    renderVolSurfaceTable();
+}
+
+function renderVolSurfaceTable() {
+    const sym = document.getElementById('volSurfaceCommodity')?.value || 'Au';
+    const container = document.getElementById('volSurfaceContainer');
+    if (!container || !state.marketData) return;
+
+    const vs = state.marketData.volSurface[sym];
+    const spot = getMarketPrice(sym);
+
+    let html = `<table class="vol-surface-table">
+        <thead><tr><th>Strike</th><th>Price</th>`;
+    MARKET_DATA_CONFIG.tenors.forEach(t => { html += `<th>${t}</th>`; });
+    html += `</tr></thead><tbody>`;
+
+    MARKET_DATA_CONFIG.strikePercents.forEach(pct => {
+        const strikePrice = spot * pct / 100;
+        html += `<tr><td class="fw-bold">${pct}%</td><td>${formatUSD(strikePrice)}</td>`;
+        MARKET_DATA_CONFIG.tenors.forEach(tenor => {
+            const vol = vs[pct][tenor];
+            const volPct = (vol * 100).toFixed(2);
+            let cellClass = 'vol-cell-low';
+            if (vol > 0.25) cellClass = 'vol-cell-high';
+            else if (vol > 0.18) cellClass = 'vol-cell-mid';
+            html += `<td class="${cellClass}">${volPct}%</td>`;
+        });
+        html += `</tr>`;
+    });
+
+    html += `</tbody></table>
+        <p style="font-size:0.72rem; color:var(--text-muted); margin-top:6px;">
+            Base ATM Vol: ${formatPct(MARKET_DATA_CONFIG.baseVols[sym])} | Smile skew: +0.1% per 1% OTM
+        </p>`;
+    container.innerHTML = html;
+}
+
+function renderMiniCalendar(date) {
+    const yr = date.getFullYear();
+    const mo = date.getMonth();
+    const monthName = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    const firstDay = new Date(yr, mo, 1).getDay();
+    const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+    const todayDate = new Date();
+
+    let html = `<div style="margin-bottom:12px;">
+        <strong style="font-size:0.82rem; color:var(--primary);">${monthName}</strong>
+        <table style="width:100%; font-size:0.72rem; margin-top:4px; border-collapse:collapse;">
+        <tr>`;
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+        html += `<th style="padding:3px; text-align:center; color:var(--text-muted);">${d}</th>`;
+    });
+    html += `</tr><tr>`;
+
+    for (let i = 0; i < firstDay; i++) html += `<td></td>`;
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dt = new Date(yr, mo, day);
+        const isWknd = dt.getDay() === 0 || dt.getDay() === 6;
+        const isToday = dt.toDateString() === todayDate.toDateString();
+        let style = 'padding:3px; text-align:center;';
+        if (isWknd) style += ' background:var(--danger-bg); color:var(--danger);';
+        if (isToday) style += ' background:var(--primary); color:#fff; border-radius:3px; font-weight:700;';
+        html += `<td style="${style}">${day}</td>`;
+        if ((firstDay + day) % 7 === 0 && day < daysInMonth) html += `</tr><tr>`;
+    }
+
+    html += `</tr></table></div>`;
+    return html;
+}
 </script>
 
 <!--
