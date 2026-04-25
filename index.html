@@ -222,6 +222,7 @@
             box-shadow: 0 0 0 2px rgba(49,130,206,0.15);
         }
         .form-group input[readonly] { background: var(--bg-page); color: var(--text-muted); }
+        .field-hint { font-size: 0.67rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; font-style: italic; }
         .notional-display {
             background: var(--info-bg); border: 1px solid #bee3f8;
             border-radius: var(--radius); padding: 12px 16px;
@@ -291,19 +292,20 @@
             cursor: help; color: var(--accent);
             font-weight: 500;
         }
-        .tip::after {
-            content: attr(data-tip);
-            position: absolute; bottom: calc(100% + 6px); left: 50%;
-            transform: translateX(-50%);
+        #tipBox {
+            position: fixed;
             background: var(--primary-dark); color: #fff;
-            padding: 6px 10px; border-radius: 4px;
-            font-size: 0.72rem; font-weight: 400;
-            white-space: nowrap; max-width: 320px;
+            padding: 8px 12px; border-radius: 6px;
+            font-size: 0.74rem; font-weight: 400;
+            line-height: 1.5; max-width: 340px;
+            white-space: normal; word-wrap: break-word;
+            overflow-wrap: break-word;
             pointer-events: none; opacity: 0;
             transition: opacity 0.15s;
-            z-index: 200; line-height: 1.4;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         }
-        .tip:hover::after { opacity: 1; }
+        #tipBox.visible { opacity: 1; }
 
         /* ============================================================
            VALIDATION CHECKLIST
@@ -1142,6 +1144,7 @@
     </style>
 </head>
 <body>
+<div id="tipBox"></div>
 
 <!-- ============================================================
      NAVIGATION BAR
@@ -1772,6 +1775,9 @@ const TRADER_INITIALS = ['JD', 'AR', 'KM', 'SP', 'TW'];
 
 const TOOLTIPS = {
     'T+2':              'Trade date plus two business days — standard spot settlement cycle',
+    'Trade Date':       'The date on which the trade is agreed and executed between counterparties — also called the transaction date (T+0)',
+    'Value Date':       'The date on which the trade settles — when payment and delivery of the commodity actually occur. For Spot: T+2, for Forwards: a specific future date',
+    'Averaging Period': 'The date range over which fixings are collected to compute the average price for an Asian option — typically daily, weekly, or monthly fixings from a published benchmark',
     'Tick Value':       'Dollar P&L impact per minimum price movement per contract. E.g. Gold: $0.10/oz x 100 oz = $10.00/tick',
     'Prompt Date':      'LME-specific: the settlement/delivery date for an LME contract. Cash prompt = T+2, 3-month prompt = ~3 months forward',
     'First Notice Day': 'COMEX/NYMEX: last business day of the month before the delivery month — long holders must declare delivery intent or roll',
@@ -2737,8 +2743,9 @@ function buildCaptureFormHTML(t, isEdit) {
         <form id="captureForm" onsubmit="handleCapture(event, ${isEdit ? "'" + t.id + "'" : 'null'})">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Trade Date</label>
+                    <label>${tip('Trade Date')}</label>
                     <input type="date" id="tradeDate" value="${defaultDate}" onchange="updateValueDate()" required>
+                    <span class="field-hint">The execution date (T+0). Settlement dates are calculated from this.</span>
                 </div>
                 <div class="form-group">
                     <label>Counterparty</label>
@@ -2776,8 +2783,9 @@ function buildCaptureFormHTML(t, isEdit) {
                     <input type="number" id="price" value="${defaultPrice}" step="${COMMODITIES[defaultCom].tick}" onchange="updateNotional()" oninput="updateNotional()" required>
                 </div>
                 <div class="form-group">
-                    <label>Value Date ${tip('T+2')}</label>
+                    <label>${tip('Value Date')} ${tip('T+2')}</label>
                     <input type="date" id="valueDate" value="${defaultValDate}" required>
+                    <span class="field-hint">Settlement date — when payment and delivery occur. Spot: T+2, Forward: agreed future date.</span>
                 </div>
                 <div class="form-group">
                     <label>Venue</label>
@@ -2786,8 +2794,9 @@ function buildCaptureFormHTML(t, isEdit) {
 
                 <!-- Future-specific: prompt date selector -->
                 <div class="form-group" id="futurePromptGroup" style="display:none">
-                    <label>Prompt Date (Delivery)</label>
+                    <label>${tip('Prompt Date')} (Delivery)</label>
                     <select id="futurePromptDate" onchange="onPromptDateChange()"></select>
+                    <span class="field-hint">The contract expiry/delivery month. LME: any business day; COMEX: monthly contract months.</span>
                 </div>
 
                 <!-- Future-specific: exchange ticker (auto-generated, read-only) -->
@@ -2828,6 +2837,7 @@ function buildCaptureFormHTML(t, isEdit) {
                         <div class="form-group">
                             <label>${tip('Expiry Date')}</label>
                             <input type="date" id="expiryDate" value="${t && t.expiryDate ? t.expiryDate : dateStr(addBusinessDays(defaultDate, 30))}">
+                            <span class="field-hint">Last date the option can be exercised. After this date the option expires worthless if OTM.</span>
                         </div>
                         <div class="form-group">
                             <label>Exercise Style</label>
@@ -2848,12 +2858,14 @@ function buildCaptureFormHTML(t, isEdit) {
                     <div class="option-section-label">${tip('Asian Option')} Parameters</div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Averaging Period Start</label>
+                            <label>${tip('Averaging Period')} Start</label>
                             <input type="date" id="averagingStart" value="${t && t.averagingStart ? t.averagingStart : dateStr(addBusinessDays(defaultDate, 5))}">
+                            <span class="field-hint">First fixing date — when averaging begins for the Asian option payoff calculation.</span>
                         </div>
                         <div class="form-group">
-                            <label>Averaging Period End</label>
+                            <label>${tip('Averaging Period')} End</label>
                             <input type="date" id="averagingEnd" value="${t && t.averagingEnd ? t.averagingEnd : dateStr(addMonths(defaultDate, 3))}">
+                            <span class="field-hint">Last fixing date — the average of all fixings in this window determines the settlement price.</span>
                         </div>
                         <div class="form-group">
                             <label>Fixing Frequency</label>
@@ -5458,6 +5470,44 @@ function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 
+// ============================================================
+// TOOLTIP ENGINE — body-level positioning to avoid overflow clipping
+// ============================================================
+(function() {
+    var box = null;
+    var GAP = 8;
+    document.addEventListener('mouseenter', function(e) {
+        var el = e.target.closest('.tip');
+        if (!el) return;
+        var text = el.getAttribute('data-tip');
+        if (!text) return;
+        if (!box) box = document.getElementById('tipBox');
+        box.textContent = text;
+        box.classList.add('visible');
+        var r = el.getBoundingClientRect();
+        var bw = box.offsetWidth, bh = box.offsetHeight;
+        var vw = window.innerWidth, vh = window.innerHeight;
+        // Try above, centered
+        var left = r.left + r.width / 2 - bw / 2;
+        var top = r.top - bh - GAP;
+        // If clipped above, show below
+        if (top < 4) top = r.bottom + GAP;
+        // Clamp horizontal to viewport
+        if (left < 4) left = 4;
+        if (left + bw > vw - 4) left = vw - bw - 4;
+        // If clipped below too, just show at top
+        if (top + bh > vh - 4) top = 4;
+        box.style.left = left + 'px';
+        box.style.top = top + 'px';
+    }, true);
+    document.addEventListener('mouseleave', function(e) {
+        var el = e.target.closest('.tip');
+        if (!el) return;
+        if (!box) box = document.getElementById('tipBox');
+        box.classList.remove('visible');
+    }, true);
+})();
+
 
 // ============================================================
 // SECTION 23: BLACK-76 PRICING ENGINE
@@ -6848,7 +6898,7 @@ function showEventModal(tradeId, eventKey) {
                 <div class="form-grid">
                     <div class="form-group"><label>New Price</label><input type="number" id="evtAmendPrice" value="${trade.price}" step="${com.tick}"></div>
                     <div class="form-group"><label>New Quantity (lots)</label><input type="number" id="evtAmendQty" value="${trade.quantity}" min="1"></div>
-                    <div class="form-group"><label>New Value Date</label><input type="date" id="evtAmendValueDate" value="${trade.valueDate}"></div>
+                    <div class="form-group"><label>New ${tip('Value Date')}</label><input type="date" id="evtAmendValueDate" value="${trade.valueDate}"><span class="field-hint">Updated settlement date for this trade.</span></div>
                     <div class="form-group"><label>Reason</label><select id="evtAmendReason"><option>Price correction</option><option>Quantity adjustment</option><option>Date change</option><option>Counterparty request</option></select></div>
                 </div>`;
             break;
@@ -6919,7 +6969,7 @@ function showEventModal(tradeId, eventKey) {
         case 'EARLY_TERMINATION':
             formHtml = `
                 <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Early Termination')} — mutually agree to terminate before maturity.</p>
-                <div class="form-group"><label>Termination Date</label><input type="date" id="evtTermDate" value="${today()}"></div>
+                <div class="form-group"><label>Termination Date</label><input type="date" id="evtTermDate" value="${today()}"><span class="field-hint">Effective date of early termination. MTM close-out calculated as of this date.</span></div>
                 <div class="form-group mt-2"><label>Breakage Fee / Settlement Amount</label><input type="number" id="evtTermFee" value="0" step="0.01"></div>
                 <div class="form-group mt-2"><label>Reason</label><select id="evtTermReason"><option>Mutual agreement</option><option>Market conditions</option><option>Credit concern</option><option>Regulatory change</option></select></div>
                 <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
@@ -6967,7 +7017,7 @@ function showEventModal(tradeId, eventKey) {
         case 'ROLL':
             formHtml = `
                 <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Roll/Carry')} — close near-month, open far-month position.</p>
-                <div class="form-group"><label>Roll to Prompt Date</label><input type="date" id="evtRollDate" value="${dateStr(addMonths(trade.valueDate || today(), 1))}"></div>
+                <div class="form-group"><label>Roll to ${tip('Prompt Date')}</label><input type="date" id="evtRollDate" value="${dateStr(addMonths(trade.valueDate || today(), 1))}"><span class="field-hint">New delivery month for the rolled position. Cost = calendar spread between months.</span></div>
                 <div class="form-group mt-2"><label>Roll Cost / Spread</label><input type="number" id="evtRollCost" value="0" step="0.01"></div>
                 <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
                     The existing position is closed and a new position is opened for the next delivery month. The cost is the calendar spread between the two months.
