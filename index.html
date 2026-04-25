@@ -1192,16 +1192,16 @@
 // ============================================================
 
 const COMMODITIES = {
-    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious', futuresCode: 'GC', physicalCode: '9AU', iso4217: 'XAU', lbmaFix: true },
-    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious', futuresCode: 'SI', physicalCode: '9AG', iso4217: 'XAG', lbmaFix: true },
-    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious', futuresCode: 'PL', physicalCode: '9PT', iso4217: 'XPT', lbmaFix: true },
-    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious', futuresCode: 'PA', physicalCode: '9PD', iso4217: 'XPD', lbmaFix: true },
-    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base',     futuresCode: 'CA', lmeWarrantSize: '25 MT' },
-    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI', lmeWarrantSize: '6 MT' },
-    Al: { name: 'Aluminium', symbol: 'Al', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 2500,  type: 'base',     futuresCode: 'AH', lmeWarrantSize: '25 MT' },
-    Zn: { name: 'Zinc',      symbol: 'Zn', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 2800,  type: 'base',     futuresCode: 'ZS', lmeWarrantSize: '25 MT' },
-    Sn: { name: 'Tin',       symbol: 'Sn', unit: 'MT',      exchange: 'LME',   contractSize: 5,    tick: 5.00,  basePrice: 31000, type: 'base',     futuresCode: 'SN', lmeWarrantSize: '5 MT' },
-    Pb: { name: 'Lead',      symbol: 'Pb', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 2100,  type: 'base',     futuresCode: 'PB', lmeWarrantSize: '25 MT' }
+    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  tickValue: 10.00,  basePrice: 4720,  type: 'precious', futuresCode: 'GC', physicalCode: '9AU', iso4217: 'XAU', lbmaFix: true },
+    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, tickValue: 25.00,  basePrice: 77,    type: 'precious', futuresCode: 'SI', physicalCode: '9AG', iso4217: 'XAG', lbmaFix: true },
+    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  tickValue: 5.00,   basePrice: 1830,  type: 'precious', futuresCode: 'PL', physicalCode: '9PT', iso4217: 'XPT', lbmaFix: true },
+    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.50,  tickValue: 50.00,  basePrice: 1490,  type: 'precious', futuresCode: 'PA', physicalCode: '9PD', iso4217: 'XPD', lbmaFix: true },
+    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  tickValue: 12.50,  basePrice: 12600, type: 'base',     futuresCode: 'CA', lmeWarrantSize: '25 MT' },
+    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  tickValue: 30.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI', lmeWarrantSize: '6 MT' },
+    Al: { name: 'Aluminium', symbol: 'Al', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  tickValue: 12.50,  basePrice: 2500,  type: 'base',     futuresCode: 'AH', lmeWarrantSize: '25 MT' },
+    Zn: { name: 'Zinc',      symbol: 'Zn', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  tickValue: 12.50,  basePrice: 2800,  type: 'base',     futuresCode: 'ZS', lmeWarrantSize: '25 MT' },
+    Sn: { name: 'Tin',       symbol: 'Sn', unit: 'MT',      exchange: 'LME',   contractSize: 5,    tick: 5.00,  tickValue: 25.00,  basePrice: 31000, type: 'base',     futuresCode: 'SN', lmeWarrantSize: '5 MT' },
+    Pb: { name: 'Lead',      symbol: 'Pb', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  tickValue: 12.50,  basePrice: 2100,  type: 'base',     futuresCode: 'PB', lmeWarrantSize: '25 MT' }
 };
 
 // Physical Precious Metals Currency Codes — used for physical (non-derivative) settlement
