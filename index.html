@@ -804,6 +804,155 @@
         .phys-op-icon { font-size: 1.4rem; }
         .phys-op-label { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-align: center; }
         .phys-op-desc { font-size: 0.65rem; color: var(--text-muted); text-align: center; line-height: 1.3; }
+
+        /* Structured Inventory Program */
+        .sip-hero { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #2c5282 100%); color: #fff; border-radius: var(--radius); padding: 28px 24px; margin-bottom: 18px; position: relative; overflow: hidden; }
+        .sip-hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .sip-hero-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.02em; }
+        .sip-hero-sub { font-size: 0.82rem; opacity: 0.85; line-height: 1.5; max-width: 700px; }
+        .sip-kpi-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin: 16px 0; }
+        .sip-kpi { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 14px; text-align: center; }
+        .sip-kpi-val { font-size: 1.2rem; font-weight: 800; }
+        .sip-kpi-label { font-size: 0.68rem; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .sip-section { margin-bottom: 20px; }
+        .sip-section-title { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+        .sip-flow { display: flex; align-items: stretch; gap: 0; margin: 14px 0; flex-wrap: wrap; }
+        .sip-flow-step { flex: 1; min-width: 130px; padding: 14px 12px; background: var(--bg-page); border: 1px solid var(--border); text-align: center; position: relative; }
+        .sip-flow-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+        .sip-flow-step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+        .sip-flow-step:not(:last-child)::after { content: '\u25B6'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 1rem; z-index: 1; background: var(--bg-card); padding: 2px; }
+        .sip-flow-num { font-size: 0.65rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+        .sip-flow-label { font-size: 0.78rem; font-weight: 700; color: var(--primary); margin: 4px 0 2px; }
+        .sip-flow-desc { font-size: 0.68rem; color: var(--text-muted); line-height: 1.3; }
+        .sip-structure-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin: 14px 0; }
+        .sip-struct-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--bg-card); transition: all 0.15s; cursor: pointer; }
+        .sip-struct-card:hover { border-color: var(--accent); box-shadow: 0 3px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
+        .sip-struct-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+        .sip-struct-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .sip-struct-icon { font-size: 1.5rem; }
+        .sip-struct-name { font-size: 0.88rem; font-weight: 700; color: var(--primary); }
+        .sip-struct-type { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+        .sip-type-repo { background: #ebf8ff; color: #2b6cb0; }
+        .sip-type-prepay { background: #faf5ff; color: #6b46c1; }
+        .sip-type-whfin { background: #fffff0; color: #b7791f; }
+        .sip-type-carry { background: #f0fff4; color: #276749; }
+        .sip-type-tolling { background: #fff5f5; color: #c53030; }
+        .sip-type-monetize { background: #ebf4ff; color: #3182ce; }
+        .sip-struct-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; }
+        .sip-struct-params { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .sip-param { font-size: 0.72rem; display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dotted var(--border-light); }
+        .sip-param-key { color: var(--text-muted); }
+        .sip-param-val { font-weight: 600; color: var(--primary); }
+        .sip-detail-panel { border: 1px solid var(--primary); border-radius: var(--radius); padding: 18px; margin: 16px 0; background: #f7fafc; }
+        .sip-detail-title { font-size: 0.92rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+        .sip-waterfall { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .sip-waterfall th { background: var(--bg-page); padding: 6px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+        .sip-waterfall td { padding: 6px 10px; border-bottom: 1px solid var(--border-light); }
+        .sip-waterfall tr.waterfall-total { background: #ebf8ff; font-weight: 700; }
+        .sip-waterfall tr.waterfall-total td { border-top: 2px solid var(--primary); }
+        .sip-risk-meter { height: 8px; border-radius: 4px; background: #e2e8f0; overflow: hidden; margin: 4px 0; }
+        .sip-risk-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+        .sip-inv-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .sip-inv-table th { background: var(--bg-page); padding: 5px 8px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); font-size: 0.72rem; }
+        .sip-inv-table td { padding: 5px 8px; border-bottom: 1px solid var(--border-light); }
+        .sip-collateral-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .sip-pledge { background: #fed7d7; color: #c53030; }
+        .sip-free { background: #c6f6d5; color: #276749; }
+        .sip-transit { background: #fefcbf; color: #b7791f; }
+
+        /* Forward Curves Module */
+        .fc-hero { background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #2b6cb0 100%); color: #fff; border-radius: var(--radius); padding: 28px 24px; margin-bottom: 18px; position: relative; overflow: hidden; }
+        .fc-hero::before { content: ''; position: absolute; right: -30px; top: -30px; width: 180px; height: 180px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .fc-hero-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.02em; }
+        .fc-hero-sub { font-size: 0.82rem; opacity: 0.85; line-height: 1.6; max-width: 750px; }
+        .fc-section { margin-bottom: 22px; }
+        .fc-section-title { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+        .fc-canvas-wrap { position: relative; width: 100%; height: 340px; background: #f7f9fc; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .fc-canvas-wrap canvas { width: 100%; height: 100%; }
+        .fc-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
+        .fc-controls label { font-size: 0.78rem; font-weight: 600; color: var(--text-body); }
+        .fc-controls select, .fc-controls input { font-size: 0.78rem; padding: 5px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; background: var(--bg-card); }
+        .fc-concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 14px 0; }
+        .fc-concept-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; background: var(--bg-card); transition: all 0.15s; }
+        .fc-concept-card:hover { border-color: var(--accent); box-shadow: 0 3px 12px rgba(0,0,0,0.08); transform: translateY(-1px); }
+        .fc-concept-card h4 { font-size: 0.88rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .fc-concept-card p { font-size: 0.78rem; color: var(--text-body); line-height: 1.65; }
+        .fc-concept-card .fc-formula { background: var(--bg-page); border: 1px solid var(--border-light); border-radius: 4px; padding: 8px 12px; margin-top: 8px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--primary); }
+        .fc-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+        .fc-badge-contango { background: #ebf8ff; color: #2b6cb0; }
+        .fc-badge-backwardation { background: #fff5f5; color: #c53030; }
+        .fc-badge-neutral { background: #f0fff4; color: #276749; }
+        .fc-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 10px; }
+        .fc-table th { background: var(--bg-page); padding: 6px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+        .fc-table td { padding: 6px 10px; border-bottom: 1px solid var(--border-light); }
+        .fc-table tr:hover { background: #f7fafc; }
+        .fc-callout { border-left: 3px solid var(--accent); background: var(--info-bg); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; margin: 12px 0; }
+        .fc-callout-title { font-size: 0.82rem; font-weight: 700; color: var(--info); margin-bottom: 4px; }
+        .fc-callout p { font-size: 0.78rem; color: var(--text-body); line-height: 1.6; }
+        .fc-tab-bar { display: flex; gap: 4px; margin-bottom: 14px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
+        .fc-tab { padding: 8px 18px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; border-bottom: 2px solid transparent; margin-bottom: -2px; border-radius: var(--radius) var(--radius) 0 0; background: none; font-family: inherit; transition: all 0.15s; }
+        .fc-tab:hover { color: var(--primary); background: var(--bg-page); }
+        .fc-tab.active { color: var(--primary); border-color: var(--border) var(--border) var(--bg-card); background: var(--bg-card); border-bottom-color: var(--bg-card); }
+        .fc-tab-content { display: none; }
+        .fc-tab-content.active { display: block; }
+        .fc-diagram-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+        .fc-diagram-box { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .fc-diagram-label { font-size: 0.78rem; font-weight: 700; color: var(--primary); padding: 8px 12px; background: var(--bg-page); border-bottom: 1px solid var(--border); text-align: center; }
+        .fc-legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 10px 0; padding: 8px 12px; background: var(--bg-page); border-radius: var(--radius); }
+        .fc-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text-body); }
+        .fc-legend-swatch { width: 14px; height: 3px; border-radius: 2px; }
+
+        /* Document Management Module */
+        .doc-hero { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #2c5282 100%); color: #fff; border-radius: var(--radius); padding: 28px 24px; margin-bottom: 18px; position: relative; overflow: hidden; }
+        .doc-hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .doc-hero-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.02em; }
+        .doc-hero-sub { font-size: 0.82rem; opacity: 0.85; line-height: 1.5; max-width: 700px; }
+        .doc-tabs { display: flex; gap: 4px; margin-bottom: 18px; flex-wrap: wrap; border-bottom: 2px solid var(--border); padding-bottom: 0; }
+        .doc-tab { padding: 10px 18px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; border-bottom: 3px solid transparent; border-radius: var(--radius) var(--radius) 0 0; background: none; color: var(--text-muted); font-family: inherit; transition: all 0.15s; }
+        .doc-tab:hover { background: var(--bg-page); color: var(--text-body); }
+        .doc-tab.active { color: var(--primary); border-color: var(--border) var(--border) var(--primary); background: var(--bg-card); margin-bottom: -2px; }
+        .doc-tab-icon { margin-right: 6px; }
+        .doc-panel { display: none; }
+        .doc-panel.active { display: block; }
+        .doc-section { margin-bottom: 20px; }
+        .doc-section-title { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); display: flex; align-items: center; gap: 8px; }
+        .doc-sample { background: #f7fafc; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 0.75rem; line-height: 1.6; white-space: pre-wrap; overflow-x: auto; position: relative; }
+        .doc-sample-label { position: absolute; top: 0; right: 0; background: var(--primary); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 0 var(--radius) 0 var(--radius); font-family: 'Inter', sans-serif; letter-spacing: 0.03em; }
+        .doc-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 14px 0; }
+        .doc-info-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--bg-card); transition: all 0.15s; }
+        .doc-info-card:hover { border-color: var(--accent); box-shadow: 0 3px 12px rgba(0,0,0,0.08); }
+        .doc-info-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .doc-info-icon { font-size: 1.4rem; }
+        .doc-info-name { font-size: 0.88rem; font-weight: 700; color: var(--primary); }
+        .doc-info-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+        .doc-flow { display: flex; align-items: stretch; gap: 0; margin: 14px 0; flex-wrap: wrap; }
+        .doc-flow-step { flex: 1; min-width: 130px; padding: 14px 12px; background: var(--bg-page); border: 1px solid var(--border); text-align: center; position: relative; }
+        .doc-flow-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+        .doc-flow-step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+        .doc-flow-step:not(:last-child)::after { content: '\u25B6'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 1rem; z-index: 1; background: var(--bg-card); padding: 2px; }
+        .doc-flow-num { font-size: 0.65rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+        .doc-flow-label { font-size: 0.78rem; font-weight: 700; color: var(--primary); margin: 4px 0 2px; }
+        .doc-flow-desc { font-size: 0.68rem; color: var(--text-muted); line-height: 1.3; }
+        .doc-field-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 10px 0; }
+        .doc-field-table th { background: var(--bg-page); padding: 6px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .doc-field-table td { padding: 6px 10px; border-bottom: 1px solid var(--border-light); }
+        .doc-field-table tr:hover { background: var(--bg-page); }
+        .doc-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .doc-badge-tt { background: #ebf8ff; color: #2b6cb0; }
+        .doc-badge-cert { background: #faf5ff; color: #6b46c1; }
+        .doc-badge-ship { background: #fffff0; color: #b7791f; }
+        .doc-badge-wr { background: #f0fff4; color: #276749; }
+        .doc-badge-transport { background: #fff5f5; color: #c53030; }
+        .doc-badge-insurance { background: #ebf4ff; color: #3182ce; }
+        .doc-kpi-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+        .doc-kpi { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 14px; text-align: center; }
+        .doc-kpi-val { font-size: 1.2rem; font-weight: 800; }
+        .doc-kpi-label { font-size: 0.68rem; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .doc-highlight { background: var(--info-bg); border: 1px solid #bee3f8; border-radius: var(--radius); padding: 12px 16px; margin: 12px 0; font-size: 0.78rem; line-height: 1.6; }
+        .doc-highlight strong { color: var(--primary); }
+        .doc-checklist { list-style: none; padding: 0; margin: 8px 0; }
+        .doc-checklist li { padding: 4px 0; font-size: 0.78rem; display: flex; align-items: flex-start; gap: 6px; }
+        .doc-checklist li::before { content: '\u2713'; color: var(--success); font-weight: 700; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -817,6 +966,9 @@
         <button class="nav-btn active" id="navNewTrade" onclick="startNewTrade()">New Trade</button>
         <button class="nav-btn" id="navBlotter" onclick="showView('blotter')">Blotter</button>
         <button class="nav-btn" id="navMarketData" onclick="showView('marketData')">Market Data</button>
+        <button class="nav-btn" id="navSIP" onclick="showView('sip')">Structured Inventory</button>
+        <button class="nav-btn" id="navForwardCurves" onclick="showView('forwardCurves')">Forward Curves</button>
+        <button class="nav-btn" id="navDocMgmt" onclick="showView('docMgmt')">Documents</button>
         <button class="nav-btn" id="navAbout" onclick="showView('about')">About the Lifecycle</button>
         <button class="nav-btn seed-btn" onclick="seedDemoTrades()">Seed 7 Demo Trades</button>
     </div>
@@ -858,7 +1010,11 @@ const COMMODITIES = {
     Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious', futuresCode: 'PL', physicalCode: '9PT', iso4217: 'XPT', lbmaFix: true },
     Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious', futuresCode: 'PA', physicalCode: '9PD', iso4217: 'XPD', lbmaFix: true },
     Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base',     futuresCode: 'CA', lmeWarrantSize: '25 MT' },
-    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI', lmeWarrantSize: '6 MT' }
+    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI', lmeWarrantSize: '6 MT' },
+    Al: { name: 'Aluminium', symbol: 'Al', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 2500,  type: 'base',     futuresCode: 'AH', lmeWarrantSize: '25 MT' },
+    Zn: { name: 'Zinc',      symbol: 'Zn', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 2800,  type: 'base',     futuresCode: 'ZS', lmeWarrantSize: '25 MT' },
+    Sn: { name: 'Tin',       symbol: 'Sn', unit: 'MT',      exchange: 'LME',   contractSize: 5,    tick: 5.00,  basePrice: 31000, type: 'base',     futuresCode: 'SN', lmeWarrantSize: '5 MT' },
+    Pb: { name: 'Lead',      symbol: 'Pb', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 2100,  type: 'base',     futuresCode: 'PB', lmeWarrantSize: '25 MT' }
 };
 
 // Physical Precious Metals Currency Codes — used for physical (non-derivative) settlement
@@ -1069,7 +1225,27 @@ const TOOLTIPS = {
     'Cancelled Warrant':'LME warrant where metal has been requested for withdrawal from the warehouse — no longer available for delivery',
     'Live Warrant':     'LME warrant for metal available in an approved warehouse and eligible for delivery against futures contracts',
     'Warrant Rent':     'Daily storage charge for metal held on an LME warrant in an approved warehouse (typically $0.50/MT/day)',
-    'LME Delivery':     'Physical delivery process: short delivers warrants to long via LMEsword on the prompt date'
+    'LME Delivery':     'Physical delivery process: short delivers warrants to long via LMEsword on the prompt date',
+    'SIP':              'Structured Inventory Program — financing framework where physical commodity inventory serves as collateral backing structured financial products',
+    'Repo':             'Repurchase Agreement — sale of inventory with a contractual obligation to repurchase at a future date at an agreed price',
+    'Reverse Repo':     'The buyer\'s side of a repo — purchasing inventory with agreement to sell back, earning the repo rate',
+    'Prepay':           'Advance payment to a producer/supplier against future delivery of physical commodity — a form of structured trade finance',
+    'Warehouse Finance':'Borrowing against commodity stored in an approved warehouse, using warehouse receipts/warrants as collateral',
+    'Contango':         'Market structure where forward prices exceed spot — enables cash-and-carry arbitrage by buying spot and selling forward',
+    'Cash-and-Carry':   'Arbitrage strategy: buy physical at spot, store it, sell forward at higher price — profit equals contango minus storage/financing costs',
+    'Tolling':          'Agreement where a refiner/smelter processes raw material owned by the tolling party — the toller retains ownership throughout',
+    'LTV':              'Loan-to-Value ratio — the financing amount as a percentage of the collateral\'s current market value',
+    'Advance Rate':     'Maximum percentage of inventory value that can be drawn as financing (typically 70-90% depending on commodity and counterparty)',
+    'Haircut':          'The discount applied to collateral value for risk management (100% - Advance Rate). Higher for volatile commodities',
+    'Margin Call SIP':  'Demand for additional collateral when LTV exceeds the agreed threshold due to commodity price decline',
+    'Cash Waterfall':   'The priority order in which cash flows are distributed in a structured financing — senior debt first, equity last',
+    'Inventory Monetization':'Converting physical inventory holdings into immediate cash flow through structured financing without selling the commodity',
+    'Field Warehouse':  'Warehouse controlled by a third-party collateral manager at the borrower\'s premises — provides lender control over pledged inventory',
+    'Collateral Manager':'Independent third party (e.g., SGS, Bureau Veritas, Cotecna) that verifies, monitors, and controls pledged commodity inventory',
+    'Borrowing Base':   'The maximum amount a lender will advance, calculated from eligible inventory value less haircuts and reserves',
+    'Title Document':   'Legal document evidencing ownership of physical commodity — warehouse receipt, bill of lading, or warrant',
+    'Off-Take Agreement':'Long-term contract to purchase a specified quantity of production output — often used to secure prepay financing',
+    'Bill of Lading':   'Document of title issued by a carrier acknowledging receipt of cargo for shipment — negotiable, can be endorsed to transfer ownership'
 };
 
 const HEDGING_STRATEGIES = {
@@ -1291,6 +1467,112 @@ const LIFECYCLE_EVENTS = {
     CASH_SETTLEMENT:     { label: 'Cash Settlement',      icon: '$',  iconClass: 'evt-settlement', emirAction: 'TERM', emirEvent: 'TRAD',   applicable: (t) => t.tradeStatus === 'LIVE' && t.settled && (t.productType === 'Swap' || isOptionType(t.productType)) },
     MARGIN_CALL:         { label: 'Margin Call',          icon: '\u26A1', iconClass: 'evt-margin',  emirAction: 'MARU', emirEvent: 'TRAD',   applicable: (t) => t.tradeStatus === 'LIVE' && (t.productType === 'Future' || t.productType === 'Vanilla Option') },
     CREDIT_EVENT:        { label: 'Credit Event',         icon: '\u2620', iconClass: 'evt-cancel',  emirAction: 'TERM', emirEvent: 'CREV',   applicable: (t) => t.tradeStatus === 'LIVE' }
+};
+
+// Structured Inventory Program — financing structures
+const SIP_STRUCTURES = {
+    'REPO': {
+        name: 'Inventory Repo / Reverse Repo',
+        icon: '\uD83D\uDD04',
+        type: 'repo',
+        description: 'Sale of physical inventory with a binding agreement to repurchase at a future date. The repo rate reflects the financing cost. The buyer (lender) holds title during the repo term as security.',
+        howItWorks: [
+            { step: 'Origination', desc: 'Commodity owner sells inventory to financing bank at spot price' },
+            { step: 'Title Transfer', desc: 'Legal title passes to the bank; inventory stays in approved warehouse' },
+            { step: 'Financing Period', desc: 'Owner receives cash; pays repo rate (e.g., SOFR + spread) on outstanding amount' },
+            { step: 'Repurchase', desc: 'At maturity, owner repurchases inventory at original price + accrued interest' },
+            { step: 'Title Return', desc: 'Title reverts to original owner; financing closes' }
+        ],
+        typicalParams: { advanceRate: '85-95%', tenor: '30-180 days', rate: 'SOFR + 75-150 bps', collateral: 'Warehouse receipts / warrants', minSize: '$5M notional' },
+        risks: ['Price risk (mark-to-market margin calls)', 'Warehouse/storage risk', 'Counterparty default', 'Title perfection risk'],
+        example: { commodity: 'Au', qty: 50, unit: 'troy oz bars (400 oz each)', loanPct: 0.90, rate: 0.065, tenor: 90, vault: 'LBMA London — Brinks' }
+    },
+    'PREPAY': {
+        name: 'Prepay / Pre-Export Finance',
+        icon: '\uD83D\uDCB5',
+        type: 'prepay',
+        description: 'Advance payment to a producer or mining company against future delivery of physical commodity. The prepay is repaid via physical delivery over the contract term, often backed by an off-take agreement.',
+        howItWorks: [
+            { step: 'Off-Take Agreement', desc: 'Long-term purchase contract signed between producer and buyer/trader' },
+            { step: 'Prepayment', desc: 'Financing bank advances cash to the producer (typically 60-80% of expected delivery value)' },
+            { step: 'Production & Delivery', desc: 'Producer ships commodity in scheduled parcels; each delivery reduces the outstanding prepay balance' },
+            { step: 'True-Up', desc: 'Final delivery settles remaining balance; any surplus/shortfall cash-settled at market price' },
+            { step: 'Close-Out', desc: 'Facility terminated; security interests released' }
+        ],
+        typicalParams: { advanceRate: '60-80%', tenor: '1-5 years', rate: 'SOFR + 200-400 bps', collateral: 'Off-take agreement + cargo insurance', minSize: '$10M notional' },
+        risks: ['Production/delivery risk', 'Sovereign/political risk', 'Commodity price risk', 'Environmental/force majeure'],
+        example: { commodity: 'Cu', qty: 500, unit: 'MT', loanPct: 0.70, rate: 0.085, tenor: 365, vault: 'Mine-site warehouse — Glencore' }
+    },
+    'WAREHOUSE_FIN': {
+        name: 'Warehouse Receipt Financing',
+        icon: '\uD83C\uDFED',
+        type: 'whfin',
+        description: 'Borrowing against commodity stored in an approved or field warehouse. The warehouse receipt (or electronic warrant) serves as the title document pledged to the lender. A collateral manager may oversee the inventory.',
+        howItWorks: [
+            { step: 'Deposit', desc: 'Commodity deposited in approved warehouse; warehouse receipt issued' },
+            { step: 'Pledge', desc: 'Receipt pledged to lender; collateral manager appointed to verify and monitor stock' },
+            { step: 'Advance', desc: 'Lender advances funds based on borrowing base calculation (value x advance rate)' },
+            { step: 'Monitoring', desc: 'Daily MTM of inventory; collateral manager reports stock levels; margin calls if LTV breaches threshold' },
+            { step: 'Release', desc: 'On repayment, lender releases pledge; warehouse receipt returned to borrower' }
+        ],
+        typicalParams: { advanceRate: '70-85%', tenor: '30-360 days (revolving)', rate: 'SOFR + 125-250 bps', collateral: 'Warehouse receipts + collateral mgmt agreement', minSize: '$2M notional' },
+        risks: ['Warehouse fraud/mismanagement', 'Inventory quality degradation', 'Price volatility → margin calls', 'Insurance coverage gaps'],
+        example: { commodity: 'Ni', qty: 200, unit: 'MT', loanPct: 0.75, rate: 0.072, tenor: 180, vault: 'LME-approved — Steinweg Rotterdam' }
+    },
+    'CASH_CARRY': {
+        name: 'Contango / Cash-and-Carry',
+        icon: '\uD83D\uDCC8',
+        type: 'carry',
+        description: 'Arbitrage strategy exploiting contango (forward > spot). Buy physical commodity at spot, finance storage, and simultaneously sell forward at a higher price. Profit = contango spread minus financing and storage costs.',
+        howItWorks: [
+            { step: 'Spot Purchase', desc: 'Buy physical commodity at current spot price' },
+            { step: 'Storage', desc: 'Deposit in approved warehouse; warrant or receipt issued' },
+            { step: 'Forward Sale', desc: 'Simultaneously sell equivalent quantity on forward/futures market at higher price' },
+            { step: 'Carry Period', desc: 'Hold position; pay storage rent + financing cost; mark-to-market the spread' },
+            { step: 'Delivery / Close', desc: 'At maturity, deliver physical against the forward sale; collect the locked-in profit' }
+        ],
+        typicalParams: { advanceRate: '95-100% (self-financing)', tenor: '1-12 months', rate: 'Implicit in contango spread', collateral: 'Physical commodity + futures hedge', minSize: '$1M notional' },
+        risks: ['Contango collapse (backwardation shift)', 'Storage cost escalation', 'Delivery logistics/timing', 'Basis risk between physical and futures'],
+        example: { commodity: 'Al', qty: 1000, unit: 'MT', loanPct: 0.97, rate: 0.045, tenor: 90, vault: 'LME-approved — ISTIM Vlissingen' }
+    },
+    'TOLLING': {
+        name: 'Tolling Arrangement',
+        icon: '\u2699\uFE0F',
+        type: 'tolling',
+        description: 'The commodity owner (toller) delivers raw material to a refiner/smelter for processing. The toller retains ownership throughout — paying only a processing fee (TC/RC). The refined product is returned or sold.',
+        howItWorks: [
+            { step: 'Raw Material Delivery', desc: 'Toller delivers concentrate or unrefined metal to the smelter/refinery' },
+            { step: 'Processing', desc: 'Refiner processes material under tolling terms; treatment charge (TC) and refining charge (RC) apply' },
+            { step: 'Quality Assurance', desc: 'Refined output assayed and certified to Good Delivery or contractual specifications' },
+            { step: 'Return / Sale', desc: 'Refined commodity returned to toller or sold directly to end-buyer per toller instructions' },
+            { step: 'Settlement', desc: 'Toller pays TC/RC; refiner may retain a small share of by-products' }
+        ],
+        typicalParams: { advanceRate: 'N/A (ownership retained)', tenor: '30-90 days processing', rate: 'TC/RC fee ($50-$120/MT)', collateral: 'Material in refiner custody', minSize: '100 MT concentrate' },
+        risks: ['Refiner insolvency (commingling)', 'Processing loss/yield risk', 'Quality downgrade', 'Logistics delay'],
+        example: { commodity: 'Cu', qty: 2000, unit: 'MT concentrate', loanPct: 0, rate: 0, tenor: 60, vault: 'Aurubis smelter, Hamburg' }
+    },
+    'INVENTORY_MONETIZE': {
+        name: 'Inventory Monetization',
+        icon: '\uD83D\uDCB0',
+        type: 'monetize',
+        description: 'Converting on-balance-sheet physical inventory into immediate cash without an outright sale. Typically structured as a sale-and-leaseback or a revolving borrowing base facility backed by the inventory.',
+        howItWorks: [
+            { step: 'Inventory Valuation', desc: 'Independent surveyor (SGS, Bureau Veritas) inspects and values the inventory' },
+            { step: 'Borrowing Base Calc', desc: 'Eligible inventory x advance rate = maximum drawing. Ineligible stock excluded (damaged, aged, disputed title)' },
+            { step: 'Facility Drawdown', desc: 'Borrower draws funds up to the borrowing base; inventory pledged as security' },
+            { step: 'Revolving Monitoring', desc: 'Weekly/monthly borrowing base certificates filed; inventory audited; new stock added, sold stock released' },
+            { step: 'Repayment / Rollover', desc: 'Facility repaid from sales proceeds; or rolled over with updated borrowing base' }
+        ],
+        typicalParams: { advanceRate: '70-90%', tenor: '364 days (revolving)', rate: 'SOFR + 150-300 bps', collateral: 'All inventory + insurance assignment', minSize: '$5M facility' },
+        risks: ['Inventory shrinkage/theft', 'Valuation disputes', 'Concentration risk (single commodity)', 'Liquidity squeeze on margin calls'],
+        example: { commodity: 'Ag', qty: 100000, unit: 'troy oz', loanPct: 0.80, rate: 0.068, tenor: 364, vault: 'Allocated — Malca-Amit, London' }
+    }
+};
+
+const SIP_INVENTORY_STATUSES = {
+    FREE: { label: 'Free / Unpledged', cssClass: 'sip-free', description: 'Inventory available for sale, delivery, or pledging' },
+    PLEDGED: { label: 'Pledged', cssClass: 'sip-pledge', description: 'Inventory pledged as collateral under a financing facility' },
+    IN_TRANSIT: { label: 'In Transit', cssClass: 'sip-transit', description: 'Inventory in transit between locations — covered by cargo insurance' }
 };
 
 
@@ -1630,7 +1912,7 @@ function getCurrentTrade() {
 function showView(view) {
     state.currentView = view;
     document.querySelectorAll('.nav-btn:not(.seed-btn)').forEach(b => b.classList.remove('active'));
-    const navId = { newTrade: 'navNewTrade', blotter: 'navBlotter', about: 'navAbout', marketData: 'navMarketData' };
+    const navId = { newTrade: 'navNewTrade', blotter: 'navBlotter', about: 'navAbout', marketData: 'navMarketData', sip: 'navSIP', forwardCurves: 'navForwardCurves', docMgmt: 'navDocMgmt' };
     document.getElementById(navId[view])?.classList.add('active');
 
     const main = document.getElementById('mainContent');
@@ -1650,6 +1932,15 @@ function showView(view) {
             break;
         case 'marketData':
             renderMarketDataView();
+            break;
+        case 'sip':
+            renderStructuredInventoryView();
+            break;
+        case 'forwardCurves':
+            renderForwardCurvesView();
+            break;
+        case 'docMgmt':
+            renderDocumentManagementView();
             break;
     }
 }
@@ -1707,11 +1998,12 @@ function renderTradeView(trade) {
     html += '<div id="lifecycleEventsContainer"></div>';
     main.innerHTML = html;
     renderStageContent(trade);
-    // Physical commodity panels (precious metals, LME warrants, auctions)
+    // Physical commodity panels (precious metals, LME warrants, auctions, SIP)
     let physHtml = '';
     physHtml += renderPhysicalMetalsPanel(trade);
     physHtml += renderAuctionPanel(trade);
     physHtml += renderLMEWarrantPanel(trade);
+    physHtml += renderSIPTradePanel(trade);
     document.getElementById('physicalCommodityContainer').innerHTML = physHtml;
     document.getElementById('lifecycleEventsContainer').innerHTML = renderLifecycleEventsPanel(trade);
 }
@@ -6374,6 +6666,1976 @@ function cancelWarrant(tradeId, warrantNumber) {
     const t = getCurrentTrade();
     if (t && t.id === tradeId) renderTradeView(t);
 }
+
+
+// ============================================================
+// SECTION 39: DOCUMENT MANAGEMENT MODULE
+// ============================================================
+
+function switchDocTab(tabId) {
+    document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.doc-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('docTab-' + tabId)?.classList.add('active');
+    document.getElementById('docPanel-' + tabId)?.classList.add('active');
+}
+
+function renderDocumentManagementView() {
+    const main = document.getElementById('mainContent');
+    main.innerHTML = `
+    <!-- Hero Banner -->
+    <div class="doc-hero">
+        <div class="doc-hero-title">Document Management &amp; Title Transfer</div>
+        <div class="doc-hero-sub">
+            Physical commodity trades require a comprehensive set of documents that govern ownership transfer,
+            quality assurance, logistics, warehousing, and insurance. This module covers the full documentary
+            lifecycle from title transfer instructions through to marine cargo insurance certificates.
+        </div>
+        <div class="doc-kpi-row">
+            <div class="doc-kpi"><div class="doc-kpi-val">6</div><div class="doc-kpi-label">Document Categories</div></div>
+            <div class="doc-kpi"><div class="doc-kpi-val">TT</div><div class="doc-kpi-label">Title Transfer</div></div>
+            <div class="doc-kpi"><div class="doc-kpi-val">B/L</div><div class="doc-kpi-label">Bills of Lading</div></div>
+            <div class="doc-kpi"><div class="doc-kpi-val">W/R</div><div class="doc-kpi-label">Warehouse Receipts</div></div>
+            <div class="doc-kpi"><div class="doc-kpi-val">C/P</div><div class="doc-kpi-label">Charter Party</div></div>
+            <div class="doc-kpi"><div class="doc-kpi-val">CIM</div><div class="doc-kpi-label">Cargo Insurance</div></div>
+        </div>
+    </div>
+
+    <!-- Document Flow Overview -->
+    <div class="card">
+        <div class="card-title">Documentary Flow in a Physical Commodity Trade</div>
+        <div class="doc-flow">
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Step 1</div>
+                <div class="doc-flow-label">Trade Capture</div>
+                <div class="doc-flow-desc">Deal agreed, contract signed with Incoterms</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Step 2</div>
+                <div class="doc-flow-label">Inspection</div>
+                <div class="doc-flow-desc">Certificates of quality, weight, origin issued</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Step 3</div>
+                <div class="doc-flow-label">Shipping</div>
+                <div class="doc-flow-desc">B/L, packing list, commercial invoice prepared</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Step 4</div>
+                <div class="doc-flow-label">Insurance</div>
+                <div class="doc-flow-desc">Marine cargo policy / certificate issued</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Step 5</div>
+                <div class="doc-flow-label">Title Transfer</div>
+                <div class="doc-flow-desc">TT instruction sent, ownership changes instantly</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Step 6</div>
+                <div class="doc-flow-label">Settlement</div>
+                <div class="doc-flow-desc">Payment against documents, warehouse receipt endorsed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="doc-tabs">
+        <button class="doc-tab active" id="docTab-tt" onclick="switchDocTab('tt')">
+            <span class="doc-tab-icon">&#x21C4;</span>Title Transfer (TT)
+        </button>
+        <button class="doc-tab" id="docTab-certs" onclick="switchDocTab('certs')">
+            <span class="doc-tab-icon">&#x1F4DC;</span>Certificates
+        </button>
+        <button class="doc-tab" id="docTab-shipping" onclick="switchDocTab('shipping')">
+            <span class="doc-tab-icon">&#x1F6A2;</span>Shipping Documents
+        </button>
+        <button class="doc-tab" id="docTab-warehouse" onclick="switchDocTab('warehouse')">
+            <span class="doc-tab-icon">&#x1F3ED;</span>Warehouse Receipts
+        </button>
+        <button class="doc-tab" id="docTab-transport" onclick="switchDocTab('transport')">
+            <span class="doc-tab-icon">&#x1F69A;</span>Transportation
+        </button>
+        <button class="doc-tab" id="docTab-insurance" onclick="switchDocTab('insurance')">
+            <span class="doc-tab-icon">&#x1F6E1;</span>Insurance
+        </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 1: TITLE TRANSFER (TT) -->
+    <!-- ============================================ -->
+    <div class="doc-panel active" id="docPanel-tt">
+        <div class="card">
+            <div class="card-title">Instantaneous Title Transfer (TT) Mechanisms</div>
+
+            <div class="doc-highlight">
+                <strong>What is a Title Transfer?</strong> A Title Transfer (TT) is the instantaneous change of legal ownership
+                of a commodity &mdash; typically precious metals held in a vault or base metals in an approved warehouse &mdash; from
+                one party to another, without the physical movement of the goods. The metal remains in situ; only the book
+                entry changes. TTs are the primary settlement mechanism for ${tip('Loco London')} gold and silver, and are also
+                used for metals held in LME-approved warehouses.
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title"><span class="doc-badge doc-badge-tt">TT</span> How Title Transfer Works</div>
+                <div class="doc-flow">
+                    <div class="doc-flow-step">
+                        <div class="doc-flow-num">1</div>
+                        <div class="doc-flow-label">Instruction</div>
+                        <div class="doc-flow-desc">Seller sends TT instruction to vault/custodian</div>
+                    </div>
+                    <div class="doc-flow-step">
+                        <div class="doc-flow-num">2</div>
+                        <div class="doc-flow-label">Verification</div>
+                        <div class="doc-flow-desc">Custodian verifies holding &amp; authorized signatories</div>
+                    </div>
+                    <div class="doc-flow-step">
+                        <div class="doc-flow-num">3</div>
+                        <div class="doc-flow-label">Book Transfer</div>
+                        <div class="doc-flow-desc">Account debited from seller, credited to buyer</div>
+                    </div>
+                    <div class="doc-flow-step">
+                        <div class="doc-flow-num">4</div>
+                        <div class="doc-flow-label">Confirmation</div>
+                        <div class="doc-flow-desc">Both parties receive confirmation of transfer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">TT Types in Commodities Markets</div>
+                <div class="doc-info-grid">
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F947;</div>
+                            <div class="doc-info-name">Loco London Gold/Silver TT</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            The standard settlement mechanism for OTC precious metals. Gold is transferred between
+                            unallocated accounts at LBMA member banks. Settlement is T+2 via ${tip('LPMCL')} AURUM
+                            system for gold, or its silver equivalent. No physical movement occurs &mdash; the
+                            custodian bank simply adjusts account balances.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Unallocated-to-Unallocated (most common, fungible ounces)</li>
+                            <li>Allocated-to-Allocated (specific bars, requires bar list)</li>
+                            <li>Unallocated-to-Allocated (allocation request, triggers bar list)</li>
+                            <li>Free-of-Payment (FOP) or Delivery-versus-Payment (DvP)</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F3ED;</div>
+                            <div class="doc-info-name">LME Warrant Title Transfer</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Base metals (Cu, Al, Zn, Ni, Pb, Sn) stored in LME-approved warehouses are represented
+                            by electronic warrants in the ${tip('LMEsword')} system. Title transfer occurs by
+                            electronic transfer of warrants between LMEsword accounts, typically on the prompt date.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Warrant transfer via LMEsword (electronic book-entry)</li>
+                            <li>Each warrant = 1 lot (e.g., 25 MT copper)</li>
+                            <li>Specific brand, warehouse location, and lot number</li>
+                            <li>Rent liability transfers with the warrant</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x26FD;</div>
+                            <div class="doc-info-name">Tank-to-Tank Transfer (Energy)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            For crude oil and refined products stored in tank farms, title transfer occurs by
+                            updating the terminal operator's stock records. The product remains in the same tank;
+                            ownership records change to reflect the buyer. Also known as "in-tank transfer" (ITT).
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Terminal operator updates custody records</li>
+                            <li>Product grade, API gravity, and sulfur content verified</li>
+                            <li>Independent inspector certifies quantity</li>
+                            <li>Common at ARA (Amsterdam-Rotterdam-Antwerp) hub</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F33E;</div>
+                            <div class="doc-info-name">Silo Receipt Transfer (Agri)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Agricultural commodities (wheat, corn, soybeans) stored in approved elevators/silos use
+                            warehouse receipts or electronic equivalents. Title transfers by endorsement of the
+                            receipt or electronic transfer in systems like CME's EWR (Electronic Warehouse Receipt).
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Endorsed warehouse receipt or EWR transfer</li>
+                            <li>Grade, moisture content, and condition verified</li>
+                            <li>Storage fees transfer with the receipt</li>
+                            <li>Delivery points specified in futures contract</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Loco London Gold Title Transfer Instruction</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE TT INSTRUCTION</span>
+================================================================
+        TITLE TRANSFER INSTRUCTION
+        Loco London Gold - Unallocated Account
+================================================================
+
+Date:           25-Apr-2026
+Reference:      TT-AU-2026-04-25-0001
+Transfer Type:  FREE OF PAYMENT (FOP)
+
+TRANSFEROR (SELLER):
+  Account Holder:   Global Commodities Trading Ltd
+  Account Number:   LPMCL-GCT-AU-001
+  LBMA Member:      HSBC Bank plc (Custodian)
+  LEI:              5493001KJTIIGC8Y1R12
+
+TRANSFEREE (BUYER):
+  Account Holder:   Sovereign Wealth Fund Corp
+  Account Number:   LPMCL-SWF-AU-042
+  LBMA Member:      JP Morgan Chase Bank N.A. (Custodian)
+  LEI:              7H6GLXDRUGQFU57RNE97
+
+TRANSFER DETAILS:
+  Metal:            Gold (XAU)
+  Form:             Unallocated
+  Fineness:         995.0 minimum
+  Quantity:         5,000.000 fine troy ounces
+  Loco:             London
+  Value Date:       27-Apr-2026 (T+2)
+
+SETTLEMENT:
+  Reference Price:  USD 2,342.50 / troy oz (LBMA PM Fix)
+  Total Value:      USD 11,712,500.00
+  Payment Method:   Delivery versus Payment (DvP) via LPMCL
+  Payment Ref:      PAY-GCT-SWF-20260425-001
+
+AUTHORIZATION:
+  Authorized By:    J. Richardson, Head of Precious Metals Ops
+  Signature:        [Digital Signature / SWIFT Authentication]
+  SWIFT MT604:      Sent via SWIFT FIN - Ref: HSBCGB2LXXX-604-001
+
+SPECIAL INSTRUCTIONS:
+  - Transfer to be effected on value date via AURUM clearing
+  - Confirm completion to both parties via SWIFT MT950
+  - In case of mismatch, contact GCT Ops: +44 20 7123 4567
+
+================================================================
+        END OF TITLE TRANSFER INSTRUCTION
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: LME Warrant Title Transfer (LMEsword)</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE LME WARRANT TT</span>
+================================================================
+        LME WARRANT TRANSFER INSTRUCTION
+        Via LMEsword Electronic System
+================================================================
+
+Date:           25-Apr-2026
+LMEsword Ref:   SWORD-TFR-20260425-3847
+
+TRANSFEROR:
+  Member:           MetalCorp Broking Ltd
+  LMEsword A/C:    SWORD-MCB-0012
+  Category:         Cat 1 Member
+
+TRANSFEREE:
+  Member:           Pacific Rim Trading LLC
+  LMEsword A/C:    SWORD-PRT-0089
+  Category:         Cat 2 Member
+
+WARRANT DETAILS:
+  +---------+----------+------------+-----------+----------+-----------+
+  | Warrant | Metal    | Brand      | Weight    | Location | Warehouse |
+  +---------+----------+------------+-----------+----------+-----------+
+  | W-78341 | Copper   | Aurubis    | 24.92 MT  | Rotterdam| Steinweg  |
+  | W-78342 | Copper   | Aurubis    | 25.04 MT  | Rotterdam| Steinweg  |
+  | W-78343 | Copper   | Codelco    | 25.00 MT  | Rotterdam| Steinweg  |
+  | W-78344 | Copper   | Codelco    | 24.87 MT  | Rotterdam| Steinweg  |
+  +---------+----------+------------+-----------+----------+-----------+
+  Total:    4 warrants = 99.83 MT (Lot equiv: 4 lots)
+
+PROMPT DATE:    Third Wednesday, May 2026 (20-May-2026)
+SETTLEMENT:     LME Official Settlement Price on prompt date
+RENT LIABILITY: Transfers to buyer from transfer date
+CURRENT RENT:   USD 0.50/MT/day (Steinweg Rotterdam schedule)
+
+STATUS:         PENDING ACCEPTANCE
+  - Transferor authorized: YES (25-Apr-2026 09:15 GMT)
+  - Transferee acceptance:  AWAITING
+
+================================================================
+        END OF LME WARRANT TRANSFER
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Key Concepts</div>
+                <table class="doc-field-table">
+                    <thead><tr><th>Term</th><th>Definition</th><th>Context</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>FOP</strong></td><td>Free of Payment &mdash; title transfers without simultaneous cash settlement</td><td>Used for internal transfers, pre-positioned metal</td></tr>
+                        <tr><td><strong>DvP</strong></td><td>Delivery versus Payment &mdash; title and cash settle simultaneously</td><td>Standard for inter-bank precious metals settlement</td></tr>
+                        <tr><td><strong>AURUM</strong></td><td>LPMCL's electronic clearing system for Loco London gold</td><td>Clears ~$30B daily in London gold transfers</td></tr>
+                        <tr><td><strong>LMEsword</strong></td><td>Electronic warrant system for LME-approved warehouse metals</td><td>All LME warrant transfers are electronic since 1999</td></tr>
+                        <tr><td><strong>Loco</strong></td><td>Location of delivery (e.g., Loco London, Loco Zurich)</td><td>Determines the settlement system and vault network</td></tr>
+                        <tr><td><strong>Allocated</strong></td><td>Specific identified bars assigned to the account holder</td><td>Holder owns specific bars; custodian holds on bailment</td></tr>
+                        <tr><td><strong>Unallocated</strong></td><td>General claim on the custodian for a quantity of metal</td><td>Fungible; holder is unsecured creditor of the bank</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 2: CERTIFICATES -->
+    <!-- ============================================ -->
+    <div class="doc-panel" id="docPanel-certs">
+        <div class="card">
+            <div class="card-title">Trade Certificates</div>
+
+            <div class="doc-highlight">
+                <strong>Role of Certificates:</strong> Certificates are independent third-party documents that verify the
+                quality, quantity, origin, and condition of a commodity. They are issued by inspection companies
+                (e.g., SGS, Bureau Veritas, Intertek, Alex Stewart International) and are required by buyers, banks
+                (for documentary credits), and exchanges (for deliverable status).
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title"><span class="doc-badge doc-badge-cert">CERT</span> Certificate Types</div>
+                <div class="doc-info-grid">
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x2696;</div>
+                            <div class="doc-info-name">Certificate of Quality / Assay</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Confirms the chemical composition and purity of the commodity. For metals, this includes
+                            assay results (fineness for precious metals, grade for base metals). For agri, it covers
+                            protein content, moisture, foreign matter, etc.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x2696;</div>
+                            <div class="doc-info-name">Certificate of Weight</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Independent verification of the net and gross weight of the shipment. Critical for
+                            calculating the invoice value (price x weight). Draft survey or shore-tank gauging
+                            methods may be used for bulk cargoes.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F30D;</div>
+                            <div class="doc-info-name">Certificate of Origin (CO)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Certifies the country of origin of the goods. Required for customs clearance, tariff
+                            determination, and sanctions compliance. May be issued by a chamber of commerce or
+                            the exporting country's trade authority.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4CB;</div>
+                            <div class="doc-info-name">Certificate of Inspection</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            A comprehensive report covering visual inspection, sampling, and testing of the commodity.
+                            Confirms that goods conform to the contract specifications. Often required by the
+                            buyer's bank under a Letter of Credit (L/C).
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F9EA;</div>
+                            <div class="doc-info-name">Phytosanitary Certificate</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Required for agricultural commodities. Certifies that the goods are free from plant
+                            pests and diseases and meet the importing country's phytosanitary requirements. Issued
+                            by the national plant protection organization (NPPO) of the exporting country.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x2622;</div>
+                            <div class="doc-info-name">Fumigation Certificate</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Certifies that the cargo has been treated (fumigated) to eliminate insects, pests, or
+                            biological contaminants. Required for grains, timber, and other organic commodities
+                            before import into many jurisdictions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Certificate of Quality &amp; Assay (Copper Cathodes)</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE QUALITY CERTIFICATE</span>
+================================================================
+        CERTIFICATE OF QUALITY AND ASSAY
+        SGS Minerals Services
+================================================================
+
+Certificate No:     SGS-MET-2026-04-7892
+Date of Issue:      24-Apr-2026
+Place of Inspection: Antwerp, Belgium
+
+CLIENT:
+  Name:             Global Commodities Trading Ltd
+  Reference:        GCT-PO-2026-CU-0142
+
+COMMODITY:
+  Description:      Electrolytic Copper Cathodes
+  Brand:            Aurubis AG - Grade A (LME Registered)
+  Origin:           Germany
+  LME Brand Code:   AURUBIS
+
+SAMPLING &amp; ANALYSIS:
+  Lot Size:         100 MT (4 bundles x 25 MT)
+  Sample Method:    Drill samples per ISO 6507
+  Laboratory:       SGS Antwerp Metals Lab (ISO 17025 accredited)
+
+ASSAY RESULTS:
+  +-------------------+--------+--------------+
+  | Element           | Result | Specification|
+  +-------------------+--------+--------------+
+  | Copper (Cu)       | 99.97% | Min 99.95%   |
+  | Silver (Ag)       | 12 ppm | Max 25 ppm   |
+  | Sulfur (S)        |  5 ppm | Max 15 ppm   |
+  | Iron (Fe)         |  3 ppm | Max 10 ppm   |
+  | Lead (Pb)         |  1 ppm | Max  5 ppm   |
+  | Arsenic (As)      | <1 ppm | Max  5 ppm   |
+  | Bismuth (Bi)      | <1 ppm | Max  2 ppm   |
+  | Oxygen (O)        | 18 ppm | Max 40 ppm   |
+  +-------------------+--------+--------------+
+
+CONCLUSION:
+  The copper cathodes conform to LME Grade A specification
+  (BS EN 1978:1998 Cu-CATH-1) and are deliverable against
+  LME copper contracts.
+
+PHYSICAL:
+  Cathode Dimensions: 980mm x 920mm x 12mm (approx.)
+  Individual Weight:  ~110 kg per cathode
+  Bundle Weight:      ~2,200 kg (20 cathodes per bundle)
+  Surface Condition:  Smooth, free from nodules and inclusions
+
+Authorized By:      Dr. M. Vandenberg, Chief Assayer
+                    SGS Minerals Services, Antwerp
+
+================================================================
+        THIS DOCUMENT IS ISSUED WITHOUT PREJUDICE
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Certificate of Origin</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE CERTIFICATE OF ORIGIN</span>
+================================================================
+        CERTIFICATE OF ORIGIN
+        Chamber of Commerce, Santiago, Chile
+================================================================
+
+Certificate No:     CO-CL-2026-28734
+Date of Issue:      22-Apr-2026
+
+EXPORTER:
+  Name:             Codelco - Corporacion Nacional del Cobre
+  Address:          Huerfanos 1270, Santiago, Chile
+  Tax ID:           76.043.307-1
+
+CONSIGNEE:
+  Name:             Pacific Rim Trading LLC
+  Address:          1 Raffles Place, #40-02, Singapore 048616
+
+GOODS:
+  Description:      Electrolytic Copper Cathodes
+  HS Code:          7403.11.00
+  Net Weight:       500 MT
+  Gross Weight:     502.3 MT
+  No. of Packages:  20 bundles
+
+COUNTRY OF ORIGIN:  Chile
+
+MEANS OF TRANSPORT:
+  Vessel:           MV Pacific Copper
+  Port of Loading:  Antofagasta, Chile
+  Port of Discharge: Singapore
+
+DECLARATION:
+  The undersigned hereby declares that the above-mentioned
+  goods originate in the Republic of Chile in accordance
+  with the rules of origin applicable under the Chile-
+  Singapore Free Trade Agreement (FTA).
+
+  Preferential tariff treatment claimed: YES
+  FTA Reference: Chile-Singapore FTA, Annex 3-A
+
+Certified By:       Chamber of Commerce, Santiago
+Stamp &amp; Seal:       [Official Chamber Seal]
+
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Certificate of Weight</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE WEIGHT CERTIFICATE</span>
+================================================================
+        CERTIFICATE OF WEIGHT
+        Bureau Veritas Commodities
+================================================================
+
+Certificate No:     BV-WT-2026-04-1234
+Date:               23-Apr-2026
+Location:           Rotterdam, Netherlands
+
+CLIENT:             Global Commodities Trading Ltd
+CONTRACT REF:       GCT-CU-SPOT-2026-0142
+
+COMMODITY:          Electrolytic Copper Cathodes (LME Grade A)
+
+WEIGHING DETAILS:
+  Method:           Electronic Platform Scale (calibrated)
+  Scale Type:       Mettler Toledo ICS689 (Cap: 30,000 kg)
+  Last Calibration: 01-Apr-2026 (Cert: CAL-2026-RT-089)
+
+RESULTS:
+  +--------+------------------+----------+----------+----------+
+  | Bundle | Brand            | Gross Wt | Tare     | Net Wt   |
+  +--------+------------------+----------+----------+----------+
+  | 1      | Aurubis Grade A  | 2,218 kg |   18 kg  | 2,200 kg |
+  | 2      | Aurubis Grade A  | 2,226 kg |   18 kg  | 2,208 kg |
+  | 3      | Aurubis Grade A  | 2,214 kg |   18 kg  | 2,196 kg |
+  | 4      | Aurubis Grade A  | 2,220 kg |   18 kg  | 2,202 kg |
+  +--------+------------------+----------+----------+----------+
+  TOTAL GROSS:      8,878 kg
+  TOTAL TARE:          72 kg
+  TOTAL NET:        8,806 kg  (8.806 MT)
+
+REMARKS:
+  Weighing performed in dry, covered warehouse conditions.
+  No moisture correction applied. Metal visually inspected;
+  no damage or contamination observed.
+
+Surveyor:           P. de Groot, Senior Surveyor
+                    Bureau Veritas Commodities, Rotterdam
+
+================================================================</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 3: SHIPPING DOCUMENTS -->
+    <!-- ============================================ -->
+    <div class="doc-panel" id="docPanel-shipping">
+        <div class="card">
+            <div class="card-title">Shipping Documents</div>
+
+            <div class="doc-highlight">
+                <strong>Critical Role:</strong> Shipping documents are the backbone of international commodity trade. The
+                ${tip('Bill of Lading')} (B/L) serves as a receipt for goods, evidence of the contract of carriage, and
+                &mdash; most importantly &mdash; a document of title. Presentation of a clean, on-board B/L is typically
+                required to trigger payment under a Letter of Credit or documentary collection.
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title"><span class="doc-badge doc-badge-ship">SHIP</span> Key Shipping Documents</div>
+                <div class="doc-info-grid">
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4C4;</div>
+                            <div class="doc-info-name">Bill of Lading (B/L)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            The primary document of title in maritime trade. An original negotiable B/L can be endorsed
+                            and transferred, giving the holder the right to claim the goods at the port of discharge.
+                            Types include: Clean B/L, Claused B/L, Through B/L, Combined Transport B/L.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4CB;</div>
+                            <div class="doc-info-name">Commercial Invoice</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            The seller's bill to the buyer, detailing the goods, quantity, unit price, total amount,
+                            Incoterms, and payment terms. Must match the Letter of Credit terms exactly. Used for
+                            customs valuation and duty calculation.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4E6;</div>
+                            <div class="doc-info-name">Packing List</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Itemized list of the cargo showing number of packages, their marks and numbers,
+                            description of contents, individual and total weights, and dimensions. Enables customs
+                            and consignees to identify specific packages within a shipment.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F6A2;</div>
+                            <div class="doc-info-name">Mate's Receipt</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Issued by the ship's officer acknowledging receipt of cargo on board. Serves as the
+                            basis for issuing the Bill of Lading. Notes any damage or discrepancy observed during
+                            loading. A "clean" mate's receipt leads to a "clean" B/L.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Ocean Bill of Lading</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE BILL OF LADING</span>
+================================================================
+      NEGOTIABLE OCEAN BILL OF LADING
+      Mediterranean Shipping Company (MSC)
+================================================================
+
+B/L Number:         MSCU-2026-RTM-SIN-78421
+Booking Ref:        BKG-20260420-4521
+Date of Issue:      25-Apr-2026
+
+SHIPPER:
+  Global Commodities Trading Ltd
+  1 Canada Square, Canary Wharf
+  London E14 5AB, United Kingdom
+
+CONSIGNEE:
+  TO THE ORDER OF: Standard Chartered Bank, Singapore
+  (L/C No: SCBS-LC-2026-04-1892)
+
+NOTIFY PARTY:
+  Pacific Rim Trading LLC
+  1 Raffles Place, #40-02
+  Singapore 048616
+
+VESSEL / VOYAGE:    MSC Lorena / Voyage 2026-AE14
+FLAG:               Panama
+PORT OF LOADING:    Rotterdam, Netherlands (NLRTM)
+PORT OF DISCHARGE:  Singapore (SGSIN)
+PLACE OF DELIVERY:  Singapore, PSA Terminal
+
+PARTICULARS OF GOODS:
+  +-----+-------------------+---------+---------+----------+
+  | Qty | Description       | Gross   | Measure | Marks    |
+  +-----+-------------------+---------+---------+----------+
+  | 4   | Bundles Copper    | 8,878kg | 6.2 CBM | GCT-CU   |
+  |     | Cathodes Grade A  |         |         | LOT 0142 |
+  |     | LME Registered    |         |         | RTM>SIN  |
+  |     | HS: 7403.11.00    |         |         |          |
+  +-----+-------------------+---------+---------+----------+
+
+CONTAINER:          MSCU7234581 / 20' GP
+SEAL NO:            MSC-1892456
+WEIGHT:             8,878 KGS GROSS
+MEASUREMENT:        6.2 CBM
+
+FREIGHT:            PREPAID
+  Freight Amount:   USD 2,450.00
+  THC Origin:       USD    385.00
+  THC Destination:  USD    410.00
+  BAF Surcharge:    USD    180.00
+  TOTAL:            USD  3,425.00
+
+NUMBER OF ORIGINALS: THREE (3)
+
+SHIPPED ON BOARD:   25-Apr-2026 at Rotterdam
+CLEAN ON BOARD:     No clauses or exceptions noted
+
+ON BOARD NOTATION:
+  "Shipped on board in apparent good order and condition
+   for carriage to the port of discharge or as close
+   thereto as the vessel may safely get."
+
+Signed:             Captain M. Stavridis
+                    For and on behalf of the Master
+                    MSC Mediterranean Shipping Company S.A.
+
+================================================================
+        ORIGINAL 1 OF 3 - NEGOTIABLE
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Commercial Invoice</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE COMMERCIAL INVOICE</span>
+================================================================
+        COMMERCIAL INVOICE
+================================================================
+
+Invoice No:         GCT-INV-2026-CU-0142
+Invoice Date:       25-Apr-2026
+
+SELLER:
+  Global Commodities Trading Ltd
+  1 Canada Square, Canary Wharf, London E14 5AB, UK
+  VAT: GB 123 456 789
+  LEI: 5493001KJTIIGC8Y1R12
+
+BUYER:
+  Pacific Rim Trading LLC
+  1 Raffles Place, #40-02, Singapore 048616
+  UEN: 201901234A
+
+CONTRACT REF:       GCT-PRT-CU-2026-0142
+L/C REF:            SCBS-LC-2026-04-1892
+INCOTERMS:          CIF Singapore (Incoterms 2020)
+
+GOODS:
+  +-----+--------------------+--------+-----------+-----------+
+  | Item| Description        | Qty    | Unit Price| Amount    |
+  +-----+--------------------+--------+-----------+-----------+
+  | 1   | Copper Cathodes    | 8.806  | USD       | USD       |
+  |     | Electrolytic       | MT     | 9,425.00  | 82,996.55 |
+  |     | Grade A (LME Reg.) |        | per MT    |           |
+  |     | Brand: Aurubis     |        |           |           |
+  |     | Origin: Germany    |        |           |           |
+  |     | HS: 7403.11.00     |        |           |           |
+  +-----+--------------------+--------+-----------+-----------+
+  SUBTOTAL (Goods):                       USD  82,996.55
+  FREIGHT (Rotterdam to Singapore):       USD   3,425.00
+  INSURANCE (110% CIF value):             USD     230.78
+  ------------------------------------------------
+  TOTAL INVOICE VALUE (CIF Singapore):    USD  86,652.33
+
+PAYMENT TERMS:
+  Sight L/C - Payment upon presentation of compliant
+  documents to Standard Chartered Bank, Singapore
+
+BANK DETAILS:
+  Beneficiary:      Global Commodities Trading Ltd
+  Bank:             HSBC Bank plc, London
+  SWIFT:            HSBCGB2LXXX
+  Account:          GB82 HBUK 4012 5645 7890 12
+  Reference:        GCT-INV-2026-CU-0142
+
+DOCUMENTS ENCLOSED:
+  1. Original Bill of Lading (3/3)
+  2. Certificate of Quality (SGS)
+  3. Certificate of Weight (Bureau Veritas)
+  4. Certificate of Origin
+  5. Packing List
+  6. Insurance Certificate
+
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Packing List</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE PACKING LIST</span>
+================================================================
+        PACKING LIST
+================================================================
+
+Packing List No:    GCT-PL-2026-CU-0142
+Date:               25-Apr-2026
+Invoice Ref:        GCT-INV-2026-CU-0142
+
+SHIPPER:            Global Commodities Trading Ltd
+CONSIGNEE:          Pacific Rim Trading LLC
+VESSEL:             MSC Lorena / Voy 2026-AE14
+CONTAINER:          MSCU7234581 / 20' GP
+
+DETAILS:
+  +--------+---------+----------+--------+--------+----------+
+  | Bundle | Brand   | Cathodes | Gross  | Tare   | Net Wt   |
+  | No.    |         | per Bndl | Wt(kg) | (kg)   | (kg)     |
+  +--------+---------+----------+--------+--------+----------+
+  | 1/4    | Aurubis | 20       | 2,218  |   18   | 2,200    |
+  | 2/4    | Aurubis | 20       | 2,226  |   18   | 2,208    |
+  | 3/4    | Aurubis | 20       | 2,214  |   18   | 2,196    |
+  | 4/4    | Aurubis | 20       | 2,220  |   18   | 2,202    |
+  +--------+---------+----------+--------+--------+----------+
+  TOTALS:   4 bndls   80 caths   8,878     72      8,806 kg
+
+MARKS &amp; NUMBERS:
+  GCT-CU / LOT 0142 / RTM>SIN
+  Bundle 1/4 through 4/4
+  MADE IN GERMANY
+
+DIMENSIONS PER BUNDLE:
+  Length: 1,000 mm  |  Width: 950 mm  |  Height: 400 mm
+  Volume per bundle: ~0.38 CBM
+  Total volume: ~1.52 CBM (cargo only)
+
+CONTAINER DETAILS:
+  Container:    MSCU7234581 (20' General Purpose)
+  Seal:         MSC-1892456
+  Tare Weight:  2,230 kg
+  Max Payload:  21,770 kg
+  VGM:          11,108 kg (cargo 8,878 + container 2,230)
+
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Bill of Lading Types &amp; Functions</div>
+                <table class="doc-field-table">
+                    <thead><tr><th>B/L Type</th><th>Description</th><th>Negotiable?</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Clean B/L</strong></td><td>No clauses noting defects &mdash; goods in "apparent good order and condition"</td><td>Yes</td></tr>
+                        <tr><td><strong>Claused / Foul B/L</strong></td><td>Contains remarks about damage, shortage, or defective packaging</td><td>Yes (but banks may reject under L/C)</td></tr>
+                        <tr><td><strong>Through B/L</strong></td><td>Covers entire journey including transhipment at intermediate ports</td><td>Yes</td></tr>
+                        <tr><td><strong>Sea Waybill</strong></td><td>Non-negotiable receipt; consignee named directly, no endorsement needed</td><td>No</td></tr>
+                        <tr><td><strong>Charter Party B/L</strong></td><td>Issued under a charter party agreement for bulk shipments</td><td>Yes (subject to C/P terms)</td></tr>
+                        <tr><td><strong>Multimodal B/L</strong></td><td>Covers combined transport (sea + rail/road) under one document</td><td>Yes</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 4: WAREHOUSE RECEIPTS -->
+    <!-- ============================================ -->
+    <div class="doc-panel" id="docPanel-warehouse">
+        <div class="card">
+            <div class="card-title">Warehouse Receipts</div>
+
+            <div class="doc-highlight">
+                <strong>Document of Title:</strong> A warehouse receipt is issued by a licensed warehouse operator confirming
+                that specified goods have been received for storage. In commodities markets, warehouse receipts serve
+                as negotiable documents of title &mdash; they can be pledged as collateral for financing, endorsed and
+                transferred for delivery, or presented for physical withdrawal. Exchange-approved receipts (LME warrants,
+                CME EWRs) are standardized and electronically managed.
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title"><span class="doc-badge doc-badge-wr">W/R</span> Warehouse Receipt Types</div>
+                <div class="doc-info-grid">
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F3ED;</div>
+                            <div class="doc-info-name">LME Warrant</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Electronic warehouse receipt in the LMEsword system representing one lot of metal
+                            (e.g., 25 MT copper, 25 MT aluminium) stored in an LME-approved warehouse.
+                            Fully negotiable, can be used for delivery against futures contracts.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Electronic via LMEsword &mdash; no physical document</li>
+                            <li>One warrant per lot; specific brand, weight, location</li>
+                            <li>Live / Cancelled status tracked in real time</li>
+                            <li>Daily rent charged by warehouse operator</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4DC;</div>
+                            <div class="doc-info-name">CME Electronic Warehouse Receipt (EWR)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Electronic receipt system for agricultural commodities (grains, oilseeds) and COMEX
+                            metals (gold, silver, copper). Title transfer occurs within the CME clearing system.
+                            Replaced physical receipts for most delivery-grade commodities.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Covers COMEX gold (100 oz), silver (5,000 oz), copper</li>
+                            <li>Grains: wheat, corn, soybeans at approved elevators</li>
+                            <li>Linked to futures contract delivery process</li>
+                            <li>Tracked via CME's online delivery system</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4C4;</div>
+                            <div class="doc-info-name">Field Warehouse Receipt</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Issued when a third-party warehouse company takes control of goods stored at the
+                            owner's premises (field warehousing). Used in commodity trade finance &mdash; the
+                            collateral management agent (e.g., ACE Global, Cotecna) acts as custodian and
+                            issues receipts acceptable to financing banks.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Goods remain at producer/trader's site</li>
+                            <li>CMA (Collateral Management Agent) controls access</li>
+                            <li>Key tool for pre-export finance in emerging markets</li>
+                            <li>Regular stock audits by independent surveyors</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x26FD;</div>
+                            <div class="doc-info-name">Tank Storage Certificate</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            For crude oil and refined products stored in tank farms (e.g., Vopak, Oiltanking,
+                            Royal Vopak). The terminal operator issues a certificate showing the product type,
+                            API gravity, volume at standard temperature (60&deg;F / 15&deg;C), and the tank number.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Volume corrected to standard temperature</li>
+                            <li>Independent inspector verifies quantity (shore tank gauge)</li>
+                            <li>Commingled or segregated storage specified</li>
+                            <li>Used as collateral for inventory finance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Warehouse Receipt (Physical Metals)</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE WAREHOUSE RECEIPT</span>
+================================================================
+        WAREHOUSE RECEIPT - NEGOTIABLE
+        Steinweg (Rotterdam) B.V.
+        LME Approved Warehouse Operator
+================================================================
+
+Receipt No:         STW-RTM-2026-WR-045821
+Date of Issue:      22-Apr-2026
+Warehouse:          Steinweg Terminal, Waalhaven Zuid
+                    Rotterdam, Netherlands (LME Location: Rotterdam)
+
+DEPOSITOR:
+  Name:             Global Commodities Trading Ltd
+  Address:          1 Canada Square, London E14 5AB, UK
+  Account Ref:      GCT-STW-RTM-001
+
+COMMODITY DETAILS:
+  +----------+-----------+------------------+---------+---------+
+  | Lot No.  | Metal     | Brand            | Weight  | Marks   |
+  +----------+-----------+------------------+---------+---------+
+  | STW-4521 | Copper    | Aurubis Grade A  | 24.92MT | W-78341 |
+  | STW-4522 | Copper    | Aurubis Grade A  | 25.04MT | W-78342 |
+  | STW-4523 | Copper    | Codelco Grade A  | 25.00MT | W-78343 |
+  | STW-4524 | Copper    | Codelco Grade A  | 24.87MT | W-78344 |
+  +----------+-----------+------------------+---------+---------+
+  Total: 99.83 MT (Net Dry Weight)
+
+STORAGE LOCATION:
+  Shed:             Warehouse 7, Bay C
+  Status:           LME Warranted (Warrants issued via LMEsword)
+  Access:           Restricted &mdash; release only against valid warrant cancellation
+
+QUALITY:
+  Grade:            LME Grade A (Cu min 99.95%)
+  Condition:        Good order; no visible damage or contamination
+  Certificate:      SGS-MET-2026-04-7892
+
+CHARGES:
+  Storage Rate:     USD 0.50 per MT per day
+  In-charge Fee:    USD 12.00 per MT (one-time)
+  Out-charge Fee:   USD 12.00 per MT (on withdrawal)
+  Insurance:        Included in storage rate (warehouse legal liability)
+
+TERMS:
+  This receipt is issued subject to the General Conditions
+  of Steinweg (Rotterdam) B.V., a copy of which is available
+  on request. Goods are held at depositor's risk for perils
+  not covered by warehouse operator's liability insurance.
+
+NEGOTIABILITY:
+  This is a NEGOTIABLE warehouse receipt. Transfer of title
+  is effected by endorsement and delivery of this receipt,
+  or by electronic transfer via LMEsword for warranted lots.
+
+Issued By:          H. van der Berg, Warehouse Manager
+                    Steinweg (Rotterdam) B.V.
+
+[Warehouse Stamp &amp; Seal]
+
+================================================================
+        ORIGINAL - WAREHOUSE RECEIPT
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: COMEX Gold Vault Receipt</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE COMEX VAULT RECEIPT</span>
+================================================================
+        COMEX ELECTRONIC WAREHOUSE RECEIPT
+        Brink's Inc. - COMEX Approved Depository
+================================================================
+
+EWR Number:         COMEX-EWR-2026-AU-012456
+Date of Issue:      24-Apr-2026
+Depository:         Brink's Inc., New York
+
+HOLDER:
+  Clearing Member:  Goldman Sachs &amp; Co. LLC
+  Account:          GS-COMEX-AU-PRIMARY
+
+COMMODITY:
+  Metal:            Gold
+  Form:             Bars (100 troy oz nominal)
+  Fineness:         Min 995.0 (COMEX deliverable)
+
+BAR LIST:
+  +-------------+---------------------+---------+----------+---------+
+  | Bar No.     | Refiner             | Gross   | Fineness | Fine Oz |
+  +-------------+---------------------+---------+----------+---------+
+  | AU-2025-781 | PAMP SA             | 100.34  | 999.9    | 100.330 |
+  | AU-2025-782 | PAMP SA             | 100.12  | 999.9    | 100.110 |
+  | AU-2025-783 | Argor-Heraeus       | 100.45  | 999.5    | 100.400 |
+  | AU-2026-044 | Metalor Technologies| 100.22  | 999.9    | 100.210 |
+  | AU-2026-045 | Metalor Technologies| 100.51  | 999.9    | 100.500 |
+  +-------------+---------------------+---------+----------+---------+
+  Total:        5 bars  |  501.64 gross oz  |  501.550 fine troy oz
+
+VAULT LOCATION:     Brink's New York, Vault 3
+STATUS:             LIVE (Deliverable against COMEX GC contract)
+
+DELIVERY TERMS:
+  This EWR represents 5 lots deliverable against COMEX
+  gold futures (GC). Each lot = 100 fine troy ounces.
+  All bars are COMEX-approved brands with fineness of
+  not less than 995.
+
+================================================================</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 5: TRANSPORTATION -->
+    <!-- ============================================ -->
+    <div class="doc-panel" id="docPanel-transport">
+        <div class="card">
+            <div class="card-title">Transportation Documents</div>
+
+            <div class="doc-highlight">
+                <strong>Logistics Chain:</strong> Commodity transportation involves multiple modes (sea, rail, road, pipeline)
+                and requires specific documentation at each stage. For sea freight, the Charter Party agreement
+                governs the terms of vessel hire, while voyage details, loading/discharge rates, and demurrage/despatch
+                calculations are critical cost components. Multimodal shipments require coordinated documentation
+                across carriers.
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title"><span class="doc-badge doc-badge-transport">TRANS</span> Transportation Document Types</div>
+                <div class="doc-info-grid">
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F6A2;</div>
+                            <div class="doc-info-name">Charter Party (C/P)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Contract between shipowner and charterer for the hire of a vessel. Voyage charter (for
+                            specific voyage) or time charter (for a period). Standard forms include GENCON (general cargo),
+                            Asbatankvoy (tankers), and Amwelsh (coal). Specifies freight rate, laytime, demurrage,
+                            loading/discharge ports.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F682;</div>
+                            <div class="doc-info-name">Rail Waybill (CIM/SMGS)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            International rail consignment note. CIM covers European rail; SMGS covers CIS/Russia/Asia routes.
+                            Used for overland transport of metals, coal, grain. Non-negotiable transport document,
+                            but essential for cross-border rail customs clearance.
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F69A;</div>
+                            <div class="doc-info-name">CMR (Road Consignment Note)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            International road freight document under the CMR Convention. Covers truck transport between
+                            countries. Records sender, carrier, consignee, goods description, weight, and delivery
+                            instructions. Three original copies (sender, carrier, consignee).
+                        </div>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x2708;</div>
+                            <div class="doc-info-name">Air Waybill (AWB)</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Used for high-value, time-sensitive commodity shipments (e.g., precious metals, diamonds,
+                            critical spare parts). Non-negotiable. Issued by the airline or freight forwarder. IATA
+                            standard format. Covers airport-to-airport carriage with door delivery as option.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Voyage Charter Party (GENCON Form)</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE CHARTER PARTY</span>
+================================================================
+      VOYAGE CHARTER PARTY
+      Based on GENCON 1994 (as amended)
+================================================================
+
+Fixture Reference:  FIX-2026-VOY-0891
+Date:               20-Apr-2026
+Broker:             Clarkson PLC, London
+
+PART I - PRINCIPAL TERMS:
+
+1.  SHIPOWNER:      Hellenic Bulk Carriers SA
+    Address:        85 Akti Miaouli, Piraeus, Greece
+
+2.  CHARTERER:      Global Commodities Trading Ltd
+    Address:        1 Canada Square, London E14 5AB, UK
+
+3.  VESSEL:         MV Aegean Fortune
+    Flag:           Greece  |  IMO: 9876543
+    Built:          2019, Hyundai Samho, South Korea
+    Type:           Handymax Bulk Carrier
+    DWT:            38,500 MT (summer)
+    LOA:            179.99 m  |  Beam: 30.00 m
+    Draft:          10.2 m (summer)
+    Holds/Hatches:  5 holds / 5 hatches (box-shaped)
+    Grain Capacity: 48,200 CBM
+    Cranes:         4 x 30 MT (deck-mounted)
+    Class:          Lloyd's Register +100A1
+
+4.  CARGO:
+    Description:    Copper Cathodes in bundles
+    Quantity:       25,000 MT (+/- 5% in owner's option)
+    Stowage Factor: ~0.38 CBM/MT
+
+5.  LOADING PORT:   1 safe berth, 1 safe port
+                    Antofagasta, Chile
+
+6.  DISCHARGE PORT: 1 safe berth, 1 safe port
+                    Rotterdam, Netherlands
+
+7.  LAYDAYS:        01-May-2026 to 05-May-2026
+    CANCELLING:     10-May-2026
+
+8.  FREIGHT:
+    Rate:           USD 32.50 per MT (FIOST)
+    Basis:          Intaken quantity (B/L weight)
+    Total (est):    USD 812,500.00
+    Payment:        95% within 3 banking days of signing B/Ls
+                    5% balance within 10 days of discharge
+    Address Comm:   3.75% total (1.25% to each broker side)
+
+9.  LAYTIME:
+    Loading:        5,000 MT per weather working day (PWWD)
+                    SHINC (Sundays &amp; Holidays Included)
+                    NOR tendered ATDNSHINC
+    Discharge:      4,000 MT per weather working day (PWWD)
+                    SHEX (Sundays &amp; Holidays Excluded)
+
+10. DEMURRAGE:      USD 18,500.00 per day / pro rata
+    DESPATCH:       USD  9,250.00 per day (half demurrage)
+                    on all time saved
+
+11. LOADING AGENT:  Agencias Universales SA, Antofagasta
+    DISCH. AGENT:   Hudig &amp; Veder, Rotterdam
+
+================================================================
+      PART II - VOYAGE DETAILS
+================================================================
+
+ESTIMATED VOYAGE SCHEDULE:
+  Loading:          01-May to 06-May-2026 (5 days)
+  Sailing:          06-May-2026
+  Transit:          ~28 days via Cape (no canal transit)
+  ETA Discharge:    03-Jun-2026
+  Discharge:        04-Jun to 10-Jun-2026 (6.25 days)
+
+BUNKER ESTIMATES:
+  IFO 380:          ~420 MT (laden passage)
+  MDO:              ~25 MT (port consumption)
+  Estimated cost:   USD 210,000
+
+LAYTIME CALCULATION (ESTIMATED):
+  +---------------------+-----------+---------+----------+
+  | Activity            | Rate      | Qty(MT) | Time     |
+  +---------------------+-----------+---------+----------+
+  | Loading             | 5,000/day | 25,000  | 5.00 days|
+  | Discharge           | 4,000/day | 25,000  | 6.25 days|
+  +---------------------+-----------+---------+----------+
+  Total laytime allowed:                        11.25 days
+  Estimated actual time:                        11.25 days
+  Demurrage/Despatch:                           NIL (est)
+
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: CMR Road Consignment Note</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE CMR CONSIGNMENT NOTE</span>
+================================================================
+        CMR INTERNATIONAL CONSIGNMENT NOTE
+        (Convention on the Contract for the International
+         Carriage of Goods by Road)
+================================================================
+
+CMR No:             CMR-2026-RTM-ANT-4521
+Date:               24-Apr-2026
+
+1. SENDER (Shipper):
+   Global Commodities Trading Ltd
+   1 Canada Square, London E14 5AB, UK
+
+2. CONSIGNEE:
+   Steinweg (Rotterdam) B.V.
+   Waalhaven Zuid 14, 3089 JH Rotterdam, NL
+
+3. PLACE OF DELIVERY:
+   Steinweg Terminal, Waalhaven Zuid
+   Rotterdam, Netherlands
+
+4. PLACE &amp; DATE OF TAKING OVER:
+   Aurubis AG Works, Hamburg, Germany
+   24-Apr-2026, 06:00 hrs
+
+5. CARRIER:
+   TransEuropean Logistics GmbH
+   Hamburg, Germany
+   Vehicle: HH-TL 4521 / Trailer: HH-TL 8901
+   Driver: K. Muller, Licence: DE-B12345678
+
+6. GOODS:
+   Description:     Copper Cathodes, bundled
+   Marks:           GCT-CU / LOT 0142
+   No. of packages: 4 bundles
+   Gross Weight:    8,878 kg
+   Volume:          6.2 CBM
+   HS Code:         7403.11.00
+
+7. FREIGHT CHARGES:
+   Prepaid by sender
+   Amount: EUR 1,850.00
+
+8. INSTRUCTIONS:
+   - Handle with care; avoid moisture exposure
+   - Deliver to Warehouse 7, Bay C
+   - Contact: H. van der Berg +31 10 123 4567
+
+9. SENDER'S SIGNATURE:     [Signed]
+   CARRIER'S SIGNATURE:    [Signed]
+
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Demurrage &amp; Despatch Concepts</div>
+                <table class="doc-field-table">
+                    <thead><tr><th>Term</th><th>Definition</th><th>Typical Rate</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Laytime</strong></td><td>Agreed time allowed for loading/discharging cargo</td><td>Measured in running days or weather working days</td></tr>
+                        <tr><td><strong>Demurrage</strong></td><td>Liquidated damages payable by charterer for exceeding laytime</td><td>USD 15,000-25,000/day (Handymax)</td></tr>
+                        <tr><td><strong>Despatch</strong></td><td>Reward from owner to charterer for completing under laytime</td><td>Usually 50% of demurrage rate</td></tr>
+                        <tr><td><strong>NOR</strong></td><td>Notice of Readiness &mdash; formal notice that vessel is ready to load/discharge</td><td>Triggers laytime commencement</td></tr>
+                        <tr><td><strong>PWWD</strong></td><td>Per Weather Working Day &mdash; bad weather days excluded from laytime</td><td>Standard for dry bulk</td></tr>
+                        <tr><td><strong>SHINC/SHEX</strong></td><td>Sundays &amp; Holidays Included / Excluded from laytime count</td><td>Negotiable per fixture</td></tr>
+                        <tr><td><strong>FIOST</strong></td><td>Free In &amp; Out, Stowed &amp; Trimmed &mdash; loading/discharge costs for charterer</td><td>Reduces freight rate</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 6: INSURANCE -->
+    <!-- ============================================ -->
+    <div class="doc-panel" id="docPanel-insurance">
+        <div class="card">
+            <div class="card-title">Commodity Insurance</div>
+
+            <div class="doc-highlight">
+                <strong>Risk Transfer:</strong> Marine cargo insurance protects the owner of goods against physical loss or
+                damage during transit. Under CIF or CIP Incoterms, the seller is obligated to procure insurance for
+                the buyer. The Institute Cargo Clauses (ICC) &mdash; A, B, or C &mdash; define the scope of cover. ICC(A)
+                provides "all risks" cover and is standard for high-value commodities. War Risks and Strikes cover
+                are typically added separately.
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title"><span class="doc-badge doc-badge-insurance">INS</span> Insurance Types in Commodity Trade</div>
+                <div class="doc-info-grid">
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F6A2;</div>
+                            <div class="doc-info-name">Marine Cargo Insurance</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Covers goods in transit by sea, and often includes inland legs (warehouse-to-warehouse).
+                            Typically insured at 110% of CIF value (industry standard, required by most L/Cs).
+                            Governed by Institute Cargo Clauses issued by the International Underwriting Association.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>ICC(A): All risks &mdash; broadest cover, excludes only named exclusions</li>
+                            <li>ICC(B): Named perils &mdash; fire, explosion, stranding, collision, earthquake, volcanic eruption</li>
+                            <li>ICC(C): Minimal &mdash; major casualties only (fire, sinking, collision)</li>
+                            <li>War Risks &amp; SRCC (Strikes, Riots, Civil Commotion) added separately</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F3ED;</div>
+                            <div class="doc-info-name">Stock Throughput Insurance</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Comprehensive policy covering commodities through the entire supply chain: in storage,
+                            in transit, and at all intermediate points. Eliminates gaps between warehouse and transit
+                            policies. Preferred by large commodity traders and banks providing inventory finance.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Seamless cover from origin to final destination</li>
+                            <li>Includes warehouse storage, loading, transit, discharge</li>
+                            <li>Valued at market price or replacement cost</li>
+                            <li>Common for base metals, precious metals, soft commodities</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F4B0;</div>
+                            <div class="doc-info-name">P&amp;I Insurance</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Protection &amp; Indemnity insurance covers the shipowner's third-party liabilities:
+                            cargo damage claims, pollution, wreck removal, crew injury. Provided by P&amp;I Clubs
+                            (mutual associations). Not directly purchased by cargo owners, but essential for vessel
+                            chartering due diligence.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>International Group of P&amp;I Clubs (13 clubs)</li>
+                            <li>Covers ~90% of world's ocean-going tonnage</li>
+                            <li>Charterers should verify vessel's P&amp;I club membership</li>
+                            <li>Blue Card required for oil tankers (CLC Convention)</li>
+                        </ul>
+                    </div>
+                    <div class="doc-info-card">
+                        <div class="doc-info-header">
+                            <div class="doc-info-icon">&#x1F525;</div>
+                            <div class="doc-info-name">Warehouse Legal Liability</div>
+                        </div>
+                        <div class="doc-info-desc">
+                            Insurance held by the warehouse operator covering their legal liability for loss or
+                            damage to stored goods caused by the operator's negligence. Does NOT cover all risks &mdash;
+                            depositors typically need their own stock insurance for comprehensive protection.
+                        </div>
+                        <ul class="doc-checklist">
+                            <li>Covers operator negligence only (not Acts of God)</li>
+                            <li>Limits may be per-incident and aggregate</li>
+                            <li>LME warehouses must maintain minimum cover</li>
+                            <li>Depositor should carry own "all risks" stock policy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Sample: Marine Cargo Insurance Certificate</div>
+                <div class="doc-sample">
+<span class="doc-sample-label">SAMPLE INSURANCE CERTIFICATE</span>
+================================================================
+     MARINE CARGO INSURANCE CERTIFICATE
+     Lloyd's of London
+================================================================
+
+Certificate No:     LLO-MC-2026-04-78234
+Date of Issue:      25-Apr-2026
+Policy Ref:         OPEN-GCT-2026-MC-001 (Open Cover)
+
+ASSURED:
+  Global Commodities Trading Ltd
+  1 Canada Square, Canary Wharf
+  London E14 5AB, United Kingdom
+
+LOSS PAYEE:
+  Standard Chartered Bank, Singapore
+  (As per L/C No: SCBS-LC-2026-04-1892)
+
+COMMODITY:
+  Copper Cathodes, electrolytic, Grade A (LME Registered)
+  Brand: Aurubis, Origin: Germany
+  Packed in bundles of 20 cathodes each
+
+QUANTITY:           8.806 MT (Net) in 4 bundles
+CONTAINER:          MSCU7234581 / 20' GP
+
+CONVEYANCE:
+  Vessel:           MSC Lorena / Voyage 2026-AE14
+  From:             Rotterdam, Netherlands
+  To:               Singapore
+  Via:              Direct (Suez Canal)
+  Sailing:          25-Apr-2026 (approx.)
+
+INSURED VALUE:
+  CIF Value:        USD  86,652.33
+  Insured at:       110% of CIF Value
+  Sum Insured:      USD  95,317.56
+
+CONDITIONS OF INSURANCE:
+  Institute Cargo Clauses (A) 01/01/2009
+  Institute War Clauses (Cargo) 01/01/2009
+  Institute Strikes Clauses (Cargo) 01/01/2009
+  Institute Classification Clause 01/01/2001
+
+DEDUCTIBLE:         NIL (as per Open Cover terms)
+
+ADDITIONAL CLAUSES:
+  - Warehouse to Warehouse cover
+  - Including loading, transhipment, and discharge
+  - Including 60 days storage at destination
+  - Rust, oxidation, and discolouration covered
+  - Pair and set clause included
+  - Duty, increased value, and freight included
+
+EXCLUSIONS (STANDARD):
+  - Delay, inherent vice, ordinary wear and tear
+  - Willful misconduct of the Assured
+  - Insufficiency of packing (unless packed by carrier)
+  - Nuclear, chemical, biological terrorism (NMA 2962/2626)
+  - Sanctions limitation clause (LMA 3100)
+
+CLAIMS:
+  In the event of loss or damage which may result in a
+  claim under this insurance, immediate notice should be
+  given to:
+
+  Claims Agent:     Crawford &amp; Company (Singapore) Pte Ltd
+  Address:          80 Robinson Road, #10-01, Singapore
+  Tel:              +65 6223 8118
+  Email:            claims.singapore@crawco.com
+
+  Survey to be arranged IMMEDIATELY upon discovery of
+  loss or damage. Do not dispose of damaged goods without
+  surveyor's approval.
+
+UNDERWRITERS:
+  Lead:             Syndicate 2623 (Beazley) - 40%
+  Follow:           Syndicate 0510 (Tokio Marine Kiln) - 30%
+  Follow:           Syndicate 4444 (Canopius) - 30%
+
+  Signed for and on behalf of the Underwriters:
+
+  [Lloyd's Seal]
+  J.M. Worthington, Coverholder
+  GCT Insurance Broking Services
+
+================================================================
+     THIS CERTIFICATE IS EVIDENCE OF INSURANCE
+     SUBJECT TO THE TERMS OF THE OPEN COVER POLICY
+================================================================</div>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Institute Cargo Clauses Comparison</div>
+                <table class="doc-field-table">
+                    <thead><tr><th>Peril</th><th>ICC(A) All Risks</th><th>ICC(B) Named Perils</th><th>ICC(C) Minimal</th></tr></thead>
+                    <tbody>
+                        <tr><td>Fire, explosion</td><td>Covered</td><td>Covered</td><td>Covered</td></tr>
+                        <tr><td>Vessel sinking, stranding</td><td>Covered</td><td>Covered</td><td>Covered</td></tr>
+                        <tr><td>Collision, overturning</td><td>Covered</td><td>Covered</td><td>Covered</td></tr>
+                        <tr><td>General average sacrifice</td><td>Covered</td><td>Covered</td><td>Covered</td></tr>
+                        <tr><td>Jettison</td><td>Covered</td><td>Covered</td><td>Covered</td></tr>
+                        <tr><td>Earthquake, volcanic eruption</td><td>Covered</td><td>Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Lightning</td><td>Covered</td><td>Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Washing overboard</td><td>Covered</td><td>Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Entry of sea water</td><td>Covered</td><td>Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Theft, pilferage</td><td>Covered</td><td>Not Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Shortage, non-delivery</td><td>Covered</td><td>Not Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Fresh/rain water damage</td><td>Covered</td><td>Not Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Sweat damage</td><td>Covered</td><td>Not Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Hook/handling damage</td><td>Covered</td><td>Not Covered</td><td>Not Covered</td></tr>
+                        <tr><td>Contamination</td><td>Covered</td><td>Not Covered</td><td>Not Covered</td></tr>
+                        <tr><td>War risks</td><td>Separate clause</td><td>Separate clause</td><td>Separate clause</td></tr>
+                        <tr><td>Strikes, riots</td><td>Separate clause</td><td>Separate clause</td><td>Separate clause</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="doc-section">
+                <div class="doc-section-title">Key Insurance Concepts</div>
+                <table class="doc-field-table">
+                    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Open Cover</strong></td><td>Standing policy that automatically covers all shipments declared by the assured. Avoids need to insure each shipment individually. Most commodity traders use open covers.</td></tr>
+                        <tr><td><strong>110% CIF</strong></td><td>Standard insured value = 110% of CIF value. The extra 10% covers anticipated profit, duty, and incidental costs. Required by UCP 600 (L/C rules).</td></tr>
+                        <tr><td><strong>General Average</strong></td><td>Maritime law principle where all cargo interests share losses from voluntary sacrifices made to save the vessel (e.g., jettison). Without insurance, cargo owners must contribute.</td></tr>
+                        <tr><td><strong>Subrogation</strong></td><td>After paying a claim, the insurer takes over the assured's right to recover from the responsible third party (e.g., carrier, warehouse).</td></tr>
+                        <tr><td><strong>Utmost Good Faith</strong></td><td>Both insurer and assured must disclose all material facts. Non-disclosure can void the policy.</td></tr>
+                        <tr><td><strong>Proximate Cause</strong></td><td>The dominant or effective cause of the loss. Determines whether the peril is covered under the policy.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- End of Document Management View -->
+    <div class="card" style="margin-top:20px;">
+        <div class="card-title">Document Management &mdash; Integration with Trade Lifecycle</div>
+        <div class="doc-highlight">
+            <strong>How Documents Fit Into the Lifecycle:</strong> In a physical commodity trade, documents flow in parallel
+            with the trade lifecycle stages. At <strong>Stage 1 (Capture)</strong>, the contract specifies which documents
+            are required. At <strong>Stage 2 (Validation)</strong>, operations verify document requirements against the trade
+            terms and Incoterms. At <strong>Stage 3 (Confirmation)</strong>, the confirmation message references the
+            document set. At <strong>Stage 4 (Settlement)</strong>, payment is typically triggered by presentation of
+            compliant documents (documents against payment, or under a Letter of Credit). At <strong>Stage 5
+            (Reconciliation)</strong>, document receipt is reconciled against the expected set.
+        </div>
+        <div class="doc-flow">
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Contract</div>
+                <div class="doc-flow-label">Incoterms</div>
+                <div class="doc-flow-desc">CIF, FOB, CFR, etc. determine who arranges transport &amp; insurance</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Pre-Shipment</div>
+                <div class="doc-flow-label">Inspection</div>
+                <div class="doc-flow-desc">Quality, weight, origin certificates obtained before loading</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Loading</div>
+                <div class="doc-flow-label">B/L Issued</div>
+                <div class="doc-flow-desc">Clean on-board B/L issued by carrier; TT instruction prepared</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">In Transit</div>
+                <div class="doc-flow-label">Doc Courier</div>
+                <div class="doc-flow-desc">Original documents couriered to buyer's bank or direct</div>
+            </div>
+            <div class="doc-flow-step">
+                <div class="doc-flow-num">Arrival</div>
+                <div class="doc-flow-label">Doc Release</div>
+                <div class="doc-flow-desc">Bank releases originals against payment; cargo claimed</div>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+
+
+// ============================================================
+// SECTION 39: STRUCTURED INVENTORY PROGRAM (SIP)
+// ============================================================
+
+function sipGenerateInventoryBook() {
+    const items = [
+        { id: 'INV-AU-001', commodity: 'Au', qty: 20000, unit: 'troy oz', location: 'LBMA London \u2014 Brinks', status: 'FREE', titleDoc: 'WR-LDN-88431', valDate: dateStr(new Date()), grade: '995.0+ Fine', insurance: 'Lloyds Syndicate' },
+        { id: 'INV-AU-002', commodity: 'Au', qty: 12000, unit: 'troy oz', location: 'LBMA London \u2014 Malca-Amit', status: 'PLEDGED', titleDoc: 'WR-LDN-88502', valDate: dateStr(new Date()), grade: '999.9 Fine', insurance: 'AIG Cargo', pledgedTo: 'REPO \u2014 HSBC', ltvCurrent: 0.82 },
+        { id: 'INV-AG-001', commodity: 'Ag', qty: 500000, unit: 'troy oz', location: 'LBMA London \u2014 Loomis', status: 'PLEDGED', titleDoc: 'WR-LDN-77210', valDate: dateStr(new Date()), grade: '999.0+ Fine', insurance: 'Zurich', pledgedTo: 'WH Finance \u2014 JPM', ltvCurrent: 0.71 },
+        { id: 'INV-CU-001', commodity: 'Cu', qty: 500, unit: 'MT', location: 'LME \u2014 Steinweg Rotterdam', status: 'FREE', titleDoc: 'LME-WR-44021', valDate: dateStr(new Date()), grade: 'Grade A Cathode', insurance: 'Swiss Re' },
+        { id: 'INV-CU-002', commodity: 'Cu', qty: 250, unit: 'MT', location: 'LME \u2014 ISTIM Vlissingen', status: 'PLEDGED', titleDoc: 'LME-WR-44055', valDate: dateStr(new Date()), grade: 'Grade A Cathode', insurance: 'Lloyds', pledgedTo: 'Cash-Carry \u2014 Citi', ltvCurrent: 0.91 },
+        { id: 'INV-NI-001', commodity: 'Ni', qty: 120, unit: 'MT', location: 'LME \u2014 C. Steinweg Johor', status: 'IN_TRANSIT', titleDoc: 'BL-MY-9921', valDate: dateStr(new Date()), grade: 'Full Plate Cathode', insurance: 'Tokio Marine' },
+        { id: 'INV-AL-001', commodity: 'Al', qty: 2000, unit: 'MT', location: 'LME \u2014 Pacorini Vlissingen', status: 'FREE', titleDoc: 'LME-WR-55100', valDate: dateStr(new Date()), grade: 'P1020A', insurance: 'Allianz' },
+        { id: 'INV-PT-001', commodity: 'Pt', qty: 500, unit: 'troy oz', location: 'LPPM Zurich \u2014 UBS Vault', status: 'FREE', titleDoc: 'WR-ZRH-10022', valDate: dateStr(new Date()), grade: '999.5+ Fine', insurance: 'Chubb' }
+    ];
+    items.forEach(item => {
+        const spot = getMarketPrice(item.commodity);
+        item.spotPrice = spot;
+        item.marketValue = item.qty * spot;
+        if (item.status === 'PLEDGED' && item.ltvCurrent) {
+            item.loanAmount = item.marketValue * item.ltvCurrent;
+            item.headroom = item.marketValue - item.loanAmount;
+        }
+    });
+    return items;
+}
+
+function sipCalculateWaterfall(structure, inventoryValue) {
+    const s = SIP_STRUCTURES[structure];
+    if (!s) return [];
+    const ex = s.example;
+    const loanAmt = inventoryValue * ex.loanPct;
+    const interest = loanAmt * ex.rate * (ex.tenor / 365);
+    const storageCost = inventoryValue * 0.003 * (ex.tenor / 365);
+    const insuranceCost = inventoryValue * 0.001 * (ex.tenor / 365);
+    const mgmtFee = loanAmt * 0.005;
+    const totalCost = interest + storageCost + insuranceCost + mgmtFee;
+    return [
+        { label: 'Inventory Market Value', amount: inventoryValue, type: 'asset' },
+        { label: 'Advance Rate', amount: ex.loanPct, type: 'pct' },
+        { label: 'Loan / Financing Amount', amount: loanAmt, type: 'loan' },
+        { label: 'Interest (' + (ex.rate * 100).toFixed(1) + '% x ' + ex.tenor + ' days)', amount: -interest, type: 'cost' },
+        { label: 'Storage / Warehouse Rent', amount: -storageCost, type: 'cost' },
+        { label: 'Insurance Premium', amount: -insuranceCost, type: 'cost' },
+        { label: 'Arrangement / Management Fee', amount: -mgmtFee, type: 'cost' },
+        { label: 'Total Financing Cost', amount: -totalCost, type: 'subtotal' },
+        { label: 'Net Proceeds to Borrower', amount: loanAmt - totalCost, type: 'total' },
+        { label: 'Effective All-In Cost (annualised)', amount: (totalCost / loanAmt) / (ex.tenor / 365), type: 'annpct' }
+    ];
+}
+
+function renderStructuredInventoryView() {
+    const main = document.getElementById('mainContent');
+    const inventory = sipGenerateInventoryBook();
+    const totalValue = inventory.reduce((s, i) => s + i.marketValue, 0);
+    const pledgedValue = inventory.filter(i => i.status === 'PLEDGED').reduce((s, i) => s + i.marketValue, 0);
+    const freeValue = inventory.filter(i => i.status === 'FREE').reduce((s, i) => s + i.marketValue, 0);
+    const transitValue = inventory.filter(i => i.status === 'IN_TRANSIT').reduce((s, i) => s + i.marketValue, 0);
+    const totalLoan = inventory.filter(i => i.loanAmount).reduce((s, i) => s + i.loanAmount, 0);
+    const avgLTV = totalLoan > 0 && pledgedValue > 0 ? totalLoan / pledgedValue : 0;
+    const commodityCount = new Set(inventory.map(i => i.commodity)).size;
+
+    let html = '';
+
+    html += `<div class="sip-hero">
+        <div class="sip-hero-title">${tip('SIP')} \u2014 Structured Inventory Program</div>
+        <div class="sip-hero-sub">
+            Inventory-backed structured products convert physical commodity holdings into flexible financing instruments.
+            This module models the full lifecycle: inventory pledge, collateral management, ${tip('Cash Waterfall')} mechanics,
+            ${tip('LTV')} monitoring, and risk controls across six core financing structures.
+        </div>
+        <div class="sip-kpi-row">
+            <div class="sip-kpi"><div class="sip-kpi-val">${formatUSD(totalValue)}</div><div class="sip-kpi-label">Total Inventory Value</div></div>
+            <div class="sip-kpi"><div class="sip-kpi-val">${formatUSD(pledgedValue)}</div><div class="sip-kpi-label">Pledged / Financed</div></div>
+            <div class="sip-kpi"><div class="sip-kpi-val">${formatUSD(freeValue)}</div><div class="sip-kpi-label">Free / Unpledged</div></div>
+            <div class="sip-kpi"><div class="sip-kpi-val">${(avgLTV * 100).toFixed(1)}%</div><div class="sip-kpi-label">Avg ${tip('LTV')} (Pledged)</div></div>
+            <div class="sip-kpi"><div class="sip-kpi-val">${commodityCount}</div><div class="sip-kpi-label">Commodities</div></div>
+            <div class="sip-kpi"><div class="sip-kpi-val">${inventory.length}</div><div class="sip-kpi-label">Inventory Lots</div></div>
+        </div>
+    </div>`;
+
+    html += `<div class="card sip-section">
+        <div class="sip-section-title">\uD83D\uDD04 How Inventory-Backed Structured Products Work</div>
+        <p style="font-size:0.8rem; line-height:1.6; margin-bottom:14px; color:var(--text-secondary);">
+            A ${tip('SIP')} enables commodity holders (miners, traders, refiners) to unlock liquidity from physical inventory
+            without selling it. The physical stock serves as ${tip('Title Document')}-backed collateral, monitored by a
+            ${tip('Collateral Manager')}, and financed at rates reflecting the commodity's liquidity and storage characteristics.
+        </p>
+        <div class="sip-flow">
+            <div class="sip-flow-step"><div class="sip-flow-num">Step 1</div><div class="sip-flow-label">Inventory Deposit</div><div class="sip-flow-desc">Physical commodity deposited in approved warehouse; receipt / warrant issued</div></div>
+            <div class="sip-flow-step"><div class="sip-flow-num">Step 2</div><div class="sip-flow-label">Valuation &amp; Pledge</div><div class="sip-flow-desc">${tip('Collateral Manager')} verifies stock; ${tip('Borrowing Base')} calculated; title pledged to lender</div></div>
+            <div class="sip-flow-step"><div class="sip-flow-num">Step 3</div><div class="sip-flow-label">Financing</div><div class="sip-flow-desc">Lender advances funds (${tip('Advance Rate')} x inventory value); ${tip('Haircut')} retained as buffer</div></div>
+            <div class="sip-flow-step"><div class="sip-flow-num">Step 4</div><div class="sip-flow-label">Monitoring</div><div class="sip-flow-desc">Daily ${tip('MTM')}; ${tip('LTV')} tracking; ${tip('Margin Call SIP')} if collateral value drops below threshold</div></div>
+            <div class="sip-flow-step"><div class="sip-flow-num">Step 5</div><div class="sip-flow-label">Repayment &amp; Release</div><div class="sip-flow-desc">Loan repaid from sale proceeds; pledge released; warehouse receipt returned to owner</div></div>
+        </div>
+    </div>`;
+
+    html += `<div class="card sip-section">
+        <div class="sip-section-title">\uD83C\uDFE6 Financing Structures \u2014 Click to Explore</div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">
+            Six core structures for inventory-backed financing. Click any card to see the full lifecycle flow,
+            ${tip('Cash Waterfall')}, worked example, and risk analysis.
+        </p>
+        <div class="sip-structure-grid" id="sipStructureGrid">`;
+
+    Object.entries(SIP_STRUCTURES).forEach(([key, s]) => {
+        html += `<div class="sip-struct-card" id="sipCard_${key}" onclick="sipExpandStructure('${key}')">
+            <div class="sip-struct-header">
+                <span class="sip-struct-icon">${s.icon}</span>
+                <div>
+                    <div class="sip-struct-name">${s.name}</div>
+                    <span class="sip-struct-type sip-type-${s.type}">${s.type === 'repo' ? tip('Repo') : s.type === 'prepay' ? tip('Prepay') : s.type === 'whfin' ? tip('Warehouse Finance') : s.type === 'carry' ? tip('Cash-and-Carry') : s.type === 'tolling' ? tip('Tolling') : tip('Inventory Monetization')}</span>
+                </div>
+            </div>
+            <div class="sip-struct-desc">${s.description}</div>
+            <div class="sip-struct-params">
+                <div class="sip-param"><span class="sip-param-key">${tip('Advance Rate')}</span><span class="sip-param-val">${s.typicalParams.advanceRate}</span></div>
+                <div class="sip-param"><span class="sip-param-key">Tenor</span><span class="sip-param-val">${s.typicalParams.tenor}</span></div>
+                <div class="sip-param"><span class="sip-param-key">Rate</span><span class="sip-param-val">${s.typicalParams.rate}</span></div>
+                <div class="sip-param"><span class="sip-param-key">Min Size</span><span class="sip-param-val">${s.typicalParams.minSize}</span></div>
+            </div>
+        </div>`;
+    });
+
+    html += `</div><div id="sipDetailPanel"></div></div>`;
+
+    html += `<div class="card sip-section">
+        <div class="sip-section-title">\uD83D\uDCCB Inventory Register \u2014 Collateral Book</div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
+            Real-time inventory register showing all physical holdings, pledge status, ${tip('LTV')} ratios, and ${tip('Title Document')} references.
+            <span class="sip-collateral-badge sip-free">${SIP_INVENTORY_STATUSES.FREE.label}</span>
+            <span class="sip-collateral-badge sip-pledge">${SIP_INVENTORY_STATUSES.PLEDGED.label}</span>
+            <span class="sip-collateral-badge sip-transit">${SIP_INVENTORY_STATUSES.IN_TRANSIT.label}</span>
+        </p>
+        <div style="overflow-x:auto;">
+        <table class="sip-inv-table">
+            <thead><tr><th>Lot ID</th><th>Commodity</th><th>Quantity</th><th>Location</th><th>Grade</th><th>Spot Price</th><th>Market Value</th><th>Status</th><th>Pledged To</th><th>${tip('LTV')}</th><th>Title Doc</th><th>Insurance</th></tr></thead><tbody>`;
+
+    inventory.forEach(inv => {
+        const com = COMMODITIES[inv.commodity];
+        const statusInfo = SIP_INVENTORY_STATUSES[inv.status];
+        const ltvPct = inv.ltvCurrent ? (inv.ltvCurrent * 100).toFixed(1) + '%' : '\u2014';
+        const ltvColor = inv.ltvCurrent > 0.85 ? '#c53030' : inv.ltvCurrent > 0.75 ? '#b7791f' : '#276749';
+        html += `<tr>
+            <td style="font-weight:600; font-family:monospace;">${inv.id}</td>
+            <td><strong>${com.name}</strong> (${inv.commodity})</td>
+            <td style="text-align:right; font-weight:600;">${inv.qty.toLocaleString()} ${inv.unit}</td>
+            <td style="font-size:0.7rem;">${inv.location}</td>
+            <td style="font-size:0.7rem;">${inv.grade}</td>
+            <td style="text-align:right;">${formatUSD(inv.spotPrice)}</td>
+            <td style="text-align:right; font-weight:700;">${formatUSD(inv.marketValue)}</td>
+            <td><span class="sip-collateral-badge ${statusInfo.cssClass}">${statusInfo.label}</span></td>
+            <td style="font-size:0.7rem;">${inv.pledgedTo || '\u2014'}</td>
+            <td style="text-align:center; font-weight:700; color:${ltvColor};">${ltvPct}</td>
+            <td style="font-family:monospace; font-size:0.7rem;">${inv.titleDoc}</td>
+            <td style="font-size:0.7rem;">${inv.insurance}</td>
+        </tr>`;
+    });
+
+    html += `</tbody></table></div>
+        <div style="margin-top:12px; display:flex; gap:16px; flex-wrap:wrap; font-size:0.78rem;">
+            <div><strong>Total Inventory:</strong> ${formatUSD(totalValue)}</div>
+            <div><strong>Pledged:</strong> <span style="color:#c53030;">${formatUSD(pledgedValue)}</span> (${(pledgedValue/totalValue*100).toFixed(1)}%)</div>
+            <div><strong>Free:</strong> <span style="color:#276749;">${formatUSD(freeValue)}</span> (${(freeValue/totalValue*100).toFixed(1)}%)</div>
+            <div><strong>In Transit:</strong> <span style="color:#b7791f;">${formatUSD(transitValue)}</span></div>
+            <div><strong>Outstanding Loans:</strong> ${formatUSD(totalLoan)}</div>
+            <div><strong>Net Equity (Free + Headroom):</strong> ${formatUSD(freeValue + (pledgedValue - totalLoan))}</div>
+        </div></div>`;
+
+    html += `<div class="card sip-section">
+        <div class="sip-section-title">\u26A0\uFE0F Risk Controls &amp; ${tip('LTV')} Monitoring</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div>
+                <h4 style="font-size:0.82rem; margin-bottom:8px;">Margin Call Trigger Levels</h4>
+                <table class="sip-inv-table">
+                    <thead><tr><th>Level</th><th>${tip('LTV')} Threshold</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <tr><td style="color:#276749; font-weight:600;">Green</td><td>\u2264 75%</td><td>Normal \u2014 no action required</td></tr>
+                        <tr><td style="color:#b7791f; font-weight:600;">Amber</td><td>75% \u2013 85%</td><td>Warning notice; 48hr cure period</td></tr>
+                        <tr><td style="color:#c53030; font-weight:600;">Red</td><td>&gt; 85%</td><td>${tip('Margin Call SIP')} \u2014 top-up within 24hrs or forced liquidation</td></tr>
+                        <tr><td style="color:#9b2c2c; font-weight:600;">Breach</td><td>&gt; 95%</td><td>Automatic liquidation of pledged inventory at market</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h4 style="font-size:0.82rem; margin-bottom:8px;">Current Portfolio LTV</h4>`;
+
+    inventory.filter(i => i.status === 'PLEDGED').forEach(inv => {
+        const ltvPct = (inv.ltvCurrent * 100);
+        const fillColor = ltvPct > 85 ? '#c53030' : ltvPct > 75 ? '#ecc94b' : '#48bb78';
+        html += `<div style="margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                <span><strong>${inv.id}</strong> (${COMMODITIES[inv.commodity].name})</span>
+                <span style="font-weight:700; color:${fillColor};">${ltvPct.toFixed(1)}%</span>
+            </div>
+            <div class="sip-risk-meter"><div class="sip-risk-fill" style="width:${Math.min(100, ltvPct)}%; background:${fillColor};"></div></div>
+            <div style="font-size:0.68rem; color:var(--text-muted);">Pledged to: ${inv.pledgedTo} | Headroom: ${formatUSD(inv.headroom)}</div>
+        </div>`;
+    });
+
+    html += `<div style="margin-top:14px; padding:10px; background:#fffff0; border:1px solid #ecc94b; border-radius:var(--radius); font-size:0.75rem;">
+                    <strong>Concentration Limits:</strong> No single commodity &gt; 40% of pledged book. No single warehouse location &gt; 30%. Minimum 3 counterparties for financing facilities.
+                </div></div></div></div>`;
+
+    html += `<div class="card sip-section">
+        <div class="sip-section-title">\uD83D\uDD04 SIP Lifecycle Simulation</div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">
+            Simulate an inventory-backed financing deal from origination to maturity. Select a structure and commodity to see the full lifecycle with ${tip('Cash Waterfall')} and P&amp;L.
+        </p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:end; margin-bottom:14px;">
+            <div class="form-group" style="margin:0;"><label style="font-size:0.75rem;">Structure</label>
+                <select id="sipSimStructure" style="font-size:0.82rem; padding:6px 10px;" onchange="sipRunSimulation()">${Object.entries(SIP_STRUCTURES).map(([k, s]) => '<option value="' + k + '">' + s.name + '</option>').join('')}</select></div>
+            <div class="form-group" style="margin:0;"><label style="font-size:0.75rem;">Commodity</label>
+                <select id="sipSimCommodity" style="font-size:0.82rem; padding:6px 10px;" onchange="sipRunSimulation()">${Object.keys(COMMODITIES).map(k => '<option value="' + k + '">' + COMMODITIES[k].name + ' (' + k + ')</option>').join('')}</select></div>
+            <div class="form-group" style="margin:0;"><label style="font-size:0.75rem;">Quantity</label>
+                <input type="number" id="sipSimQty" value="100" min="1" style="font-size:0.82rem; padding:6px 10px; width:100px;" onchange="sipRunSimulation()" oninput="sipRunSimulation()"></div>
+            <button class="btn btn-primary" onclick="sipRunSimulation()" style="padding:6px 16px; font-size:0.82rem;">Run Simulation</button>
+        </div>
+        <div id="sipSimResults"></div></div>`;
+
+    main.innerHTML = html;
+    sipRunSimulation();
+}
+
+function sipExpandStructure(key) {
+    const s = SIP_STRUCTURES[key];
+    if (!s) return;
+    const panel = document.getElementById('sipDetailPanel');
+    document.querySelectorAll('.sip-struct-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('sipCard_' + key)?.classList.add('active');
+
+    const ex = s.example;
+    const com = COMMODITIES[ex.commodity];
+    const spot = getMarketPrice(ex.commodity);
+    const invValue = ex.qty * spot;
+    const waterfall = sipCalculateWaterfall(key, invValue);
+
+    let html = `<div class="sip-detail-panel">
+        <div class="sip-detail-title">${s.icon} ${s.name} \u2014 Detailed View</div>
+        <h4 style="font-size:0.82rem; margin:12px 0 8px; color:var(--primary);">Lifecycle Flow</h4>
+        <div class="sip-flow">`;
+    s.howItWorks.forEach((step, i) => {
+        html += `<div class="sip-flow-step"><div class="sip-flow-num">Step ${i + 1}</div><div class="sip-flow-label">${step.step}</div><div class="sip-flow-desc">${step.desc}</div></div>`;
+    });
+    html += `</div>
+        <h4 style="font-size:0.82rem; margin:16px 0 8px; color:var(--primary);">Worked Example \u2014 ${com.name} (${ex.commodity})</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+            <div><table class="sip-inv-table"><tbody>
+                <tr><td class="sip-param-key">Commodity</td><td style="font-weight:700;">${com.name} (${ex.commodity})</td></tr>
+                <tr><td class="sip-param-key">Quantity</td><td style="font-weight:700;">${ex.qty.toLocaleString()} ${ex.unit}</td></tr>
+                <tr><td class="sip-param-key">Spot Price</td><td style="font-weight:700;">${formatUSD(spot)}/${com.unit}</td></tr>
+                <tr><td class="sip-param-key">Inventory Value</td><td style="font-weight:700; color:var(--primary);">${formatUSD(invValue)}</td></tr>
+                <tr><td class="sip-param-key">${tip('Advance Rate')}</td><td style="font-weight:700;">${(ex.loanPct * 100).toFixed(0)}%</td></tr>
+                <tr><td class="sip-param-key">Tenor</td><td style="font-weight:700;">${ex.tenor} days</td></tr>
+                <tr><td class="sip-param-key">Rate</td><td style="font-weight:700;">${(ex.rate * 100).toFixed(1)}%</td></tr>
+                <tr><td class="sip-param-key">Location</td><td style="font-size:0.72rem;">${ex.vault}</td></tr>
+            </tbody></table></div>
+            <div><h4 style="font-size:0.8rem; margin-bottom:6px;">${tip('Cash Waterfall')}</h4>
+                <table class="sip-waterfall"><thead><tr><th>Item</th><th style="text-align:right;">Amount</th></tr></thead><tbody>`;
+    waterfall.forEach(w => {
+        const isTotal = w.type === 'total' || w.type === 'subtotal';
+        const trClass = isTotal ? ' class="waterfall-total"' : '';
+        let display;
+        if (w.type === 'pct') display = (w.amount * 100).toFixed(0) + '%';
+        else if (w.type === 'annpct') display = (w.amount * 100).toFixed(2) + '% p.a.';
+        else display = (w.amount < 0 ? '-' : '') + formatUSD(Math.abs(w.amount));
+        const color = w.type === 'cost' ? 'color:#c53030;' : w.type === 'total' ? 'color:#276749; font-size:0.85rem;' : '';
+        html += `<tr${trClass}><td>${w.label}</td><td style="text-align:right; font-weight:600; ${color}">${display}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>
+        <h4 style="font-size:0.82rem; margin:12px 0 8px; color:#c53030;">Key Risks</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">`;
+    s.risks.forEach(r => {
+        html += `<span style="display:inline-block; padding:4px 10px; background:#fff5f5; border:1px solid #fed7d7; border-radius:4px; font-size:0.72rem; color:#c53030;">\u26A0 ${r}</span>`;
+    });
+    html += `</div>
+        <h4 style="font-size:0.82rem; margin:14px 0 8px; color:var(--primary);">Typical Parameters</h4>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:6px;">`;
+    Object.entries(s.typicalParams).forEach(([k, v]) => {
+        const label = k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+        html += `<div class="sip-param" style="padding:6px 8px; background:var(--bg-page); border-radius:4px;"><span class="sip-param-key">${label}</span><span class="sip-param-val">${v}</span></div>`;
+    });
+    html += `</div></div>`;
+    panel.innerHTML = html;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function sipRunSimulation() {
+    const structKey = document.getElementById('sipSimStructure')?.value || 'REPO';
+    const comKey = document.getElementById('sipSimCommodity')?.value || 'Au';
+    const qty = parseFloat(document.getElementById('sipSimQty')?.value) || 100;
+    const container = document.getElementById('sipSimResults');
+    if (!container) return;
+
+    const s = SIP_STRUCTURES[structKey];
+    const com = COMMODITIES[comKey];
+    const spot = getMarketPrice(comKey);
+    const invValue = qty * spot;
+    const ex = s.example;
+    const loanAmt = invValue * ex.loanPct;
+    const dailyRate = ex.rate / 365;
+    const storageDailyRate = 0.003 / 365;
+    const insuranceDailyRate = 0.001 / 365;
+    const days = Math.min(ex.tenor, 180);
+    const timeline = [];
+    let currentPrice = spot;
+    let cumulativeInterest = 0;
+    let cumulativeStorage = 0;
+    let marginCallCount = 0;
+    const currentLoan = loanAmt;
+    const stepSize = days <= 30 ? 1 : 7;
+
+    for (let d = 0; d <= days; d += stepSize) {
+        if (d > 0) { currentPrice *= (1 + (Math.random() - 0.48) * 0.015); }
+        const currentInvValue = qty * currentPrice;
+        const currentLTV = currentLoan / currentInvValue;
+        cumulativeInterest += currentLoan * dailyRate * stepSize;
+        cumulativeStorage += currentInvValue * storageDailyRate * stepSize;
+        let event = 'Normal';
+        if (currentLTV > 0.85) { event = 'MARGIN CALL'; marginCallCount++; }
+        else if (currentLTV > 0.75) { event = 'Warning'; }
+        timeline.push({ day: d, price: currentPrice, invValue: currentInvValue, loan: currentLoan, ltv: currentLTV, cumInterest: cumulativeInterest, cumStorage: cumulativeStorage, event: event });
+    }
+
+    const finalState = timeline[timeline.length - 1];
+    const totalCost = cumulativeInterest + cumulativeStorage + invValue * insuranceDailyRate * days + loanAmt * 0.005;
+    const netProceeds = loanAmt - totalCost;
+
+    let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div><h4 style="font-size:0.82rem; margin-bottom:8px; color:var(--primary);">Deal Summary</h4>
+            <table class="sip-inv-table"><tbody>
+                <tr><td class="sip-param-key">Structure</td><td style="font-weight:700;">${s.name}</td></tr>
+                <tr><td class="sip-param-key">Commodity</td><td style="font-weight:700;">${com.name} (${comKey})</td></tr>
+                <tr><td class="sip-param-key">Quantity</td><td style="font-weight:700;">${qty.toLocaleString()} ${com.unit}</td></tr>
+                <tr><td class="sip-param-key">Entry Spot</td><td style="font-weight:700;">${formatUSD(spot)}</td></tr>
+                <tr><td class="sip-param-key">Inventory Value (t=0)</td><td style="font-weight:700;">${formatUSD(invValue)}</td></tr>
+                <tr><td class="sip-param-key">Loan Amount</td><td style="font-weight:700;">${formatUSD(loanAmt)}</td></tr>
+                <tr><td class="sip-param-key">${tip('Advance Rate')}</td><td style="font-weight:700;">${(ex.loanPct * 100).toFixed(0)}%</td></tr>
+                <tr><td class="sip-param-key">Financing Rate</td><td style="font-weight:700;">${(ex.rate * 100).toFixed(1)}% p.a.</td></tr>
+                <tr><td class="sip-param-key">Tenor</td><td style="font-weight:700;">${days} days</td></tr>
+            </tbody></table></div>
+        <div><h4 style="font-size:0.82rem; margin-bottom:8px; color:var(--primary);">Outcome at Maturity (Day ${days})</h4>
+            <table class="sip-inv-table"><tbody>
+                <tr><td class="sip-param-key">Final Spot Price</td><td style="font-weight:700;">${formatUSD(finalState.price)}</td></tr>
+                <tr><td class="sip-param-key">Final Inventory Value</td><td style="font-weight:700;">${formatUSD(finalState.invValue)}</td></tr>
+                <tr><td class="sip-param-key">Price Change</td><td style="font-weight:700; color:${finalState.price >= spot ? '#276749' : '#c53030'};">${((finalState.price / spot - 1) * 100).toFixed(2)}%</td></tr>
+                <tr><td class="sip-param-key">Final ${tip('LTV')}</td><td style="font-weight:700; color:${finalState.ltv > 0.85 ? '#c53030' : '#276749'};">${(finalState.ltv * 100).toFixed(1)}%</td></tr>
+                <tr><td class="sip-param-key">Total Interest Paid</td><td style="font-weight:700; color:#c53030;">-${formatUSD(cumulativeInterest)}</td></tr>
+                <tr><td class="sip-param-key">Total Storage Cost</td><td style="font-weight:700; color:#c53030;">-${formatUSD(cumulativeStorage)}</td></tr>
+                <tr><td class="sip-param-key">All-In Financing Cost</td><td style="font-weight:700; color:#c53030;">-${formatUSD(totalCost)}</td></tr>
+                <tr><td class="sip-param-key">Net Proceeds</td><td style="font-weight:700; color:${netProceeds >= 0 ? '#276749' : '#c53030'};">${formatUSD(netProceeds)}</td></tr>
+                <tr><td class="sip-param-key">Margin Calls Triggered</td><td style="font-weight:700; color:${marginCallCount > 0 ? '#c53030' : '#276749'};">${marginCallCount}</td></tr>
+            </tbody></table></div></div>`;
+
+    html += `<h4 style="font-size:0.82rem; margin:16px 0 8px; color:var(--primary);">Lifecycle Timeline (${stepSize === 1 ? 'Daily' : 'Weekly'} Snapshots)</h4>
+        <div style="overflow-x:auto; max-height:320px; overflow-y:auto;">
+        <table class="sip-inv-table"><thead style="position:sticky; top:0;"><tr>
+            <th>Day</th><th>Spot Price</th><th>Inv. Value</th><th>Loan O/S</th><th>${tip('LTV')}</th><th>Cum. Interest</th><th>Cum. Storage</th><th>Event</th>
+        </tr></thead><tbody>`;
+    timeline.forEach(t => {
+        const ltvColor = t.ltv > 0.85 ? '#c53030' : t.ltv > 0.75 ? '#b7791f' : '#276749';
+        const evtStyle = t.event === 'MARGIN CALL' ? 'color:#fff; background:#c53030; padding:1px 6px; border-radius:3px; font-weight:700;' : t.event === 'Warning' ? 'color:#b7791f; font-weight:600;' : 'color:var(--text-muted);';
+        html += `<tr><td style="font-weight:600;">T+${t.day}</td><td style="text-align:right;">${formatUSD(t.price)}</td><td style="text-align:right;">${formatUSD(t.invValue)}</td><td style="text-align:right;">${formatUSD(t.loan)}</td><td style="text-align:center; font-weight:700; color:${ltvColor};">${(t.ltv * 100).toFixed(1)}%</td><td style="text-align:right; color:#c53030;">${formatUSD(t.cumInterest)}</td><td style="text-align:right; color:#b7791f;">${formatUSD(t.cumStorage)}</td><td><span style="${evtStyle}">${t.event}</span></td></tr>`;
+    });
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+}
+
+function renderSIPTradePanel(trade) {
+    if (!trade) return '';
+    const com = COMMODITIES[trade.commodity];
+    if (!com) return '';
+    if (!['Spot', 'Forward', 'Future'].includes(trade.productType) && !isOptionType(trade.productType)) return '';
+
+    const spot = getMarketPrice(trade.commodity);
+    const tradeValue = trade.quantity * spot * com.contractSize;
+    const isPhysical = trade.productType === 'Spot' || trade.productType === 'Forward';
+
+    let html = `<div class="card">
+        <div class="card-title">${tip('SIP')} \u2014 Inventory Financing Eligibility</div>
+        <div style="font-size:0.78rem; color:var(--text-secondary); margin-bottom:12px;">This trade's underlying physical position may be eligible for inventory-backed financing.</div>
+        <table class="sip-inv-table" style="margin-bottom:12px;"><tbody>
+            <tr><td class="sip-param-key">Commodity</td><td style="font-weight:700;">${com.name} (${trade.commodity})</td></tr>
+            <tr><td class="sip-param-key">Position Size</td><td style="font-weight:700;">${trade.quantity} lots x ${com.contractSize} ${com.unit} = ${(trade.quantity * com.contractSize).toLocaleString()} ${com.unit}</td></tr>
+            <tr><td class="sip-param-key">Current Market Value</td><td style="font-weight:700;">${formatUSD(tradeValue)}</td></tr>
+            <tr><td class="sip-param-key">Physical Delivery</td><td style="font-weight:700;">${isPhysical ? 'Yes \u2014 eligible' : 'Cash-settled (hedge only)'}</td></tr>
+        </tbody></table>
+        <div style="font-size:0.78rem; font-weight:600; margin-bottom:8px;">Eligible Financing Structures:</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">`;
+    Object.entries(SIP_STRUCTURES).forEach(([key, s]) => {
+        if (key === 'TOLLING' && trade.commodity !== 'Cu' && trade.commodity !== 'Ni') return;
+        const advRate = s.example.loanPct;
+        html += `<div style="padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-page); min-width:140px;">
+            <div style="font-size:0.72rem; font-weight:700; color:var(--primary);">${s.icon} ${s.name}</div>
+            <div style="font-size:0.68rem; color:var(--text-muted);">${tip('Advance Rate')}: ${(advRate * 100).toFixed(0)}%</div>
+            <div style="font-size:0.78rem; font-weight:700; color:#276749; margin-top:2px;">Up to ${formatUSD(tradeValue * advRate)}</div>
+        </div>`;
+    });
+    html += `</div>
+        <div style="margin-top:12px; padding:8px 12px; background:#ebf8ff; border-radius:var(--radius); font-size:0.72rem; color:#2b6cb0;">
+            <strong>Note:</strong> Financing eligibility depends on warehouse location, title documentation, counterparty credit, and collateral manager approval.
+            Navigate to <strong>Structured Inventory</strong> tab for full program details and simulation.
+        </div></div>`;
+    return html;
+}
+
 </script>
 
 <!--
