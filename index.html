@@ -776,6 +776,34 @@
         .status-terminated { background: #fbd38d; color: #975a16; }
         .status-novated { background: #bee3f8; color: #2c5282; }
         .status-delivered { background: #b2f5ea; color: #285e61; }
+
+        /* Physical metals & warrant panels */
+        .phys-code-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.78rem; font-weight: 700; }
+        .phys-code-au { background: #fefcbf; color: #975a16; }
+        .phys-code-ag { background: #e2e8f0; color: #4a5568; }
+        .phys-code-pt { background: #e9d8fd; color: #6b46c1; }
+        .phys-code-pd { background: #bee3f8; color: #2c5282; }
+        .bar-list-table { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+        .bar-list-table th { background: var(--bg-page); padding: 4px 8px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+        .bar-list-table td { padding: 4px 8px; border-bottom: 1px solid var(--border-light); font-family: 'Courier New', monospace; }
+        .vault-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+        .vault-allocated { background: #c6f6d5; color: #276749; }
+        .vault-unallocated { background: #fefcbf; color: #b7791f; }
+        .warrant-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; background: var(--bg-page); }
+        .warrant-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; }
+        .warrant-live { background: #c6f6d5; color: #2f855a; }
+        .warrant-cancelled { background: #fed7d7; color: #c53030; }
+        .warrant-delivered { background: #b2f5ea; color: #285e61; }
+        .auction-round { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--border-light); font-size: 0.78rem; }
+        .auction-round:last-child { border-bottom: none; }
+        .auction-round-num { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; flex-shrink: 0; }
+        .cftc-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; background: #ebf8ff; color: #2b6cb0; }
+        .phys-ops-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 12px 0; }
+        .phys-op-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); cursor: pointer; transition: all 0.15s; }
+        .phys-op-card:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .phys-op-icon { font-size: 1.4rem; }
+        .phys-op-label { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-align: center; }
+        .phys-op-desc { font-size: 0.65rem; color: var(--text-muted); text-align: center; line-height: 1.3; }
     </style>
 </head>
 <body>
@@ -825,12 +853,40 @@
 // ============================================================
 
 const COMMODITIES = {
-    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious', futuresCode: 'GC' },
-    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious', futuresCode: 'SI' },
-    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious', futuresCode: 'PL' },
-    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious', futuresCode: 'PA' },
-    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base',     futuresCode: 'CA' },
-    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI' }
+    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious', futuresCode: 'GC', physicalCode: '9AU', iso4217: 'XAU', lbmaFix: true },
+    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious', futuresCode: 'SI', physicalCode: '9AG', iso4217: 'XAG', lbmaFix: true },
+    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious', futuresCode: 'PL', physicalCode: '9PT', iso4217: 'XPT', lbmaFix: true },
+    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious', futuresCode: 'PA', physicalCode: '9PD', iso4217: 'XPD', lbmaFix: true },
+    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base',     futuresCode: 'CA', lmeWarrantSize: '25 MT' },
+    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI', lmeWarrantSize: '6 MT' }
+};
+
+// Physical Precious Metals Currency Codes — used for physical (non-derivative) settlement
+// These follow the convention of prefixing the element symbol with "9" to distinguish
+// physical metal transfers from financial (paper) trades
+const PHYSICAL_METAL_CODES = {
+    '9AU': { metal: 'Au', name: 'Physical Gold',      iso4217: 'XAU', lbmaGoodDelivery: '350-430 troy oz bar', fineness: '995.0+', assayOffice: 'LBMA-approved', clearingVia: 'LPMCL', settlementLoco: 'London' },
+    '9AG': { metal: 'Ag', name: 'Physical Silver',    iso4217: 'XAG', lbmaGoodDelivery: '750-1100 troy oz bar', fineness: '999.0+', assayOffice: 'LBMA-approved', clearingVia: 'LPMCL', settlementLoco: 'London' },
+    '9PT': { metal: 'Pt', name: 'Physical Platinum',  iso4217: 'XPT', lbmaGoodDelivery: '1-6 kg plate/ingot', fineness: '999.5+', assayOffice: 'LPPM-approved', clearingVia: 'LPMCL', settlementLoco: 'London/Zurich' },
+    '9PD': { metal: 'Pd', name: 'Physical Palladium', iso4217: 'XPD', lbmaGoodDelivery: '1-6 kg plate/ingot', fineness: '999.5+', assayOffice: 'LPPM-approved', clearingVia: 'LPMCL', settlementLoco: 'London/Zurich' }
+};
+
+// LME Warrant reference — standard parcel sizes and warehouse details
+const LME_WARRANT_DATA = {
+    Cu: { parcelSize: '25 MT', brands: ['Aurubis', 'Codelco', 'Freeport', 'Jiangxi'], warehouseLocations: ['Rotterdam', 'Busan', 'Singapore', 'New Orleans'], rentPerDay: 0.50, insurancePct: 0.002 },
+    Ni: { parcelSize: '6 MT',  brands: ['Norilsk', 'Vale', 'Jinchuan', 'Sumitomo'], warehouseLocations: ['Rotterdam', 'Johor', 'Newcastle'], rentPerDay: 0.50, insurancePct: 0.002 },
+    Al: { parcelSize: '25 MT', brands: ['Rusal', 'Alcoa', 'Rio Tinto', 'Hindalco'], warehouseLocations: ['Rotterdam', 'Detroit', 'Vlissingen', 'Port Klang'], rentPerDay: 0.50, insurancePct: 0.002 },
+    Zn: { parcelSize: '25 MT', brands: ['Nyrstar', 'Korea Zinc', 'Glencore', 'Hindustan Zinc'], warehouseLocations: ['Rotterdam', 'Antwerp', 'Singapore', 'New Orleans'], rentPerDay: 0.50, insurancePct: 0.002 },
+    Sn: { parcelSize: '5 MT',  brands: ['Malaysia Smelting', 'Yunnan Tin', 'PT Timah', 'Minsur'], warehouseLocations: ['Rotterdam', 'Johor', 'Baltimore'], rentPerDay: 0.50, insurancePct: 0.002 },
+    Pb: { parcelSize: '25 MT', brands: ['Doe Run', 'Korea Zinc', 'Nyrstar', 'Hindustan Zinc'], warehouseLocations: ['Antwerp', 'Singapore', 'Rotterdam'], rentPerDay: 0.50, insurancePct: 0.002 }
+};
+
+// LBMA Precious Metals Auction Schedule
+const LBMA_AUCTIONS = {
+    Au: { name: 'LBMA Gold Price', administrator: 'ICE Benchmark Administration (IBA)', times: ['10:30 London (AM)', '15:00 London (PM)'], currency: 'USD', participants: 15, roundDuration: '30 seconds', methodology: 'Electronic auction with aggregated buy/sell orders' },
+    Ag: { name: 'LBMA Silver Price', administrator: 'ICE Benchmark Administration (IBA)', times: ['12:00 London'], currency: 'USD', participants: 13, roundDuration: '30 seconds', methodology: 'Electronic auction with aggregated buy/sell orders' },
+    Pt: { name: 'LBMA Platinum Price', administrator: 'ICE Benchmark Administration (IBA)', times: ['09:45 London'], currency: 'USD', participants: 10, roundDuration: '30 seconds', methodology: 'Electronic auction with aggregated buy/sell orders' },
+    Pd: { name: 'LBMA Palladium Price', administrator: 'ICE Benchmark Administration (IBA)', times: ['14:00 London'], currency: 'USD', participants: 10, roundDuration: '30 seconds', methodology: 'Electronic auction with aggregated buy/sell orders' }
 };
 
 /**
@@ -991,7 +1047,29 @@ const TOOLTIPS = {
     'Roll/Carry':       'Close position in near-month and open equivalent in far-month to extend exposure',
     'Physical Delivery':'Take or make delivery of the actual physical commodity (metal, energy, etc.)',
     'Margin Call':      'Demand for additional collateral when variation margin exceeds threshold',
-    'Credit Event':     'Counterparty default or downgrade triggering close-out netting under ISDA Master Agreement'
+    'Credit Event':     'Counterparty default or downgrade triggering close-out netting under ISDA Master Agreement',
+    '9AU':              'Physical Gold currency code — used for physical bullion transfers and allocated/unallocated account settlements',
+    '9AG':              'Physical Silver currency code — used for physical bullion transfers and allocated/unallocated account settlements',
+    '9PT':              'Physical Platinum currency code — used for physical PGM transfers',
+    '9PD':              'Physical Palladium currency code — used for physical PGM transfers',
+    'Loco London':      'Metal physically held in London — the global standard settlement location for OTC precious metals',
+    'Loco Swap':        'A location swap exchanging metal in one location for metal in another without physical shipment — price adjusted for freight/premium',
+    'Good Delivery':    'LBMA/LPPM standard defining acceptable bar specifications (weight, fineness, markings) for London settlement',
+    'Bar List':         'Detailed inventory manifest showing each bar\'s unique number, gross weight, assay/fineness, and fine weight',
+    'Weight List':      'Document listing specific bars with serial numbers assigned to an allocated account holder',
+    'Vault Transfer':   'Physical movement of metal between vaults or conversion between allocated and unallocated accounts',
+    'LBMA Gold Price':  'Benchmark price determined twice daily via electronic auction administered by IBA — used globally for valuation and settlement',
+    'LBMA Silver Price':'Benchmark price determined once daily via electronic auction administered by IBA',
+    'Auction Trade':    'Trade executed at the LBMA benchmark fixing price — participants submit buy/sell orders aggregated across rounds',
+    'IBA':              'ICE Benchmark Administration — independent administrator of LBMA Gold, Silver, Platinum and Palladium Prices',
+    'CFTC':             'Commodity Futures Trading Commission — US regulator overseeing commodity futures and options markets',
+    'Form 102':         'CFTC ownership and control report identifying traders with reportable positions in commodity futures/options',
+    'Large Trader':     'Entity holding positions at or above CFTC-specified reporting levels in commodity futures or options',
+    'COT Report':       'Commitments of Traders — weekly CFTC report showing aggregate positions by trader category',
+    'Cancelled Warrant':'LME warrant where metal has been requested for withdrawal from the warehouse — no longer available for delivery',
+    'Live Warrant':     'LME warrant for metal available in an approved warehouse and eligible for delivery against futures contracts',
+    'Warrant Rent':     'Daily storage charge for metal held on an LME warrant in an approved warehouse (typically $0.50/MT/day)',
+    'LME Delivery':     'Physical delivery process: short delivers warrants to long via LMEsword on the prompt date'
 };
 
 const HEDGING_STRATEGIES = {
@@ -1509,9 +1587,16 @@ function renderTradeView(trade) {
     const main = document.getElementById('mainContent');
     let html = renderStepper(trade.stage);
     html += '<div id="stageContent"></div>';
+    html += '<div id="physicalCommodityContainer"></div>';
     html += '<div id="lifecycleEventsContainer"></div>';
     main.innerHTML = html;
     renderStageContent(trade);
+    // Physical commodity panels (precious metals, LME warrants, auctions)
+    let physHtml = '';
+    physHtml += renderPhysicalMetalsPanel(trade);
+    physHtml += renderAuctionPanel(trade);
+    physHtml += renderLMEWarrantPanel(trade);
+    document.getElementById('physicalCommodityContainer').innerHTML = physHtml;
     document.getElementById('lifecycleEventsContainer').innerHTML = renderLifecycleEventsPanel(trade);
 }
 
@@ -2339,6 +2424,15 @@ function renderStage2(trade) {
     // Allocated vs Unallocated (precious metals)
     html += renderMetalAccountComparison(trade);
 
+    // Physical Precious Metals Panel (currency codes, bar lists, vault ops)
+    html += renderPhysicalMetalsPanel(trade);
+
+    // LBMA Auction Panel (precious metals)
+    html += renderAuctionPanel(trade);
+
+    // LME Warrant Management Panel (base metals)
+    html += renderLMEWarrantPanel(trade);
+
     html += `<div class="btn-group">
         <button class="btn btn-primary" ${allPass ? '' : 'disabled'} onclick="advanceStage('${trade.id}', 3)">
             Move to Next Stage &rarr;
@@ -3023,7 +3117,7 @@ function renderSelectedRegReport() {
     if (!sel || !container) return;
     const trade = state.trades.find(t => t.id === sel.value);
     if (!trade) { container.innerHTML = ''; return; }
-    container.innerHTML = renderMiFIDReport(trade) + renderEMIRReport(trade);
+    container.innerHTML = renderMiFIDReport(trade) + renderEMIRReport(trade) + renderCFTCReport(trade);
 }
 
 
@@ -3396,6 +3490,129 @@ function renderAboutView() {
             the threshold. Deadline is typically T+1 by 10:00 London.
             <strong>${tip('Credit Event')}</strong> (EMIR: TERM/CREV) — Counterparty default or downgrade triggering close-out netting
             under the ISDA Master Agreement Section 6(e). All trades with the defaulting counterparty are terminated and netted.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Physical Precious Metals — Currency Codes & Accounts</div>
+        <p style="font-size:0.88rem; color: var(--text-body); margin-bottom:16px;">
+            Physical precious metals use dedicated currency codes for settlement, distinct from
+            their ISO 4217 financial codes (XAU, XAG, XPT, XPD). Physical codes prefixed with "9"
+            denote actual bullion transfers rather than paper/derivative positions.
+        </p>
+
+        <div class="about-section">
+            <h3>Physical Metal Currency Codes</h3>
+            <p><span class="phys-code-badge phys-code-au">${tip('9AU')}</span> Physical Gold |
+            <span class="phys-code-badge phys-code-ag">${tip('9AG')}</span> Physical Silver |
+            <span class="phys-code-badge phys-code-pt">${tip('9PT')}</span> Physical Platinum |
+            <span class="phys-code-badge phys-code-pd">${tip('9PD')}</span> Physical Palladium</p>
+            <p>These codes are used in back-office systems, SWIFT messages, and settlement instructions
+            to distinguish physical bullion movements from financial (derivative) cash flows. For example,
+            a ${tip('Loco London')} spot trade settling in physical gold uses 9AU, while the same trade
+            settling financially uses XAU (ISO 4217).</p>
+        </div>
+
+        <div class="about-section">
+            <h3>${tip('Allocated')} Accounts</h3>
+            <p>Each bar is individually identified with a unique serial number, gross weight, assay/fineness,
+            and fine weight. The client has <strong>direct ownership</strong> of specific bars — there is no counterparty
+            credit risk. The account cannot be overdrawn. A ${tip('Bar List')} / ${tip('Weight List')} is provided
+            listing every bar. Storage fees are typically 8-15 basis points per year on metal value.
+            Central banks, ETFs, and institutional investors typically require allocated storage.</p>
+            <p><strong>Example:</strong> A client buys 200 troy oz of gold on an allocated basis. Since ${tip('Good Delivery')}
+            bars weigh approximately 350-430 oz and are not uniform, one bar of ~400 oz is assigned. The client
+            pays for 200 oz and a balancing trade sells the remaining ~200 oz back to the dealer (two-stage process).</p>
+        </div>
+
+        <div class="about-section">
+            <h3>${tip('Unallocated')} Accounts</h3>
+            <p>The client holds a <strong>general claim</strong> on a pool of metal — similar to a bank deposit.
+            No specific bars are assigned. Quantities can be calculated to 3 decimal places, making settlement
+            highly efficient. However, the client is an <strong>unsecured creditor</strong> of the account provider
+            (counterparty credit risk exists). Lower storage cost than allocated. Accounts can be overdrawn (short position).</p>
+            <p><strong>Example:</strong> A client buys exactly 156.250 troy oz of gold (unallocated). The bank credits
+            the client's unallocated account with 156.250 oz. No physical bars are identified. The bank owes
+            the client 156.250 oz on demand. Settlement is T+2 via ${tip('LPMCL')} netting.</p>
+        </div>
+
+        <div class="about-section">
+            <h3>${tip('Vault Transfer')}s & ${tip('Loco Swap')}s</h3>
+            <p><strong>Vault Transfers</strong> involve the physical movement of bars between vaults or the conversion
+            between allocated and unallocated accounts. Within London, transfers typically settle same-day.
+            International transfers take 2-5 business days and require insurance in transit.</p>
+            <p><strong>Loco Swaps</strong> allow participants to exchange metal across different locations
+            (e.g., London to Zurich) without physical shipment. The price is adjusted for freight costs and
+            local supply/demand premiums. Both sides record paired book entries — USD values are netted
+            while metal transfers clear separately per location account.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">${tip('LBMA Gold Price')} — Precious Metals Auctions</div>
+        <div class="about-section">
+            <h3>${tip('Auction Trade')} Process</h3>
+            <p>The LBMA precious metals benchmark prices are determined via electronic auctions administered by
+            ${tip('IBA')} (ICE Benchmark Administration). Direct participants (15 for gold, 13 for silver) submit
+            aggregated buy and sell orders. The auction runs in rounds of 30 seconds. At the start of each round,
+            IBA publishes a price and participants indicate their buy/sell quantities. If buy and sell volumes balance
+            within a tolerance, the price is "fixed". If not, the price is adjusted and a new round begins.</p>
+            <p><strong>Auction Schedule:</strong> Gold — 10:30 AM & 3:00 PM London |
+            Silver — 12:00 PM London | Platinum — 9:45 AM London | Palladium — 2:00 PM London.</p>
+            <p><strong>Settlement:</strong> ${tip('Loco London')}, T+2 business days, via unallocated accounts
+            cleared through ${tip('LPMCL')}. Approximately $25 billion of gold is settled daily through the
+            London clearing system.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">${tip('CFTC')} Trade Reporting</div>
+        <div class="about-section">
+            <h3>${tip('Large Trader')} Reporting Program</h3>
+            <p>The ${tip('CFTC')} requires clearing members and futures commission merchants to file daily
+            electronic reports (Part 17 of CFTC Regulations) for all trader accounts that hold positions
+            at or above specified reporting levels. For example, Gold (GC): 200 contracts, Silver (SI): 150 contracts.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('Form 102')} — Ownership & Control</h3>
+            <p>Form 102 identifies traders with reportable positions, including account controller name,
+            NFA ID, trader category (Commercial vs Non-Commercial), country of domicile, and whether the
+            account is omnibus. Required within one business day of first reaching a reportable level.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('COT Report')} — Commitments of Traders</h3>
+            <p>The COT Report is published weekly (every Friday at 3:30 PM ET, as of the preceding Tuesday).
+            It aggregates large trader positions by category: Producer/Merchant/Processor/User (commercial),
+            Swap Dealers, Managed Money, and Other Reportables. The Disaggregated COT provides the most
+            detailed breakdown. Concentration ratios (CR4, CR8) show the percentage of open interest held
+            by the largest traders.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">${tip('LME Warrant')} Management & ${tip('LME Delivery')} Process</div>
+        <div class="about-section">
+            <h3>LME Warrants</h3>
+            <p>An LME warrant is a document of title to a specific lot of base metal stored in an LME-approved
+            warehouse. Standard lot sizes: 25 MT (copper, zinc, aluminium, lead), 6 MT (nickel), 5 MT (tin).
+            Warrants specify the brand, weight, warehouse location, and issue date. They are transferred
+            electronically via ${tip('LMEsword')} — the LME's electronic warrant management system.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('Live Warrant')}s vs ${tip('Cancelled Warrant')}s</h3>
+            <p>A <strong>live warrant</strong> represents metal available in warehouse and eligible for delivery
+            against futures contracts. A <strong>cancelled warrant</strong> indicates the owner has requested
+            physical withdrawal — the metal is still in the warehouse but is no longer available for delivery.
+            The "cancelled warrant ratio" (cancelled / total warrants) is a closely watched market indicator
+            of physical demand and potential supply tightness.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('LME Delivery')} Process</h3>
+            <p>On the prompt (delivery) date: (1) Short selects warrants from their ${tip('LMEsword')} account.
+            (2) Warrants are electronically transferred to the long's account. (3) Long pays the settlement price.
+            (4) Long may cancel the warrant to take physical delivery. (5) Warehouse loads out the metal.
+            ${tip('Warrant Rent')} (typically $0.50/MT/day) accrues until physical withdrawal. Warehouses must
+            load out a minimum of 3,000 MT/day for metals with large stocks (LME queue rules).</p>
         </div>
     </div>`;
 }
@@ -5301,6 +5518,568 @@ function executeEvent(tradeId, eventKey) {
     const t = getCurrentTrade();
     if (t && t.id === tradeId) renderTradeView(t);
     else if (state.currentView === 'blotter') renderBlotterView();
+}
+
+
+// ============================================================
+// SECTION 35: PHYSICAL COMMODITY LIFECYCLE MANAGEMENT
+// ============================================================
+
+function getPhysicalCode(commodity) {
+    const com = COMMODITIES[commodity];
+    return com && com.physicalCode ? com.physicalCode : null;
+}
+
+function generateBarNumber(metal) {
+    const prefix = metal === 'Au' ? 'GD' : metal === 'Ag' ? 'SV' : metal === 'Pt' ? 'PT' : 'PD';
+    return prefix + '-' + Math.floor(100000 + Math.random() * 900000);
+}
+
+function generateBarList(metal, quantity, contractSize) {
+    const bars = [];
+    const com = COMMODITIES[metal];
+    const totalOz = quantity * contractSize;
+    // Gold: ~400 oz bars; Silver: ~1000 oz bars; Pt/Pd: ~1-6 kg (~32-193 oz)
+    const barSizeOz = metal === 'Au' ? 400 : metal === 'Ag' ? 1000 : 100;
+    const numBars = Math.max(1, Math.round(totalOz / barSizeOz));
+    const refiners = metal === 'Au' ? ['Argor-Heraeus', 'PAMP SA', 'Valcambi', 'Metalor', 'Rand Refinery', 'Perth Mint']
+        : metal === 'Ag' ? ['Asahi Refining', 'KGHM', 'Umicore', 'Johnson Matthey', 'Heraeus']
+        : ['Johnson Matthey', 'Heraeus', 'BASF', 'Tanaka', 'Valcambi'];
+    const fineness = metal === 'Au' ? 0.9999 : metal === 'Ag' ? 0.999 : 0.9995;
+
+    for (let i = 0; i < numBars; i++) {
+        const grossWeight = barSizeOz * (0.97 + Math.random() * 0.06);
+        bars.push({
+            barNumber: generateBarNumber(metal),
+            refiner: refiners[Math.floor(Math.random() * refiners.length)],
+            grossWeight: parseFloat(grossWeight.toFixed(3)),
+            fineness: parseFloat((fineness - Math.random() * 0.0005).toFixed(4)),
+            fineWeight: parseFloat((grossWeight * fineness).toFixed(3)),
+            year: 2020 + Math.floor(Math.random() * 6),
+            vault: metal === 'Au' || metal === 'Ag' ? 'HSBC London Vault' : 'Johnson Matthey Royston'
+        });
+    }
+    return bars;
+}
+
+function renderPhysicalMetalsPanel(trade) {
+    const com = COMMODITIES[trade.commodity];
+    if (com.type !== 'precious') return '';
+    const physCode = com.physicalCode;
+    const physData = PHYSICAL_METAL_CODES[physCode];
+    if (!physData) return '';
+
+    const codeClass = 'phys-code-' + trade.commodity.toLowerCase();
+    const acctType = trade.metalAccount || 'Unallocated';
+    const acctClass = acctType === 'Allocated' ? 'vault-allocated' : 'vault-unallocated';
+
+    let html = `<div class="card">
+        <div class="card-title">Physical Precious Metals — ${com.name}</div>
+        <p style="font-size:0.78rem; color:var(--text-body); margin-bottom:12px;">
+            Physical settlement via ${tip('Loco London')} using currency code
+            <span class="phys-code-badge ${codeClass}">${physCode}</span>
+            (ISO 4217: ${physData.iso4217}). Clearing via ${tip('LPMCL')}.
+        </p>
+
+        <table class="enrich-table">
+            <tr><td>Physical Currency Code</td><td class="fw-bold"><span class="phys-code-badge ${codeClass}">${physCode}</span></td></tr>
+            <tr><td>ISO 4217 Code</td><td>${physData.iso4217}</td></tr>
+            <tr><td>${tip('Good Delivery')} Standard</td><td>${physData.lbmaGoodDelivery}</td></tr>
+            <tr><td>Minimum Fineness</td><td>${physData.fineness}</td></tr>
+            <tr><td>Assay</td><td>${physData.assayOffice}</td></tr>
+            <tr><td>Settlement Location</td><td>${physData.settlementLoco}</td></tr>
+            <tr><td>Clearing</td><td>${physData.clearingVia}</td></tr>
+            <tr><td>Account Type</td><td><span class="vault-badge ${acctClass}">${acctType}</span></td></tr>
+        </table>`;
+
+    // Account type explanation
+    html += `<div style="margin-top:14px; padding:12px; background:var(--bg-page); border-radius:var(--radius); border-left:3px solid ${acctType === 'Allocated' ? '#2f855a' : '#b7791f'};">
+        <h4 style="font-size:0.82rem; margin-bottom:6px; color:var(--primary);">
+            ${acctType === 'Allocated' ? tip('Allocated') + ' Account' : tip('Unallocated') + ' Account'}
+        </h4>
+        ${acctType === 'Allocated'
+            ? `<p style="font-size:0.78rem; line-height:1.5;">
+                Each bar is <strong>individually identified</strong> with unique serial number, gross weight, and assay.
+                The client has <strong>direct ownership</strong> of specific bars — no counterparty credit risk.
+                The account <strong>cannot be overdrawn</strong>. A ${tip('Weight List')} / ${tip('Bar List')} is provided.
+                Storage fees: typically 8-15 bps/year on metal value, billed quarterly.
+                Insurance must be arranged separately by the account holder.</p>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:6px;">
+                <strong>Example:</strong> Client buys 200 oz gold (allocated). 1 bar of 400 oz is assigned, client pays for 200 oz
+                and a balancing trade sells the remaining ~200 oz back to the dealer — this two-stage process is necessary because
+                ${tip('Good Delivery')} bars are not uniform in weight.</p>`
+            : `<p style="font-size:0.78rem; line-height:1.5;">
+                Client holds a <strong>general claim</strong> on a pool of metal — like a bank deposit.
+                No specific bars are assigned. Quantities can be calculated to <strong>3 decimal places</strong>.
+                The client is an <strong>unsecured creditor</strong> of the account provider (counterparty credit risk).
+                Lower storage cost than allocated. Settlement is highly efficient — no physical bar movement needed.
+                Unallocated accounts can be <strong>overdrawn</strong> (short position).</p>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:6px;">
+                <strong>Example:</strong> Client buys exactly 156.250 troy oz gold (unallocated). The bank credits the client's
+                unallocated account with 156.250 oz. No physical bars are identified. The bank owes the client 156.250 oz gold
+                on demand. Settlement is T+2 via LPMCL netting.</p>`
+        }
+    </div>`;
+
+    // Bar list for allocated accounts
+    if (acctType === 'Allocated') {
+        if (!trade._barList) trade._barList = generateBarList(trade.commodity, trade.quantity, com.contractSize);
+        html += `<div style="margin-top:14px;">
+            <h4 style="font-size:0.82rem; margin-bottom:8px; color:var(--primary);">${tip('Bar List')} / ${tip('Weight List')}</h4>
+            <table class="bar-list-table">
+                <thead><tr><th>Bar Number</th><th>Refiner</th><th>Year</th><th>Gross Wt (oz)</th><th>Fineness</th><th>Fine Wt (oz)</th><th>Vault</th></tr></thead>
+                <tbody>`;
+        trade._barList.forEach(bar => {
+            html += `<tr>
+                <td>${bar.barNumber}</td><td>${bar.refiner}</td><td>${bar.year}</td>
+                <td>${bar.grossWeight.toFixed(3)}</td><td>${bar.fineness.toFixed(4)}</td>
+                <td>${bar.fineWeight.toFixed(3)}</td><td>${bar.vault}</td>
+            </tr>`;
+        });
+        const totalFine = trade._barList.reduce((s, b) => s + b.fineWeight, 0);
+        html += `</tbody>
+            <tfoot><tr style="font-weight:700; border-top:2px solid var(--border);">
+                <td colspan="3">Total (${trade._barList.length} bars)</td>
+                <td>${trade._barList.reduce((s, b) => s + b.grossWeight, 0).toFixed(3)}</td>
+                <td>—</td><td>${totalFine.toFixed(3)}</td><td>—</td>
+            </tr></tfoot></table>
+        </div>`;
+    }
+
+    // Physical operations panel
+    html += `<div style="margin-top:16px;">
+        <h4 style="font-size:0.82rem; margin-bottom:8px; color:var(--primary);">Physical Operations</h4>
+        <div class="phys-ops-grid">
+            <div class="phys-op-card" onclick="showPhysicalOpModal('${trade.id}', 'allocate')">
+                <span class="phys-op-icon">📦</span>
+                <span class="phys-op-label">Allocate</span>
+                <span class="phys-op-desc">Convert unallocated to allocated — assign specific bars</span>
+            </div>
+            <div class="phys-op-card" onclick="showPhysicalOpModal('${trade.id}', 'unallocate')">
+                <span class="phys-op-icon">🔄</span>
+                <span class="phys-op-label">Unallocate</span>
+                <span class="phys-op-desc">Convert allocated to unallocated — return bars to pool</span>
+            </div>
+            <div class="phys-op-card" onclick="showPhysicalOpModal('${trade.id}', 'vault_transfer')">
+                <span class="phys-op-icon">🏦</span>
+                <span class="phys-op-label">${tip('Vault Transfer')}</span>
+                <span class="phys-op-desc">Move metal between vaults or locations</span>
+            </div>
+            <div class="phys-op-card" onclick="showPhysicalOpModal('${trade.id}', 'loco_swap')">
+                <span class="phys-op-icon">🌍</span>
+                <span class="phys-op-label">${tip('Loco Swap')}</span>
+                <span class="phys-op-desc">Exchange metal across locations without physical shipment</span>
+            </div>
+        </div>
+    </div>`;
+
+    html += `</div>`;
+    return html;
+}
+
+function showPhysicalOpModal(tradeId, opType) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    const com = COMMODITIES[trade.commodity];
+    let title = '', formHtml = '';
+
+    switch (opType) {
+        case 'allocate':
+            title = 'Allocate — Convert to Specific Bars';
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">Convert ${tip('Unallocated')} holdings to ${tip('Allocated')} account.
+                Specific ${tip('Good Delivery')} bars will be assigned from the vault inventory.</p>
+                <table class="enrich-table">
+                    <tr><td>Current Account Type</td><td><span class="vault-badge ${trade.metalAccount === 'Allocated' ? 'vault-allocated' : 'vault-unallocated'}">${trade.metalAccount || 'Unallocated'}</span></td></tr>
+                    <tr><td>Quantity</td><td>${trade.quantity * com.contractSize} ${com.unit}</td></tr>
+                    <tr><td>Target</td><td><span class="vault-badge vault-allocated">Allocated</span></td></tr>
+                    <tr><td>Allocation Fee</td><td>$${(trade.quantity * com.contractSize * 0.50).toFixed(2)} (est. $0.50/oz handling)</td></tr>
+                </table>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    A ${tip('Bar List')} with serial numbers, weights, and assay will be generated upon allocation.
+                    Storage fees will increase to allocated rates (8-15 bps/year vs ~2-5 bps unallocated).</p>`;
+            break;
+        case 'unallocate':
+            title = 'Unallocate — Return Bars to Pool';
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">Convert ${tip('Allocated')} holdings back to ${tip('Unallocated')}.
+                Specific bars will be returned to the vault pool.</p>
+                <table class="enrich-table">
+                    <tr><td>Current Account Type</td><td><span class="vault-badge ${trade.metalAccount === 'Allocated' ? 'vault-allocated' : 'vault-unallocated'}">${trade.metalAccount || 'Unallocated'}</span></td></tr>
+                    <tr><td>Quantity</td><td>${trade.quantity * com.contractSize} ${com.unit}</td></tr>
+                    <tr><td>Target</td><td><span class="vault-badge vault-unallocated">Unallocated</span></td></tr>
+                </table>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    Note: You will lose ownership of specific bars and become an unsecured creditor.
+                    Storage fees will decrease. Settlement will become more efficient (no bar matching needed).</p>`;
+            break;
+        case 'vault_transfer':
+            title = 'Vault Transfer';
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Vault Transfer')} — move physical metal between vault locations.</p>
+                <div class="form-group"><label>From Vault</label><select id="physFromVault">
+                    <option>HSBC London Vault</option><option>JP Morgan London Vault</option><option>ICBC Standard Bank Vault</option><option>Brink's London</option>
+                </select></div>
+                <div class="form-group mt-2"><label>To Vault</label><select id="physToVault">
+                    <option>JP Morgan London Vault</option><option>HSBC London Vault</option><option>UBS Zurich Vault</option><option>Brink's Singapore</option>
+                </select></div>
+                <table class="enrich-table mt-2">
+                    <tr><td>Transfer Quantity</td><td>${trade.quantity * com.contractSize} ${com.unit}</td></tr>
+                    <tr><td>Est. Transfer Time</td><td>Same day (within London) / 2-5 days (international)</td></tr>
+                    <tr><td>Insurance in Transit</td><td>Required — typically 0.01-0.05% of metal value</td></tr>
+                </table>`;
+            break;
+        case 'loco_swap':
+            title = 'Loco Swap — Location Exchange';
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Loco Swap')} — exchange metal in one location for metal in
+                another without physical shipment. Price adjusted for freight and local premium/discount.</p>
+                <div class="form-group"><label>Current Location</label><select id="physLocoFrom">
+                    <option>Loco London</option><option>Loco Zurich</option><option>Loco New York</option>
+                </select></div>
+                <div class="form-group mt-2"><label>Target Location</label><select id="physLocoTo">
+                    <option>Loco Zurich</option><option>Loco London</option><option>Loco New York</option><option>Loco Hong Kong</option><option>Loco Singapore</option>
+                </select></div>
+                <div class="form-group mt-2"><label>Location Premium/Discount ($/oz)</label><input type="number" id="physLocoPremium" value="0.50" step="0.01"></div>
+                <table class="enrich-table mt-2">
+                    <tr><td>Quantity</td><td>${trade.quantity * com.contractSize} ${com.unit}</td></tr>
+                    <tr><td>Mechanism</td><td>Book transfer — no physical shipment. Paired entries offset USD values.</td></tr>
+                </table>`;
+            break;
+    }
+
+    const modalId = 'physicalOpModal';
+    const existing = document.getElementById(modalId);
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = modalId;
+    overlay.className = 'event-modal-overlay';
+    overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = `<div class="event-modal">
+        <h3>${title}</h3>
+        ${formHtml}
+        <div class="btn-group" style="margin-top:16px;">
+            <button class="btn btn-primary" onclick="executePhysicalOp('${tradeId}', '${opType}')">Confirm</button>
+            <button class="btn btn-outline" onclick="document.getElementById('${modalId}').remove()">Cancel</button>
+        </div>
+    </div>`;
+    document.body.appendChild(overlay);
+}
+
+function executePhysicalOp(tradeId, opType) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    const com = COMMODITIES[trade.commodity];
+
+    switch (opType) {
+        case 'allocate':
+            trade.metalAccount = 'Allocated';
+            trade._barList = generateBarList(trade.commodity, trade.quantity, com.contractSize);
+            addEvent(trade, 'AMEND', `Physical allocation: converted to Allocated account. ${trade._barList.length} bars assigned. Bar list generated.`);
+            break;
+        case 'unallocate':
+            trade.metalAccount = 'Unallocated';
+            trade._barList = null;
+            addEvent(trade, 'AMEND', `Physical unallocation: converted to Unallocated account. Bars returned to pool. Client is now unsecured creditor.`);
+            break;
+        case 'vault_transfer':
+            const fromVault = document.getElementById('physFromVault')?.value || 'HSBC London Vault';
+            const toVault = document.getElementById('physToVault')?.value || 'JP Morgan London Vault';
+            addEvent(trade, 'AMEND', `Vault transfer: ${trade.quantity * com.contractSize} ${com.unit} moved from ${fromVault} to ${toVault}.`);
+            if (trade._barList) trade._barList.forEach(b => b.vault = toVault);
+            break;
+        case 'loco_swap':
+            const from = document.getElementById('physLocoFrom')?.value || 'Loco London';
+            const to = document.getElementById('physLocoTo')?.value || 'Loco Zurich';
+            const premium = parseFloat(document.getElementById('physLocoPremium')?.value) || 0;
+            addEvent(trade, 'AMEND', `Loco swap: ${from} -> ${to}. Premium: $${premium.toFixed(2)}/oz. No physical shipment — book transfer.`);
+            break;
+    }
+
+    document.getElementById('physicalOpModal')?.remove();
+    updateSidebar();
+    const t = getCurrentTrade();
+    if (t && t.id === tradeId) renderTradeView(t);
+}
+
+
+// ============================================================
+// SECTION 36: PRECIOUS METALS AUCTION TRADES
+// ============================================================
+
+function renderAuctionPanel(trade) {
+    const com = COMMODITIES[trade.commodity];
+    if (com.type !== 'precious' || !com.lbmaFix) return '';
+    const auction = LBMA_AUCTIONS[trade.commodity];
+    if (!auction) return '';
+
+    // Simulate an auction
+    const fixPrice = getMarketPrice(trade.commodity);
+    const rounds = [];
+    let buyVol = 0, sellVol = 0, currentPrice = fixPrice * (1 + (Math.random() - 0.5) * 0.002);
+    const numRounds = 3 + Math.floor(Math.random() * 4);
+    for (let i = 1; i <= numRounds; i++) {
+        const buyOrd = Math.floor(50 + Math.random() * 200);
+        const sellOrd = Math.floor(50 + Math.random() * 200);
+        const imbalance = buyOrd - sellOrd;
+        const imbalanceDir = imbalance > 0 ? 'Buy surplus' : imbalance < 0 ? 'Sell surplus' : 'Balanced';
+        const balanced = i === numRounds;
+        if (!balanced) currentPrice += imbalance * 0.002;
+        else currentPrice = fixPrice;
+        rounds.push({
+            round: i, price: currentPrice, buyOrders: buyOrd, sellOrders: sellOrd,
+            imbalance: Math.abs(imbalance), direction: imbalanceDir,
+            status: balanced ? 'FIXED' : 'Imbalanced — next round'
+        });
+        buyVol += buyOrd; sellVol += sellOrd;
+    }
+
+    let html = `<div class="card">
+        <div class="card-title">${tip('LBMA Gold Price') === tip(auction.name) ? tip(auction.name) : auction.name} — ${tip('Auction Trade')}</div>
+        <p style="font-size:0.78rem; color:var(--text-body); margin-bottom:10px;">
+            The ${auction.name} is determined via electronic auction administered by ${tip('IBA')}.
+            ${auction.participants} direct participants submit aggregated buy/sell orders.
+            Auction runs in ${auction.roundDuration} rounds until buy and sell volumes balance within tolerance.
+        </p>
+
+        <table class="enrich-table">
+            <tr><td>Benchmark</td><td class="fw-bold">${auction.name}</td></tr>
+            <tr><td>Administrator</td><td>${auction.administrator}</td></tr>
+            <tr><td>Auction Time(s)</td><td>${auction.times.join(' | ')}</td></tr>
+            <tr><td>Currency</td><td>${auction.currency}</td></tr>
+            <tr><td>Participants</td><td>${auction.participants} direct participants</td></tr>
+            <tr><td>Round Duration</td><td>${auction.roundDuration}</td></tr>
+            <tr><td>Fix Price</td><td class="fw-bold" style="color:var(--primary); font-size:1rem;">${formatUSD(fixPrice)}</td></tr>
+        </table>
+
+        <h4 style="font-size:0.82rem; margin:14px 0 8px; color:var(--primary);">Simulated Auction Rounds</h4>
+        <div style="border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;">`;
+
+    rounds.forEach(r => {
+        const statusColor = r.status === 'FIXED' ? '#2f855a' : '#b7791f';
+        html += `<div class="auction-round">
+            <span class="auction-round-num">${r.round}</span>
+            <span style="flex:1;">Price: <strong>${formatUSD(r.price)}</strong></span>
+            <span style="font-size:0.72rem;">Buy: ${r.buyOrders} | Sell: ${r.sellOrders}</span>
+            <span style="font-size:0.72rem; color:${statusColor}; font-weight:600;">${r.status}</span>
+        </div>`;
+    });
+
+    html += `</div>
+        <div style="margin-top:10px; font-size:0.72rem; color:var(--text-muted);">
+            Total volume: Buy ${buyVol} orders | Sell ${sellVol} orders | ${numRounds} rounds to fix.
+            Settlement: ${tip('Loco London')}, T+2 via ${tip('LPMCL')} unallocated accounts.
+        </div>
+    </div>`;
+    return html;
+}
+
+
+// ============================================================
+// SECTION 37: CFTC TRADE REPORTING
+// ============================================================
+
+function renderCFTCReport(trade) {
+    const com = COMMODITIES[trade.commodity];
+    // CFTC reporting applies to US exchange-traded commodity derivatives
+    if (!['COMEX', 'NYMEX'].includes(com.exchange) && trade.productType !== 'Future' && !isOptionType(trade.productType)) return '';
+
+    const reportingLevels = { Au: 200, Ag: 150, Cu: 50, Ni: 50, Pt: 50, Pd: 25 };
+    const reportingLevel = reportingLevels[trade.commodity] || 100;
+    const isReportable = trade.quantity >= reportingLevel;
+    const traderCategory = trade.quantity >= reportingLevel * 2 ? 'Commercial' : 'Non-Commercial (Managed Money)';
+
+    // CFTC Form 102 fields
+    const cftcId = 'CFTC-' + trade.id.replace('TRD-', '');
+    const specialAccountNumber = 'SA-' + Math.floor(10000 + Math.random() * 90000);
+    const reportDate = trade.tradeDate;
+    const commodityCode = com.futuresCode;
+    const contractMonth = trade.futurePromptDate ? trade.futurePromptDate.slice(0, 7) : (trade.expiryDate ? trade.expiryDate.slice(0, 7) : trade.valueDate.slice(0, 7));
+
+    let html = `<div style="margin-top:16px;">
+        <h4 style="font-size:0.92rem; margin-bottom:10px;">
+            <span class="cftc-badge">${tip('CFTC')}</span> Large Trader Report — Form 102
+        </h4>
+        <p style="font-size:0.78rem; color:var(--text-body); margin-bottom:10px;">
+            The ${tip('CFTC')} requires reporting firms to file daily position reports for traders whose positions
+            reach or exceed specified ${tip('Large Trader')} reporting levels.
+            ${tip('Form 102')} identifies the trader and their controller.
+            The ${tip('COT Report')} aggregates positions by trader category and is published weekly.
+        </p>
+
+        <table class="enrich-table">
+            <tr><td colspan="2" style="background:var(--bg-page); font-weight:700;">CFTC Large Trader Report — Record Type 1 (Position Data)</td></tr>
+            <tr><td>Report Date</td><td>${reportDate}</td></tr>
+            <tr><td>Reporting Firm ID</td><td>RF-${Math.floor(1000 + Math.random() * 9000)}</td></tr>
+            <tr><td>Special Account Number</td><td style="font-family:'Courier New',monospace;">${specialAccountNumber}</td></tr>
+            <tr><td>Commodity Code</td><td style="font-family:'Courier New',monospace;">${commodityCode} (${com.name})</td></tr>
+            <tr><td>Exchange Code</td><td>${com.exchange === 'COMEX' || com.exchange === 'NYMEX' ? 'CME Group' : com.exchange}</td></tr>
+            <tr><td>Contract Month</td><td>${contractMonth}</td></tr>
+            <tr><td>Put/Call</td><td>${isOptionType(trade.productType) ? (trade.callPut === 'Call' ? 'C' : 'P') : 'F (Futures)'}</td></tr>
+            <tr><td>Strike Price</td><td>${isOptionType(trade.productType) ? formatUSD(trade.strike) : 'N/A'}</td></tr>
+            <tr><td>Long Positions</td><td class="fw-bold">${trade.buySell === 'Buy' ? trade.quantity + ' contracts' : '0'}</td></tr>
+            <tr><td>Short Positions</td><td class="fw-bold">${trade.buySell === 'Sell' ? trade.quantity + ' contracts' : '0'}</td></tr>
+            <tr><td>Reporting Level</td><td>${reportingLevel} contracts</td></tr>
+            <tr><td>Reportable?</td><td class="fw-bold ${isReportable ? 'text-success' : 'text-muted'}">${isReportable ? 'YES — exceeds reporting level' : 'NO — below threshold'}</td></tr>
+        </table>
+
+        <table class="enrich-table" style="margin-top:10px;">
+            <tr><td colspan="2" style="background:var(--bg-page); font-weight:700;">Form 102 — Trader Identification</td></tr>
+            <tr><td>Account Controller Name</td><td>${trade.counterparty}</td></tr>
+            <tr><td>Account Controller NFA ID</td><td>NFA-${Math.floor(100000 + Math.random() * 900000)}</td></tr>
+            <tr><td>Trader Category</td><td>${traderCategory}</td></tr>
+            <tr><td>Trader Sub-Category</td><td>${traderCategory === 'Commercial' ? 'Producer/Merchant/Processor' : 'Money Manager'}</td></tr>
+            <tr><td>Country of Domicile</td><td>US</td></tr>
+            <tr><td>Omnibus Account?</td><td>No</td></tr>
+            <tr><td>Reportable Position Origin</td><td>${trade.buySell === 'Buy' ? 'Customer' : 'Proprietary'}</td></tr>
+        </table>
+
+        <table class="enrich-table" style="margin-top:10px;">
+            <tr><td colspan="2" style="background:var(--bg-page); font-weight:700;">${tip('COT Report')} Classification</td></tr>
+            <tr><td>Report Category</td><td>Disaggregated COT (Futures + Options Combined)</td></tr>
+            <tr><td>Classification</td><td>${traderCategory}</td></tr>
+            <tr><td>Spreading</td><td>${isOptionType(trade.productType) ? 'Options spreading: 0 contracts' : 'N/A'}</td></tr>
+            <tr><td>Concentration Ratio (CR4)</td><td>${(5 + Math.random() * 15).toFixed(1)}% of open interest</td></tr>
+            <tr><td>Publication</td><td>Every Friday 3:30 PM ET (as of preceding Tuesday)</td></tr>
+        </table>
+
+        <div style="margin-top:10px; padding:8px; background:var(--bg-page); border-radius:var(--radius); font-size:0.72rem; color:var(--text-muted);">
+            <strong>CFTC Reporting Levels (${com.name}):</strong>
+            Futures: ${reportingLevel} contracts | Options: ${reportingLevel} contracts (delta-adjusted equivalent).
+            Reports due by 9:00 AM ET on the next business day. Part 17 / Part 18 of CFTC Regulations.
+        </div>
+    </div>`;
+    return html;
+}
+
+
+// ============================================================
+// SECTION 38: LME WARRANT MANAGEMENT & DELIVERY PROCESS
+// ============================================================
+
+function generateWarrantNumber(metal) {
+    return 'LME-' + metal.toUpperCase() + '-W' + Math.floor(10000 + Math.random() * 90000);
+}
+
+function generateLMEWarrants(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const wData = LME_WARRANT_DATA[trade.commodity];
+    if (!wData) return [];
+
+    const warrants = [];
+    const numWarrants = trade.quantity; // 1 warrant per lot
+    for (let i = 0; i < numWarrants; i++) {
+        const loc = wData.warehouseLocations[Math.floor(Math.random() * wData.warehouseLocations.length)];
+        const brand = wData.brands[Math.floor(Math.random() * wData.brands.length)];
+        const weight = parseFloat(com.contractSize).toFixed(3);
+        warrants.push({
+            warrantNumber: generateWarrantNumber(trade.commodity),
+            metal: com.name,
+            brand: brand,
+            weight: weight + ' ' + com.unit,
+            location: loc,
+            warehouse: loc + ' Warehouse Co.',
+            status: 'LIVE',
+            issueDate: trade.tradeDate,
+            rentPerDay: wData.rentPerDay,
+            daysHeld: Math.floor(Math.random() * 60) + 1,
+            lotSize: wData.parcelSize
+        });
+    }
+    return warrants;
+}
+
+function renderLMEWarrantPanel(trade) {
+    const com = COMMODITIES[trade.commodity];
+    if (com.type !== 'base') return '';
+    const wData = LME_WARRANT_DATA[trade.commodity];
+    if (!wData) return '';
+
+    if (!trade._warrants) trade._warrants = generateLMEWarrants(trade);
+
+    let html = `<div class="card">
+        <div class="card-title">${tip('LME Warrant')} Management — ${com.name}</div>
+        <p style="font-size:0.78rem; color:var(--text-body); margin-bottom:10px;">
+            An LME warrant is a document of title to a specific lot of ${com.name} in an LME-approved warehouse.
+            Standard lot: ${wData.parcelSize}. Warrants are transferred electronically via ${tip('LMEsword')}.
+        </p>
+
+        <table class="enrich-table" style="margin-bottom:14px;">
+            <tr><td>Standard Lot Size</td><td class="fw-bold">${wData.parcelSize}</td></tr>
+            <tr><td>Approved Brands</td><td>${wData.brands.join(', ')}</td></tr>
+            <tr><td>Warehouse Locations</td><td>${wData.warehouseLocations.join(', ')}</td></tr>
+            <tr><td>${tip('Warrant Rent')}</td><td>$${wData.rentPerDay.toFixed(2)} per MT per day</td></tr>
+            <tr><td>Insurance</td><td>${(wData.insurancePct * 100).toFixed(1)}% of metal value per annum</td></tr>
+            <tr><td>Transfer System</td><td>${tip('LMEsword')} (electronic warrant register)</td></tr>
+        </table>
+
+        <h4 style="font-size:0.82rem; margin-bottom:8px; color:var(--primary);">Warrants Held (${trade._warrants.length})</h4>`;
+
+    trade._warrants.forEach(w => {
+        const statusClass = w.status === 'LIVE' ? 'warrant-live' : w.status === 'CANCELLED' ? 'warrant-cancelled' : 'warrant-delivered';
+        const rentAccrued = (w.rentPerDay * w.daysHeld * parseFloat(w.weight)).toFixed(2);
+        html += `<div class="warrant-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <strong style="font-family:'Courier New',monospace; font-size:0.82rem;">${w.warrantNumber}</strong>
+                <span class="warrant-status ${statusClass}">${w.status === 'LIVE' ? tip('Live Warrant') : w.status === 'CANCELLED' ? tip('Cancelled Warrant') : 'DELIVERED'}</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; font-size:0.75rem;">
+                <span>Brand: <strong>${w.brand}</strong></span>
+                <span>Weight: <strong>${w.weight}</strong></span>
+                <span>Location: <strong>${w.location}</strong></span>
+                <span>Warehouse: ${w.warehouse}</span>
+                <span>Issued: ${datePretty(w.issueDate)}</span>
+                <span>Days held: ${w.daysHeld}</span>
+            </div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">
+                Rent accrued: $${rentAccrued} (${w.daysHeld} days x $${w.rentPerDay}/MT/day x ${w.weight.split(' ')[0]} MT)
+            </div>
+            ${w.status === 'LIVE' ? `<div style="margin-top:6px;">
+                <button class="btn btn-outline btn-sm" onclick="cancelWarrant('${trade.id}', '${w.warrantNumber}')" style="font-size:0.7rem;">Cancel Warrant</button>
+            </div>` : ''}
+        </div>`;
+    });
+
+    // Delivery process explanation
+    html += `<div style="margin-top:16px; padding:12px; background:var(--bg-page); border-radius:var(--radius);">
+        <h4 style="font-size:0.82rem; margin-bottom:8px; color:var(--primary);">${tip('LME Delivery')} Process</h4>
+        <ol style="font-size:0.78rem; line-height:1.8; margin-left:18px;">
+            <li><strong>Prompt Date Approaches:</strong> Short position holder must deliver warrants to the long position holder.</li>
+            <li><strong>Warrant Selection:</strong> Short selects warrants from their ${tip('LMEsword')} account (specific brand, location).</li>
+            <li><strong>LMEsword Transfer:</strong> Warrants are electronically transferred from short's to long's ${tip('LMEsword')} account on prompt date.</li>
+            <li><strong>Payment:</strong> Long pays the settlement price x lot size to the short.</li>
+            <li><strong>Cancellation (optional):</strong> Long may "cancel" the warrant — instructing the warehouse to prepare metal for physical withdrawal.</li>
+            <li><strong>Physical Withdrawal:</strong> Metal is loaded out from the warehouse. Rent ceases on the load-out date.</li>
+        </ol>
+        <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+            <strong>Queue rules:</strong> Warehouses must load out a minimum of 3,000 MT/day (for metals with large stocks).
+            ${tip('Cancelled Warrant')}s are reported daily by the LME and indicate metal leaving the warehouse system.
+            The "cancelled warrant ratio" (cancelled / total) is a key market indicator of physical demand.
+        </p>
+    </div>`;
+
+    // Total rent summary
+    const totalRent = trade._warrants.reduce((s, w) => s + w.rentPerDay * w.daysHeld * parseFloat(w.weight), 0);
+    html += `<div style="margin-top:10px; font-size:0.78rem;">
+        <strong>Total Warrant Rent Accrued:</strong> <span class="text-danger">${formatUSD(totalRent)}</span>
+        across ${trade._warrants.length} warrants.
+    </div>`;
+
+    html += `</div>`;
+    return html;
+}
+
+function cancelWarrant(tradeId, warrantNumber) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade || !trade._warrants) return;
+    const w = trade._warrants.find(wr => wr.warrantNumber === warrantNumber);
+    if (!w || w.status !== 'LIVE') return;
+    w.status = 'CANCELLED';
+    addEvent(trade, 'AMEND', `LME Warrant ${warrantNumber} cancelled. Metal scheduled for withdrawal from ${w.location} warehouse. Brand: ${w.brand}, Weight: ${w.weight}.`);
+    updateSidebar();
+    const t = getCurrentTrade();
+    if (t && t.id === tradeId) renderTradeView(t);
 }
 </script>
 
