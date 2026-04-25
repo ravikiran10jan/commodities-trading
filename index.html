@@ -1116,6 +1116,118 @@ const HEDGING_STRATEGIES = {
     }
 };
 
+// Trading Strategies — defines multi-leg structures for strategy booking
+const TRADING_STRATEGIES = {
+    'N/A': {
+        label: 'N/A — Single Leg',
+        legs: 1,
+        description: 'Standard single-leg trade with no strategy linkage.',
+        requiresOptions: false,
+        autoFields: null
+    },
+    'Zero-Cost Collar': {
+        label: 'Zero-Cost Collar (Producer Hedge)',
+        legs: 2,
+        description: 'Buy a protective put (floor) and sell a call (cap) where premiums approximately offset to zero net cost.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.05, premiumLabel: 'Put Premium' },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: +0.05, premiumLabel: 'Call Premium' }
+        ]
+    },
+    'Protective Put': {
+        label: 'Protective Put',
+        legs: 2,
+        description: 'Long physical/future position plus a bought put for downside protection.',
+        requiresOptions: false,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Spot', callPut: null, strikeOffset: 0, premiumLabel: null },
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.05, premiumLabel: 'Put Premium' }
+        ]
+    },
+    'Covered Call': {
+        label: 'Covered Call',
+        legs: 2,
+        description: 'Long physical/future position plus a sold call to generate premium income.',
+        requiresOptions: false,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Spot', callPut: null, strikeOffset: 0, premiumLabel: null },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: +0.05, premiumLabel: 'Call Premium' }
+        ]
+    },
+    'Straddle': {
+        label: 'Straddle (Long Volatility)',
+        legs: 2,
+        description: 'Buy a call and a put at the same strike to profit from large price moves in either direction.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: 0, premiumLabel: 'Call Premium' },
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: 0, premiumLabel: 'Put Premium' }
+        ]
+    },
+    'Strangle': {
+        label: 'Strangle (Long Volatility)',
+        legs: 2,
+        description: 'Buy an OTM call and an OTM put to profit from large moves, at lower cost than a straddle.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: +0.03, premiumLabel: 'Call Premium' },
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.03, premiumLabel: 'Put Premium' }
+        ]
+    },
+    'Bull Call Spread': {
+        label: 'Bull Call Spread',
+        legs: 2,
+        description: 'Buy a lower-strike call and sell a higher-strike call to profit from moderate price increases at reduced cost.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: -0.02, premiumLabel: 'Long Call Premium' },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: +0.03, premiumLabel: 'Short Call Premium' }
+        ]
+    },
+    'Bear Put Spread': {
+        label: 'Bear Put Spread',
+        legs: 2,
+        description: 'Buy a higher-strike put and sell a lower-strike put to profit from moderate price decreases at reduced cost.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: +0.02, premiumLabel: 'Long Put Premium' },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.03, premiumLabel: 'Short Put Premium' }
+        ]
+    },
+    'Calendar Spread': {
+        label: 'Calendar Spread (Time Spread)',
+        legs: 2,
+        description: 'Sell a near-month future and buy a far-month future on the same commodity to trade the contango/backwardation.',
+        requiresOptions: false,
+        autoFields: [
+            { buySell: 'Sell', productType: 'Future', callPut: null, strikeOffset: 0, premiumLabel: null, tenorNear: true },
+            { buySell: 'Buy', productType: 'Future', callPut: null, strikeOffset: 0, premiumLabel: null, tenorFar: true }
+        ]
+    },
+    'Risk Reversal': {
+        label: 'Risk Reversal (Consumer Hedge)',
+        legs: 2,
+        description: 'Buy a call (ceiling) and sell a put (floor) — the opposite of a collar. Protects consumers against price increases.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: +0.05, premiumLabel: 'Call Premium' },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.05, premiumLabel: 'Put Premium' }
+        ]
+    },
+    'Fence (3-Way)': {
+        label: 'Fence / 3-Way Collar',
+        legs: 3,
+        description: 'A collar enhanced with an additional sold put below the bought put. Producer gets protection but with a gap below.',
+        requiresOptions: true,
+        autoFields: [
+            { buySell: 'Buy', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.04, premiumLabel: 'Bought Put' },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Call', strikeOffset: +0.05, premiumLabel: 'Sold Call' },
+            { buySell: 'Sell', productType: 'Vanilla Option', callPut: 'Put', strikeOffset: -0.10, premiumLabel: 'Sold Put (floor gap)' }
+        ]
+    }
+};
+
 const LME_WARRANT_EXAMPLE = {
     warrantNumber: 'LME-WNT-2026-04187',
     metal: 'Copper', brand: 'Aurubis AG — Grade A Cathode', shape: 'Cathode',
@@ -1487,6 +1599,10 @@ function createTradeObject(formData) {
         // Hedging
         hedgingStrategy: null,
         deltaHedgeTrade: null,
+        // Strategy
+        strategy: formData.strategy || 'N/A',
+        strategyGroup: formData.strategyGroup || null,
+        strategyLegIndex: formData.strategyLegIndex != null ? formData.strategyLegIndex : null,
         // Lifecycle events
         tradeStatus: 'LIVE',
         eventLog: [{ type: 'NEW', timestamp: new Date().toISOString(), detail: 'Trade captured', emirAction: 'NEWT', emirEvent: 'TRAD', user: 'SYS' }],
@@ -1671,6 +1787,14 @@ function buildCaptureFormHTML(t, isEdit) {
                     </select>
                 </div>
                 <div class="form-group">
+                    <label>Strategy</label>
+                    <select id="strategy" onchange="onStrategyChange()">
+                        ${Object.entries(TRADING_STRATEGIES).map(([key, s]) =>
+                            `<option value="${key}" ${t && t.strategy === key ? 'selected' : ''}>${s.label}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Product Type</label>
                     <select id="productType" onchange="onProductTypeChange()" required>${productOptions}</select>
                 </div>
@@ -1730,7 +1854,7 @@ function buildCaptureFormHTML(t, isEdit) {
                         </div>
                         <div class="form-group">
                             <label>${tip('Strike Price')} (USD/${COMMODITIES[defaultCom].unit})</label>
-                            <input type="number" id="strikePrice" value="${t && t.strike ? t.strike : defaultPrice}" step="${COMMODITIES[defaultCom].tick}" onchange="onStrikeChange()" oninput="onStrikeChange()" required>
+                            <input type="number" id="strikePrice" value="${t && t.strike ? t.strike : defaultPrice}" step="any" min="0" onchange="onStrikeChange()" oninput="onStrikeChange()">
                         </div>
                         <div class="form-group">
                             <label>${tip('Premium')} per unit (USD)</label>
@@ -1816,6 +1940,12 @@ function buildCaptureFormHTML(t, isEdit) {
                 </div>
             </div>
 
+                <!-- Strategy Preview Panel -->
+                <div class="option-fields-group" id="strategyPreviewGroup" style="display:none">
+                    <div class="option-section-label">Strategy Legs Preview</div>
+                    <div id="strategyPreviewContent"></div>
+                </div>
+
                 <!-- Metal Account Type (Precious metals) -->
                 <div class="form-group full-width" id="metalAccountGroup" style="display:${COMMODITIES[defaultCom].type === 'precious' ? 'block' : 'none'}">
                     <label>${tip('Allocated')} vs ${tip('Unallocated')} Metal Account</label>
@@ -1884,6 +2014,104 @@ function renderStage1(trade) {
 // SECTION 12: STAGE 1 — EVENT HANDLERS
 // ============================================================
 
+function onStrategyChange() {
+    const stratKey = document.getElementById('strategy')?.value || 'N/A';
+    const strat = TRADING_STRATEGIES[stratKey];
+    const previewGroup = document.getElementById('strategyPreviewGroup');
+    const previewContent = document.getElementById('strategyPreviewContent');
+    const com = document.getElementById('commodity')?.value || 'Au';
+    const spot = getMarketPrice(com);
+    const comData = COMMODITIES[com];
+
+    if (stratKey === 'N/A' || !strat || !strat.autoFields) {
+        if (previewGroup) previewGroup.style.display = 'none';
+        return;
+    }
+
+    // Show strategy preview
+    if (previewGroup) previewGroup.style.display = 'block';
+
+    // Auto-set form fields for first leg
+    const firstLeg = strat.autoFields[0];
+    const buySellEl = document.getElementById('buySell');
+    const ptEl = document.getElementById('productType');
+    if (buySellEl) buySellEl.value = firstLeg.buySell;
+
+    if (firstLeg.productType && ptEl) {
+        ptEl.value = firstLeg.productType;
+        onProductTypeChange();
+    }
+
+    if (firstLeg.callPut) {
+        const cpEl = document.getElementById('callPut');
+        if (cpEl) cpEl.value = firstLeg.callPut;
+    }
+    if (firstLeg.strikeOffset !== undefined && firstLeg.callPut) {
+        const strikeEl = document.getElementById('strikePrice');
+        if (strikeEl) strikeEl.value = Math.round(spot * (1 + firstLeg.strikeOffset) * 100) / 100;
+        onStrikeChange();
+    }
+
+    // Render strategy leg preview
+    if (previewContent) {
+        let html = `<p style="font-size:0.82rem; margin-bottom:10px;">${strat.description}</p>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
+                <strong>${strat.legs} leg(s)</strong> will be booked simultaneously. Leg 1 parameters are shown in the form above.
+                All legs share the same commodity, quantity, counterparty, and dates.
+            </p>
+            <table class="enrich-table" style="margin-bottom:0;">
+                <thead><tr style="background:var(--bg-page);">
+                    <th style="padding:4px 8px; font-size:0.75rem;">Leg</th>
+                    <th style="padding:4px 8px; font-size:0.75rem;">Direction</th>
+                    <th style="padding:4px 8px; font-size:0.75rem;">Product</th>
+                    <th style="padding:4px 8px; font-size:0.75rem;">Type</th>
+                    <th style="padding:4px 8px; font-size:0.75rem;">Strike / Price</th>
+                    <th style="padding:4px 8px; font-size:0.75rem;">Est. Premium</th>
+                </tr></thead><tbody>`;
+
+        let totalPremiumNet = 0;
+        strat.autoFields.forEach((leg, i) => {
+            const strike = leg.strikeOffset !== undefined && leg.callPut
+                ? Math.round(spot * (1 + leg.strikeOffset) * 100) / 100
+                : spot;
+            let estPrem = 0;
+            if (isOptionType(leg.productType) && leg.callPut) {
+                const T = 30 / 365;
+                estPrem = black76Price(spot, strike, T, 0.05, 0.20, leg.callPut);
+                estPrem = Math.max(0.01, estPrem);
+                if (leg.buySell === 'Buy') totalPremiumNet -= estPrem;
+                else totalPremiumNet += estPrem;
+            }
+            const dirClass = leg.buySell === 'Buy' ? 'badge-buy' : 'badge-sell';
+
+            html += `<tr${i === 0 ? ' style="background:#ebf8ff;"' : ''}>
+                <td style="padding:4px 8px; font-size:0.78rem;"><strong>Leg ${i + 1}</strong>${i === 0 ? ' (primary)' : ''}</td>
+                <td style="padding:4px 8px;"><span class="badge ${dirClass}">${leg.buySell}</span></td>
+                <td style="padding:4px 8px; font-size:0.78rem;">${leg.productType}</td>
+                <td style="padding:4px 8px; font-size:0.78rem;">${leg.callPut || '—'}</td>
+                <td style="padding:4px 8px; font-size:0.78rem; font-weight:600;">${formatUSD(strike)}</td>
+                <td style="padding:4px 8px; font-size:0.78rem;">${estPrem > 0 ? formatUSD(estPrem) + '/' + comData.unit : '—'}</td>
+            </tr>`;
+        });
+
+        if (strat.autoFields.some(l => isOptionType(l.productType))) {
+            const qty = parseInt(document.getElementById('quantity')?.value) || 1;
+            const netTotal = totalPremiumNet * qty * comData.contractSize;
+            html += `<tr style="border-top:2px solid var(--border); font-weight:700;">
+                <td colspan="5" style="padding:4px 8px; font-size:0.78rem;">Net Premium (${qty} lot${qty > 1 ? 's' : ''} x ${comData.contractSize} ${comData.unit})</td>
+                <td style="padding:4px 8px; font-size:0.85rem; color:${totalPremiumNet >= 0 ? '#2f855a' : '#c53030'};">
+                    ${totalPremiumNet >= 0 ? 'Receive ' : 'Pay '}${formatUSD(Math.abs(netTotal))}
+                </td>
+            </tr>`;
+        }
+
+        html += `</tbody></table>`;
+        previewContent.innerHTML = html;
+    }
+
+    updateNotional();
+}
+
 function onProductTypeChange() {
     const pt = document.getElementById('productType').value;
     const com = document.getElementById('commodity').value;
@@ -1928,7 +2156,7 @@ function onCommodityChange() {
     if (pt === 'Future') populatePromptDates();
     if (isOptionType(pt)) {
         document.getElementById('strikePrice').value = getMarketPrice(com);
-        document.getElementById('strikePrice').step = COMMODITIES[com].tick;
+        document.getElementById('strikePrice').step = 'any';
         autoEstimatePremium();
     }
     // Show/hide metal account for precious metals
@@ -2055,6 +2283,16 @@ function updateNotional() {
 function handleCapture(event, editTradeId) {
     event.preventDefault();
     const pt = document.getElementById('productType').value;
+    const strategyVal = document.getElementById('strategy')?.value || 'N/A';
+    // Programmatic validation: option trades need a strike price (unless strategy auto-calculates)
+    if (isOptionType(pt) && strategyVal === 'N/A') {
+        const strikeVal = parseFloat(document.getElementById('strikePrice')?.value);
+        if (!strikeVal || strikeVal <= 0) {
+            alert('Please enter a valid Strike Price for option trades.');
+            document.getElementById('strikePrice')?.focus();
+            return;
+        }
+    }
     const formData = {
         tradeDate: document.getElementById('tradeDate').value,
         counterparty: document.getElementById('counterparty').value,
@@ -2082,7 +2320,8 @@ function handleCapture(event, editTradeId) {
         barrierLevel: document.getElementById('barrierLevel')?.value || null,
         barrierMonitoring: document.getElementById('barrierMonitoring')?.value || null,
         rebateAmount: document.getElementById('rebateAmount')?.value || null,
-        metalAccount: document.getElementById('metalAccount')?.value || 'Unallocated'
+        metalAccount: document.getElementById('metalAccount')?.value || 'Unallocated',
+        strategy: document.getElementById('strategy')?.value || 'N/A'
     };
 
     let trade;
@@ -2132,9 +2371,62 @@ function handleCapture(event, editTradeId) {
         trade.stage = 2;
         state.editingCapture = false;
     } else {
-        trade = createTradeObject(formData);
-        trade.stage = 2;
-        state.trades.push(trade);
+        const strat = TRADING_STRATEGIES[formData.strategy];
+        if (formData.strategy !== 'N/A' && strat && strat.autoFields) {
+            // Multi-leg strategy booking
+            const stratGroupId = 'STRAT-' + Date.now();
+            const com = COMMODITIES[formData.commodity];
+            const spot = getMarketPrice(formData.commodity);
+            const legs = strat.autoFields;
+            const createdTrades = [];
+
+            for (let i = 0; i < legs.length; i++) {
+                const leg = legs[i];
+                const legData = { ...formData };
+                legData.buySell = leg.buySell;
+                legData.productType = leg.productType;
+                legData.strategy = formData.strategy;
+                legData.strategyGroup = stratGroupId;
+                legData.strategyLegIndex = i;
+
+                if (leg.callPut) legData.callPut = leg.callPut;
+                if (leg.strikeOffset !== undefined && leg.callPut) {
+                    legData.strike = String(Math.round(spot * (1 + leg.strikeOffset) * 100) / 100);
+                }
+                // Calendar spread: near vs far month
+                if (leg.tenorNear) {
+                    legData.futurePromptDate = dateStr(addMonths(formData.tradeDate, 1));
+                } else if (leg.tenorFar) {
+                    legData.futurePromptDate = dateStr(addMonths(formData.tradeDate, 3));
+                }
+                // Auto-estimate premium for option legs
+                if (isOptionType(leg.productType) && !legData.premium) {
+                    const strike = parseFloat(legData.strike) || spot;
+                    const T = 30 / 365;
+                    const sigma = 0.20;
+                    const r = 0.05;
+                    const cp = leg.callPut || 'Call';
+                    const estPrem = black76Price(spot, strike, T, r, sigma, cp);
+                    legData.premium = String(Math.max(0.01, estPrem).toFixed(2));
+                    legData.expiryDate = legData.expiryDate || dateStr(addBusinessDays(formData.tradeDate, 30));
+                    legData.exerciseStyle = legData.exerciseStyle || 'European';
+                }
+
+                const legTrade = createTradeObject(legData);
+                legTrade.stage = 2;
+                legTrade.strategy = formData.strategy;
+                legTrade.strategyGroup = stratGroupId;
+                legTrade.strategyLegIndex = i;
+                legTrade.eventLog[0].detail = `Strategy: ${formData.strategy} — Leg ${i + 1}/${legs.length} (${leg.buySell} ${leg.productType}${leg.callPut ? ' ' + leg.callPut : ''})`;
+                state.trades.push(legTrade);
+                createdTrades.push(legTrade);
+            }
+            trade = createdTrades[0]; // Focus on first leg
+        } else {
+            trade = createTradeObject(formData);
+            trade.stage = 2;
+            state.trades.push(trade);
+        }
     }
 
     state.currentTradeId = trade.id;
@@ -3008,7 +3300,7 @@ function renderBlotterHTML(highlightId) {
         <div style="overflow-x:auto;">
         <table class="data-table">
             <thead><tr>
-                <th>Trade ID</th><th>Commodity</th><th>B/S</th><th>Product</th><th>Qty</th>
+                <th>Trade ID</th><th>Commodity</th><th>B/S</th><th>Product</th><th>Strategy</th><th>Qty</th>
                 <th>Price</th><th>Strike</th><th>Premium</th><th>Type Detail</th>
                 <th>Notional</th><th>Counterparty</th>
                 <th>Value Date</th><th>Status</th><th>Stage</th><th>Unrealised P&L</th><th></th>
@@ -3044,6 +3336,7 @@ function renderBlotterHTML(highlightId) {
             <td>${com.name} (${t.commodity})</td>
             <td><span class="badge ${t.buySell === 'Buy' ? 'badge-buy' : 'badge-sell'}">${t.buySell}</span></td>
             <td>${t.productType}</td>
+            <td style="font-size:0.72rem;">${t.strategy && t.strategy !== 'N/A' ? t.strategy : '—'}</td>
             <td>${t.quantity}</td>
             <td>${formatUSD(t.price)}</td>
             <td>${isOpt ? formatUSD(t.strike) : '---'}</td>
