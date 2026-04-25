@@ -603,13 +603,74 @@
 // ============================================================
 
 const COMMODITIES = {
-    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious' },
-    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious' },
-    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious' },
-    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious' },
-    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base' },
-    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base' }
+    Au: { name: 'Gold',      symbol: 'Au', unit: 'troy oz', exchange: 'COMEX', contractSize: 100,  tick: 0.10,  basePrice: 4720,  type: 'precious', futuresCode: 'GC' },
+    Ag: { name: 'Silver',    symbol: 'Ag', unit: 'troy oz', exchange: 'COMEX', contractSize: 5000, tick: 0.005, basePrice: 77,    type: 'precious', futuresCode: 'SI' },
+    Pt: { name: 'Platinum',  symbol: 'Pt', unit: 'troy oz', exchange: 'NYMEX', contractSize: 50,   tick: 0.10,  basePrice: 1830,  type: 'precious', futuresCode: 'PL' },
+    Pd: { name: 'Palladium', symbol: 'Pd', unit: 'troy oz', exchange: 'NYMEX', contractSize: 100,  tick: 0.05,  basePrice: 1490,  type: 'precious', futuresCode: 'PA' },
+    Cu: { name: 'Copper',    symbol: 'Cu', unit: 'MT',      exchange: 'LME',   contractSize: 25,   tick: 0.50,  basePrice: 12600, type: 'base',     futuresCode: 'CA' },
+    Ni: { name: 'Nickel',    symbol: 'Ni', unit: 'MT',      exchange: 'LME',   contractSize: 6,    tick: 5.00,  basePrice: 18500, type: 'base',     futuresCode: 'NI' }
 };
+
+/**
+ * CME Group month codes — industry standard used by CME/COMEX/NYMEX.
+ * LME also adopts this convention for electronic trading on LMEselect.
+ * Format: ProductCode + MonthCode + 2-digit year (e.g. GCZ26 = Gold Dec 2026)
+ */
+const FUTURES_MONTH_CODES = {
+    0: 'F',  // January
+    1: 'G',  // February
+    2: 'H',  // March
+    3: 'J',  // April
+    4: 'K',  // May
+    5: 'M',  // June
+    6: 'N',  // July
+    7: 'Q',  // August
+    8: 'U',  // September
+    9: 'V',  // October
+    10: 'X', // November
+    11: 'Z'  // December
+};
+
+const FUTURES_MONTH_NAMES = {
+    'F': 'Jan', 'G': 'Feb', 'H': 'Mar', 'J': 'Apr', 'K': 'May', 'M': 'Jun',
+    'N': 'Jul', 'Q': 'Aug', 'U': 'Sep', 'V': 'Oct', 'X': 'Nov', 'Z': 'Dec'
+};
+
+/**
+ * Generate the exchange ticker symbol for a futures contract.
+ * CME/COMEX/NYMEX: ProductCode + MonthCode + YY (e.g. GCZ26, SIM27, PLQ26)
+ * LME: ProductCode + MonthCode + YY (same convention on LMEselect)
+ *
+ * @param {string} commoditySym - Commodity symbol (Au, Ag, etc.)
+ * @param {string} promptDate - The delivery/prompt date (YYYY-MM-DD)
+ * @returns {string} Exchange ticker (e.g. "GCZ26")
+ */
+function generateFuturesTicker(commoditySym, promptDate) {
+    if (!promptDate || !commoditySym) return '';
+    const com = COMMODITIES[commoditySym];
+    if (!com) return '';
+    const dt = new Date(promptDate);
+    const monthCode = FUTURES_MONTH_CODES[dt.getMonth()];
+    const yearCode = String(dt.getFullYear()).slice(-2);
+    return com.futuresCode + monthCode + yearCode;
+}
+
+/**
+ * Decode a futures ticker into a human-readable description.
+ * e.g. "GCZ26" -> "Gold Dec 2026 (COMEX)"
+ */
+function decodeFuturesTicker(ticker) {
+    if (!ticker || ticker.length < 4) return '';
+    // Find matching commodity by futures code (2 chars)
+    const code = ticker.slice(0, 2);
+    const monthCode = ticker.slice(2, 3);
+    const yearCode = ticker.slice(3);
+    const com = Object.values(COMMODITIES).find(c => c.futuresCode === code);
+    if (!com) return ticker;
+    const monthName = FUTURES_MONTH_NAMES[monthCode] || '?';
+    const year = '20' + yearCode;
+    return `${com.name} ${monthName} ${year} (${com.exchange})`;
+}
 
 const COUNTERPARTIES = {
     'HSBC':                 { lei: '7LTWFZYICNSX8D621K86', swift: 'MRMDUS33', nostro: 'HSBC-NY-00142',   correspondent: 'HSBC Bank USA, NA' },
@@ -672,7 +733,8 @@ const TOOLTIPS = {
     'Implied Vol':      'The market\'s expectation of future price volatility, implied from option prices',
     'Knock-Out':        'Barrier option that ceases to exist if the underlying reaches the barrier level',
     'Knock-In':         'Barrier option that only activates if the underlying reaches the barrier level',
-    'SPAN':             'Standard Portfolio Analysis of Risk — CME\'s margin methodology for derivatives'
+    'SPAN':             'Standard Portfolio Analysis of Risk — CME\'s margin methodology for derivatives',
+    'Exchange Ticker':  'Standardised contract code: Product + Month letter (F-Z) + Year. E.g. GCZ26 = Gold Dec 2026'
 };
 
 
@@ -919,6 +981,11 @@ function createTradeObject(formData) {
         swapFixedRate: price,
         // Future fields
         futurePromptDate: formData.futurePromptDate || null,
+        exchangeTicker: formData.productType === 'Future'
+            ? generateFuturesTicker(formData.commodity, formData.futurePromptDate)
+            : (formData.productType === 'Vanilla Option'
+                ? generateFuturesTicker(formData.commodity, formData.expiryDate || dateStr(addBusinessDays(formData.tradeDate, 30)))
+                : null),
         // Option fields
         callPut: isOpt ? (formData.callPut || 'Call') : null,
         strike: strike,
@@ -1161,6 +1228,14 @@ function buildCaptureFormHTML(t, isEdit) {
                     <select id="futurePromptDate" onchange="onPromptDateChange()"></select>
                 </div>
 
+                <!-- Future-specific: exchange ticker (auto-generated, read-only) -->
+                <div class="form-group" id="futureTickerGroup" style="display:none">
+                    <label>${tip('Exchange Ticker')}</label>
+                    <input type="text" id="exchangeTicker" value="${t && t.exchangeTicker ? t.exchangeTicker : ''}" readonly
+                           style="font-weight:700; font-size:1.1rem; letter-spacing:1px; color:var(--primary); font-family:'Courier New',monospace;">
+                    <span id="tickerDecoded" style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">${t && t.exchangeTicker ? decodeFuturesTicker(t.exchangeTicker) : ''}</span>
+                </div>
+
                 <!-- Swap-specific: tenor selector -->
                 <div class="form-group" id="swapTenorGroup" style="display:none">
                     <label>Swap Tenor (Months)</label>
@@ -1298,7 +1373,7 @@ function buildCaptureFormHTML(t, isEdit) {
 function renderContractInfo(sym) {
     const c = COMMODITIES[sym];
     return `<strong>${c.name} (${sym})</strong> &mdash; ${c.contractSize} ${c.unit}/contract &bull;
-            Exchange: ${tip(c.exchange)} &bull; Tick: $${c.tick} &bull;
+            Exchange: ${tip(c.exchange)} &bull; Futures code: <strong>${c.futuresCode}</strong> &bull; Tick: $${c.tick} &bull;
             Current market: <strong>${formatUSD(getMarketPrice(sym))}</strong>`;
 }
 
@@ -1316,6 +1391,7 @@ function onProductTypeChange() {
     const com = document.getElementById('commodity').value;
 
     document.getElementById('futurePromptGroup').style.display = pt === 'Future' ? '' : 'none';
+    document.getElementById('futureTickerGroup').style.display = pt === 'Future' ? '' : 'none';
     document.getElementById('swapTenorGroup').style.display = pt === 'Swap' ? '' : 'none';
 
     const isOpt = isOptionType(pt);
@@ -1433,6 +1509,15 @@ function onPromptDateChange() {
     const pd = document.getElementById('futurePromptDate');
     if (pd && pd.value) {
         document.getElementById('valueDate').value = pd.value;
+        // Auto-generate exchange ticker
+        const com = document.getElementById('commodity')?.value;
+        if (com) {
+            const ticker = generateFuturesTicker(com, pd.value);
+            const tickerEl = document.getElementById('exchangeTicker');
+            const decodedEl = document.getElementById('tickerDecoded');
+            if (tickerEl) tickerEl.value = ticker;
+            if (decodedEl) decodedEl.textContent = decodeFuturesTicker(ticker);
+        }
     }
 }
 
@@ -1702,6 +1787,7 @@ function renderStage2(trade) {
         <div class="card-title">Auto-Enrichment</div>
         <table class="enrich-table">
             <tr><td>Trade ID</td><td>${trade.id}</td></tr>
+            ${trade.exchangeTicker ? `<tr><td>${tip('Exchange Ticker')}</td><td><strong style="font-family:\'Courier New\',monospace; font-size:1rem; letter-spacing:1px;">${trade.exchangeTicker}</strong> &mdash; ${decodeFuturesTicker(trade.exchangeTicker)}</td></tr>` : ''}
             <tr><td>Internal Book</td><td>${trade.book}</td></tr>
             <tr><td>Trader Initials</td><td>${trade.traderInitials}</td></tr>
             <tr><td>${tip('SSI')} — Nostro Account</td><td>${trade.ssi?.nostro || 'N/A'}</td></tr>
@@ -1984,7 +2070,7 @@ TRADE ECONOMICS:
   Price:                 ${formatUSD(trade.price)} per ${com.unit}
   ${tip('Notional')}:            ${formatUSD(trade.notional)}
   Venue:                 ${tip(trade.venue) || trade.venue}
-${isFuture ? '  Prompt Date:           ' + datePretty(trade.futurePromptDate || trade.valueDate) + '\n' : ''}
+${isFuture ? '  Prompt Date:           ' + datePretty(trade.futurePromptDate || trade.valueDate) + '\n  ' + tip('Exchange Ticker') + ':      ' + (trade.exchangeTicker || 'N/A') + ' (' + decodeFuturesTicker(trade.exchangeTicker) + ')\n' : ''}
 SETTLEMENT:
   Metal ${metalDir}:       ${formatNum(totalQty, 0)} ${com.unit}
   Cash ${cashDir}:         ${formatUSD(trade.notional)}
@@ -2366,7 +2452,7 @@ function renderBlotterHTML(highlightId) {
         let typeDetail = '---';
         if (isOpt) typeDetail = t.callPut;
         else if (t.productType === 'Swap') typeDetail = t.swapTenor + 'M';
-        else if (t.productType === 'Future') typeDetail = t.futurePromptDate ? datePretty(t.futurePromptDate) : '---';
+        else if (t.productType === 'Future') typeDetail = t.exchangeTicker || (t.futurePromptDate ? datePretty(t.futurePromptDate) : '---');
 
         html += `<tr class="${rowClass}">
             <td class="fw-bold">${t.id}</td>
@@ -3147,12 +3233,13 @@ function renderMarketDataView() {
     html += `<div class="card">
         <div class="card-title">Contract Specifications</div>
         <table class="data-table">
-            <thead><tr><th>Commodity</th><th>Exchange</th><th>Contract Size</th><th>Unit</th><th>Tick</th><th>Type</th></tr></thead>
+            <thead><tr><th>Commodity</th><th>Exchange</th><th>Futures Code</th><th>Contract Size</th><th>Unit</th><th>Tick</th><th>Type</th></tr></thead>
             <tbody>`;
     for (const [sym, com] of Object.entries(COMMODITIES)) {
         html += `<tr>
             <td class="fw-bold">${com.name} (${sym})</td>
             <td>${com.exchange}</td>
+            <td style="font-family:'Courier New',monospace; font-weight:700; letter-spacing:1px;">${com.futuresCode}</td>
             <td>${formatNum(com.contractSize, 0)}</td>
             <td>${com.unit}</td>
             <td>$${com.tick}</td>
