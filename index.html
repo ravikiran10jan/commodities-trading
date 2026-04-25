@@ -1233,6 +1233,436 @@ const LBMA_AUCTIONS = {
 };
 
 /**
+ * CONTRACT_SPECIFICATIONS — Authoritative exchange contract specifications.
+ *
+ * Sources: CME Group (COMEX/NYMEX), London Metal Exchange (LME).
+ *
+ * "1 lot" = 1 standard futures contract = contractSize units of the commodity.
+ *   Gold:      1 lot = 100 troy oz   (COMEX GC)
+ *   Silver:    1 lot = 5,000 troy oz (COMEX SI)
+ *   Platinum:  1 lot = 50 troy oz    (NYMEX PL)
+ *   Palladium: 1 lot = 100 troy oz   (NYMEX PA)
+ *   Copper:    1 lot = 25 MT         (LME CA)
+ *   Nickel:    1 lot = 6 MT          (LME NI)
+ *   Aluminium: 1 lot = 25 MT         (LME AH)
+ *   Zinc:      1 lot = 25 MT         (LME ZS)
+ *   Tin:       1 lot = 5 MT          (LME SN)
+ *   Lead:      1 lot = 25 MT         (LME PB)
+ */
+const CONTRACT_SPECIFICATIONS = {
+    // ── COMEX Precious Metals (CME Group — COMEX Division) ──────────────
+    Au: {
+        exchangeFull:      'COMEX (Commodity Exchange, Inc.) — CME Group',
+        mic:               'XCEC',
+        clearingHouse:     'CME Clearing',
+        currency:          'USD',
+        priceQuotation:    'USD per troy ounce',
+        contractSize:      100,
+        contractUnit:      '100 troy ounces',
+        tickSize:          0.10,
+        tickValue:         10.00,       // 100 oz × $0.10 = $10.00
+        deliveryMonths:    ['G','J','M','Q','Z'],  // Feb, Apr, Jun, Aug, Dec — listed up to 72 months out
+        nearbyMonths:      ['F','H','K','N','V','X'], // Jan, Mar, May, Jul, Oct, Nov — nearest 3 months
+        settlementType:    'Physical',
+        lastTradingDay:    'Third-to-last business day of the delivery month',
+        firstNoticeDay:    'Last business day of the month preceding the delivery month',
+        deliveryPeriod:    'Any business day beginning on the first business day of the delivery month through the last business day of the delivery month',
+        qualityGrade:      'Minimum 995 fineness',
+        deliveryPoints:    'Licensed depositories in the New York metropolitan area',
+        tradingHours:      'Sun-Fri 17:00-16:00 CT (nearly 23 hrs); Settlement window 13:28-13:30 CT',
+        positionLimits:    '6,000 net contracts in the spot month; 6,000 in any single month; 6,000 all months combined (subject to CME exchange thresholds)',
+        marginMethod:      'SPAN (CME Standard Portfolio Analysis of Risk)',
+        blockTradeMin:     50,
+        tickDescription:   '$0.10/oz = $10.00/contract',
+        lotDescription:    '1 lot = 100 troy oz = 1 COMEX GC contract'
+    },
+    Ag: {
+        exchangeFull:      'COMEX (Commodity Exchange, Inc.) — CME Group',
+        mic:               'XCEC',
+        clearingHouse:     'CME Clearing',
+        currency:          'USD',
+        priceQuotation:    'USD cents per troy ounce',
+        contractSize:      5000,
+        contractUnit:      '5,000 troy ounces',
+        tickSize:          0.005,
+        tickValue:         25.00,       // 5,000 oz × $0.005 = $25.00
+        deliveryMonths:    ['H','K','N','U','Z'],  // Mar, May, Jul, Sep, Dec
+        nearbyMonths:      [],
+        settlementType:    'Physical',
+        lastTradingDay:    'Third-to-last business day of the delivery month',
+        firstNoticeDay:    'Last business day of the month preceding the delivery month',
+        deliveryPeriod:    'Any business day of the delivery month through the last business day of the delivery month',
+        qualityGrade:      'Minimum 999 fineness',
+        deliveryPoints:    'Licensed depositories in the New York metropolitan area or Delaware',
+        tradingHours:      'Sun-Fri 17:00-16:00 CT (nearly 23 hrs); Settlement window 13:24-13:25 CT',
+        positionLimits:    '3,000 net contracts in the spot month; 3,000 single month; 3,000 all months combined',
+        marginMethod:      'SPAN',
+        blockTradeMin:     25,
+        tickDescription:   '$0.005/oz = $25.00/contract',
+        lotDescription:    '1 lot = 5,000 troy oz = 1 COMEX SI contract'
+    },
+    Pt: {
+        exchangeFull:      'NYMEX (New York Mercantile Exchange) — CME Group',
+        mic:               'XNYM',
+        clearingHouse:     'CME Clearing',
+        currency:          'USD',
+        priceQuotation:    'USD per troy ounce',
+        contractSize:      50,
+        contractUnit:      '50 troy ounces',
+        tickSize:          0.10,
+        tickValue:         5.00,        // 50 oz × $0.10 = $5.00
+        deliveryMonths:    ['F','G','H','J','K','M','N','Q','U','V','X','Z'],  // All months (Jan-Dec)
+        nearbyMonths:      [],
+        settlementType:    'Physical',
+        lastTradingDay:    'Third business day prior to the end of the delivery month',
+        firstNoticeDay:    'Last business day of the month preceding the delivery month',
+        deliveryPeriod:    'First through last business day of the delivery month',
+        qualityGrade:      'Minimum 999.5 fineness (99.95% pure)',
+        deliveryPoints:    'Licensed depositories in the New York/New Jersey metropolitan area',
+        tradingHours:      'Sun-Fri 17:00-16:00 CT; Regular session 07:20-12:05 CT',
+        positionLimits:    '500 net contracts in spot month',
+        marginMethod:      'SPAN',
+        blockTradeMin:     10,
+        tickDescription:   '$0.10/oz = $5.00/contract',
+        lotDescription:    '1 lot = 50 troy oz = 1 NYMEX PL contract'
+    },
+    Pd: {
+        exchangeFull:      'NYMEX (New York Mercantile Exchange) — CME Group',
+        mic:               'XNYM',
+        clearingHouse:     'CME Clearing',
+        currency:          'USD',
+        priceQuotation:    'USD per troy ounce',
+        contractSize:      100,
+        contractUnit:      '100 troy ounces',
+        tickSize:          0.50,
+        tickValue:         50.00,       // 100 oz × $0.50 = $50.00
+        deliveryMonths:    ['H','M','U','Z'],  // Mar, Jun, Sep, Dec
+        nearbyMonths:      [],
+        settlementType:    'Physical',
+        lastTradingDay:    'Third business day prior to the end of the delivery month',
+        firstNoticeDay:    'Last business day of the month preceding the delivery month',
+        deliveryPeriod:    'First through last business day of the delivery month',
+        qualityGrade:      'Minimum 999.5 fineness (99.95% pure)',
+        deliveryPoints:    'Licensed depositories in the New York/New Jersey metropolitan area',
+        tradingHours:      'Sun-Fri 17:00-16:00 CT; Regular session 07:30-12:00 CT',
+        positionLimits:    '400 net contracts in spot month',
+        marginMethod:      'SPAN',
+        blockTradeMin:     5,
+        tickDescription:   '$0.50/oz = $50.00/contract',
+        lotDescription:    '1 lot = 100 troy oz = 1 NYMEX PA contract'
+    },
+
+    // ── LME Base Metals (London Metal Exchange) ────────────────────────
+    // LME contracts are unique: they use a "prompt date" system rather than
+    // standard monthly expiries. Cash = T+2, 3-month = ~3 months forward.
+    // Prices are quoted per metric tonne (MT). Spread tick sizes differ from
+    // outright tick sizes on LMEselect.
+    Cu: {
+        exchangeFull:      'London Metal Exchange (LME)',
+        mic:               'XLME',
+        clearingHouse:     'LME Clear',
+        currency:          'USD',
+        priceQuotation:    'USD per metric tonne',
+        contractSize:      25,
+        contractUnit:      '25 metric tonnes',
+        tickSize:          0.50,
+        tickValue:         12.50,       // 25 MT × $0.50 = $12.50
+        spreadTickSize:    0.01,        // Spread tick on LMEselect
+        spreadTickValue:   0.25,        // 25 MT × $0.01 = $0.25
+        promptDateStructure: 'Daily out to 3 months, then every Wednesday to 6 months, then every 3rd Wednesday to 63 months, then monthly to 123 months',
+        deliveryMonths:    'All — prompt date system',
+        settlementType:    'Physical (LME warrant delivery)',
+        lastTradingDay:    'Prompt date (the settlement date IS the delivery/prompt date)',
+        cashSettlement:    'T+2 (two business days after the trade date for cash contracts)',
+        deliveryPeriod:    'On the prompt date',
+        qualityGrade:      'Grade A copper cathode — minimum 99.99% Cu',
+        deliveryPoints:    'LME approved warehouses worldwide (Rotterdam, Busan, Singapore, New Orleans, etc.)',
+        tradingHours:      'LMEselect: 01:00-19:00 London; Ring: 11:40-17:00 London; Telephone: 24 hours',
+        ringTradingSessions: '1st Ring: 11:50-11:55, 2nd Ring: 12:30-12:35 — Official settlement price set at 2nd Ring close',
+        positionLimits:    'LME lending guidance: 25% of eligible warrants + eligible stocks for dominant position',
+        marginMethod:      'LME Clear PAIRS margining',
+        tickDescription:   '$0.50/MT = $12.50/lot (outright); $0.01/MT = $0.25/lot (spread)',
+        lotDescription:    '1 lot = 25 MT = 1 LME Copper contract'
+    },
+    Ni: {
+        exchangeFull:      'London Metal Exchange (LME)',
+        mic:               'XLME',
+        clearingHouse:     'LME Clear',
+        currency:          'USD',
+        priceQuotation:    'USD per metric tonne',
+        contractSize:      6,
+        contractUnit:      '6 metric tonnes',
+        tickSize:          5.00,
+        tickValue:         30.00,       // 6 MT × $5.00 = $30.00
+        spreadTickSize:    0.01,
+        spreadTickValue:   0.06,        // 6 MT × $0.01 = $0.06
+        promptDateStructure: 'Daily out to 3 months, then every Wednesday to 6 months, then every 3rd Wednesday to 63 months, then monthly to 123 months',
+        deliveryMonths:    'All — prompt date system',
+        settlementType:    'Physical (LME warrant delivery)',
+        lastTradingDay:    'Prompt date',
+        cashSettlement:    'T+2',
+        deliveryPeriod:    'On the prompt date',
+        qualityGrade:      'Primary nickel of minimum 99.80% Ni — full plate cathode, cut cathode, briquettes, or pellets',
+        deliveryPoints:    'LME approved warehouses (Rotterdam, Johor, Newcastle, etc.)',
+        tradingHours:      'LMEselect: 01:00-19:00 London; Ring: 11:40-17:00 London; Telephone: 24 hours',
+        ringTradingSessions: '1st Ring: 12:00-12:05, 2nd Ring: 12:40-12:45',
+        positionLimits:    'LME lending guidance applies',
+        marginMethod:      'LME Clear PAIRS margining',
+        tickDescription:   '$5.00/MT = $30.00/lot (outright); $0.01/MT = $0.06/lot (spread)',
+        lotDescription:    '1 lot = 6 MT = 1 LME Nickel contract'
+    },
+    Al: {
+        exchangeFull:      'London Metal Exchange (LME)',
+        mic:               'XLME',
+        clearingHouse:     'LME Clear',
+        currency:          'USD',
+        priceQuotation:    'USD per metric tonne',
+        contractSize:      25,
+        contractUnit:      '25 metric tonnes',
+        tickSize:          0.50,
+        tickValue:         12.50,       // 25 MT × $0.50 = $12.50
+        spreadTickSize:    0.01,
+        spreadTickValue:   0.25,
+        promptDateStructure: 'Daily out to 3 months, then every Wednesday to 6 months, then every 3rd Wednesday to 63 months, then monthly to 123 months',
+        deliveryMonths:    'All — prompt date system',
+        settlementType:    'Physical (LME warrant delivery)',
+        lastTradingDay:    'Prompt date',
+        cashSettlement:    'T+2',
+        deliveryPeriod:    'On the prompt date',
+        qualityGrade:      'High grade primary aluminium — minimum 99.70% Al',
+        deliveryPoints:    'LME approved warehouses (Rotterdam, Detroit, Vlissingen, Port Klang, etc.)',
+        tradingHours:      'LMEselect: 01:00-19:00 London; Ring: 11:40-17:00 London; Telephone: 24 hours',
+        ringTradingSessions: '1st Ring: 11:40-11:45, 2nd Ring: 12:15-12:20',
+        positionLimits:    'LME lending guidance applies',
+        marginMethod:      'LME Clear PAIRS margining',
+        tickDescription:   '$0.50/MT = $12.50/lot (outright); $0.01/MT = $0.25/lot (spread)',
+        lotDescription:    '1 lot = 25 MT = 1 LME Aluminium contract'
+    },
+    Zn: {
+        exchangeFull:      'London Metal Exchange (LME)',
+        mic:               'XLME',
+        clearingHouse:     'LME Clear',
+        currency:          'USD',
+        priceQuotation:    'USD per metric tonne',
+        contractSize:      25,
+        contractUnit:      '25 metric tonnes',
+        tickSize:          0.50,
+        tickValue:         12.50,
+        spreadTickSize:    0.01,
+        spreadTickValue:   0.25,
+        promptDateStructure: 'Daily out to 3 months, then every Wednesday to 6 months, then every 3rd Wednesday to 63 months, then monthly to 123 months',
+        deliveryMonths:    'All — prompt date system',
+        settlementType:    'Physical (LME warrant delivery)',
+        lastTradingDay:    'Prompt date',
+        cashSettlement:    'T+2',
+        deliveryPeriod:    'On the prompt date',
+        qualityGrade:      'Special high grade zinc — minimum 99.995% Zn',
+        deliveryPoints:    'LME approved warehouses (Rotterdam, Antwerp, Singapore, New Orleans, etc.)',
+        tradingHours:      'LMEselect: 01:00-19:00 London; Ring: 11:40-17:00 London; Telephone: 24 hours',
+        ringTradingSessions: '1st Ring: 11:55-12:00, 2nd Ring: 12:35-12:40',
+        positionLimits:    'LME lending guidance applies',
+        marginMethod:      'LME Clear PAIRS margining',
+        tickDescription:   '$0.50/MT = $12.50/lot (outright); $0.01/MT = $0.25/lot (spread)',
+        lotDescription:    '1 lot = 25 MT = 1 LME Zinc contract'
+    },
+    Sn: {
+        exchangeFull:      'London Metal Exchange (LME)',
+        mic:               'XLME',
+        clearingHouse:     'LME Clear',
+        currency:          'USD',
+        priceQuotation:    'USD per metric tonne',
+        contractSize:      5,
+        contractUnit:      '5 metric tonnes',
+        tickSize:          5.00,
+        tickValue:         25.00,       // 5 MT × $5.00 = $25.00
+        spreadTickSize:    0.01,
+        spreadTickValue:   0.05,
+        promptDateStructure: 'Daily out to 3 months, then every Wednesday to 6 months, then every 3rd Wednesday to 15 months',
+        deliveryMonths:    'All — prompt date system',
+        settlementType:    'Physical (LME warrant delivery)',
+        lastTradingDay:    'Prompt date',
+        cashSettlement:    'T+2',
+        deliveryPeriod:    'On the prompt date',
+        qualityGrade:      'Tin of minimum 99.85% Sn',
+        deliveryPoints:    'LME approved warehouses (Rotterdam, Johor, Baltimore, etc.)',
+        tradingHours:      'LMEselect: 01:00-19:00 London; Ring: 11:40-17:00 London; Telephone: 24 hours',
+        ringTradingSessions: '1st Ring: 12:10-12:15, 2nd Ring: 12:50-12:55',
+        positionLimits:    'LME lending guidance applies',
+        marginMethod:      'LME Clear PAIRS margining',
+        tickDescription:   '$5.00/MT = $25.00/lot (outright); $0.01/MT = $0.05/lot (spread)',
+        lotDescription:    '1 lot = 5 MT = 1 LME Tin contract'
+    },
+    Pb: {
+        exchangeFull:      'London Metal Exchange (LME)',
+        mic:               'XLME',
+        clearingHouse:     'LME Clear',
+        currency:          'USD',
+        priceQuotation:    'USD per metric tonne',
+        contractSize:      25,
+        contractUnit:      '25 metric tonnes',
+        tickSize:          0.50,
+        tickValue:         12.50,
+        spreadTickSize:    0.01,
+        spreadTickValue:   0.25,
+        promptDateStructure: 'Daily out to 3 months, then every Wednesday to 6 months, then every 3rd Wednesday to 15 months, then monthly to 63 months',
+        deliveryMonths:    'All — prompt date system',
+        settlementType:    'Physical (LME warrant delivery)',
+        lastTradingDay:    'Prompt date',
+        cashSettlement:    'T+2',
+        deliveryPeriod:    'On the prompt date',
+        qualityGrade:      'Refined pig lead — minimum 99.97% Pb',
+        deliveryPoints:    'LME approved warehouses (Antwerp, Singapore, Rotterdam, etc.)',
+        tradingHours:      'LMEselect: 01:00-19:00 London; Ring: 11:40-17:00 London; Telephone: 24 hours',
+        ringTradingSessions: '1st Ring: 12:05-12:10, 2nd Ring: 12:45-12:50',
+        positionLimits:    'LME lending guidance applies',
+        marginMethod:      'LME Clear PAIRS margining',
+        tickDescription:   '$0.50/MT = $12.50/lot (outright); $0.01/MT = $0.25/lot (spread)',
+        lotDescription:    '1 lot = 25 MT = 1 LME Lead contract'
+    }
+};
+
+/**
+ * SETTLEMENT_CONVENTIONS — Settlement date conventions by product type and exchange.
+ *
+ * COMEX/NYMEX:
+ *   - Futures settle daily via mark-to-market (variation margin) through CME Clearing.
+ *   - Physical delivery occurs within the delivery month window.
+ *   - Option premiums settle T+1.
+ *
+ * LME:
+ *   - Uses the "prompt date" system — each contract has a specific settlement (prompt) date.
+ *   - Cash contract = T+2; 3-month contract = ~3 months forward from trade date.
+ *   - Official settlement prices are set during the Ring trading session.
+ *   - Physical delivery is via electronic warrant transfer (LMEsword).
+ *
+ * OTC (LBMA/LPPM):
+ *   - Spot: T+2 (Loco London)
+ *   - Forward: T+2 + forward tenor
+ *   - Swap: T+2 per reset date
+ */
+const SETTLEMENT_CONVENTIONS = {
+    Spot: {
+        standard:         'T+2',
+        description:      'Trade date plus two business days',
+        comex:            'T+2 business days — standard spot settlement',
+        lme:              'T+2 (Cash date = 2 business days from trade date)',
+        lbma:             'T+2 Loco London — LPMCL clearing for precious metals',
+        clearingCycle:    'Same day novation and netting via clearing house'
+    },
+    Forward: {
+        standard:         'T+2 + tenor',
+        description:      'Settlement on the forward value date (OTC bilateral)',
+        comex:            'N/A — use futures for standardised forward exposure on COMEX',
+        lme:              'Prompt date system — any valid business day out to maximum tenor',
+        lbma:             'Forward value date as agreed bilaterally, cleared via LPMCL',
+        clearingCycle:    'OTC bilateral or cleared via LME Clear / CME OTC'
+    },
+    Future: {
+        standard:         'Daily mark-to-market; physical delivery in delivery month',
+        description:      'Daily settlement of variation margin; physical delivery on expiry if held to maturity',
+        comex:            'Daily MTM via CME Clearing; delivery window: first to last business day of delivery month',
+        lme:              'Prompt date = delivery date; daily MTM via LME Clear; physical warrant delivery on prompt date',
+        firstNoticeDay:   'COMEX/NYMEX: Last business day of the month before delivery month — long holders must declare intent',
+        clearingCycle:    'Daily mark-to-market settled next business day; initial margin posted at trade inception'
+    },
+    Swap: {
+        standard:         'T+2 per reset date',
+        description:      'Cash settlement on each reset date per the agreed schedule',
+        comex:            'OTC cleared swap — CME Group OTC clearing',
+        lme:              'LMEswap — monthly average or LBMA/LME reference price based cash settlement',
+        clearingCycle:    'Cash flows settled T+2 from each fixing/reset date'
+    },
+    'Vanilla Option': {
+        standard:         'T+1 premium; exercise into underlying',
+        description:      'Premium settled T+1; exercise/assignment creates underlying position',
+        comex:            'Premium: T+1; Exercise results in futures position settled via CME Clearing',
+        lme:              'Premium: T+1; Monthly and weekly options available; exercise into LME prompt',
+        clearingCycle:    'Premium settled T+1; underlying position settles per futures convention'
+    },
+    'Asian Option': {
+        standard:         'Cash settlement on averaging-period end + 2 business days',
+        description:      'OTC option settled against the arithmetic average of fixings over the averaging period',
+        comex:            'OTC — typically LBMA or LME official price based averaging',
+        lme:              'TAPO (Traded Average Price Option) or OTC — monthly average settlement',
+        clearingCycle:    'Cash settled T+2 after last averaging date'
+    },
+    'Barrier Option': {
+        standard:         'Cash settlement T+2 after determination',
+        description:      'OTC exotic option; barrier monitoring continuous or discrete; settlement on exercise or expiry',
+        comex:            'OTC bilateral — not exchange-listed',
+        lme:              'OTC bilateral — not exchange-listed',
+        clearingCycle:    'Cash settled T+2 after barrier event or expiry'
+    }
+};
+
+/**
+ * EXCHANGE_DETAILS — Venue-level reference data for each exchange.
+ */
+const EXCHANGE_DETAILS = {
+    COMEX: {
+        fullName:         'Commodity Exchange, Inc.',
+        operator:         'CME Group Inc.',
+        mic:              'XCEC',
+        country:          'United States',
+        timezone:         'America/Chicago (CT)',
+        regulator:        'CFTC (Commodity Futures Trading Commission)',
+        clearingHouse:    'CME Clearing',
+        settlementCurrency: 'USD',
+        tradingSystem:    'CME Globex (electronic)',
+        tradedMetals:     ['Au', 'Ag'],
+        marginSystem:     'SPAN (Standard Portfolio Analysis of Risk)',
+        deliverySystem:   'COMEX licensed depositories — electronic delivery via CME Delivery System',
+        website:          'cmegroup.com'
+    },
+    NYMEX: {
+        fullName:         'New York Mercantile Exchange',
+        operator:         'CME Group Inc.',
+        mic:              'XNYM',
+        country:          'United States',
+        timezone:         'America/Chicago (CT)',
+        regulator:        'CFTC',
+        clearingHouse:    'CME Clearing',
+        settlementCurrency: 'USD',
+        tradingSystem:    'CME Globex (electronic)',
+        tradedMetals:     ['Pt', 'Pd'],
+        marginSystem:     'SPAN',
+        deliverySystem:   'NYMEX licensed depositories',
+        website:          'cmegroup.com'
+    },
+    LME: {
+        fullName:         'London Metal Exchange',
+        operator:         'Hong Kong Exchanges and Clearing Limited (HKEX)',
+        mic:              'XLME',
+        country:          'United Kingdom',
+        timezone:         'Europe/London',
+        regulator:        'FCA (Financial Conduct Authority)',
+        clearingHouse:    'LME Clear',
+        settlementCurrency: 'USD',
+        tradingSystem:    'LMEselect (electronic), Ring (open outcry), Telephone (inter-office)',
+        tradedMetals:     ['Cu', 'Ni', 'Al', 'Zn', 'Sn', 'Pb'],
+        marginSystem:     'PAIRS (Portfolio Approach to Interest Rate Scenarios)',
+        deliverySystem:   'LMEsword — electronic warrant transfer system; delivery to LME approved warehouses globally',
+        officialPriceSource: 'Ring trading — 2nd Ring closing price is the Official Settlement Price',
+        website:          'lme.com'
+    },
+    LBMA: {
+        fullName:         'London Bullion Market Association',
+        operator:         'LBMA',
+        mic:              'XLBA',
+        country:          'United Kingdom',
+        timezone:         'Europe/London',
+        regulator:        'FCA / Bank of England (oversight)',
+        clearingHouse:    'LPMCL (London Precious Metals Clearing Limited)',
+        settlementCurrency: 'USD',
+        tradingSystem:    'OTC bilateral (telephone/electronic)',
+        tradedMetals:     ['Au', 'Ag', 'Pt', 'Pd'],
+        deliverySystem:   'Loco London — physical bar transfer or book-entry via LPMCL clearing members',
+        priceBenchmark:   'LBMA Gold/Silver Price administered by ICE Benchmark Administration (IBA)',
+        website:          'lbma.org.uk'
+    }
+};
+
+/**
  * CME Group month codes — industry standard used by CME/COMEX/NYMEX.
  * LME also adopts this convention for electronic trading on LMEselect.
  * Format: ProductCode + MonthCode + 2-digit year (e.g. GCZ26 = Gold Dec 2026)
@@ -1342,6 +1772,14 @@ const TRADER_INITIALS = ['JD', 'AR', 'KM', 'SP', 'TW'];
 
 const TOOLTIPS = {
     'T+2':              'Trade date plus two business days — standard spot settlement cycle',
+    'Tick Value':       'Dollar P&L impact per minimum price movement per contract. E.g. Gold: $0.10/oz x 100 oz = $10.00/tick',
+    'Prompt Date':      'LME-specific: the settlement/delivery date for an LME contract. Cash prompt = T+2, 3-month prompt = ~3 months forward',
+    'First Notice Day': 'COMEX/NYMEX: last business day of the month before the delivery month — long holders must declare delivery intent or roll',
+    'LME Ring':         'Open-outcry trading sessions on the LME floor. The Official Settlement Price is set at the close of the 2nd Ring',
+    'LMEsword':         'LME\'s electronic warrant transfer system for physical delivery of base metals via LME approved warehouses',
+    'LME Clear':        'LME\'s central counterparty clearing house, using PAIRS margining methodology',
+    'Contango':         'Forward price > Spot price — normal for metals with positive cost-of-carry (storage + financing > convenience yield)',
+    'Backwardation':    'Spot price > Forward price — indicates tight physical supply or high convenience yield',
     'LEI':              'Legal Entity Identifier — 20-character code uniquely identifying a legal entity',
     'SSI':              'Standard Settlement Instructions — pre-agreed payment and delivery details',
     'Variation Margin': 'Daily mark-to-market cash adjustment to cover price movements on open futures',
@@ -2527,9 +2965,15 @@ function buildCaptureFormHTML(t, isEdit) {
 
 function renderContractInfo(sym) {
     const c = COMMODITIES[sym];
-    return `<strong>${c.name} (${sym})</strong> &mdash; ${c.contractSize} ${c.unit}/contract &bull;
-            Exchange: ${tip(c.exchange)} &bull; Futures code: <strong>${c.futuresCode}</strong> &bull; Tick: $${c.tick} &bull;
-            Current market: <strong>${formatUSD(getMarketPrice(sym))}</strong>`;
+    const spec = CONTRACT_SPECIFICATIONS[sym];
+    const tickValStr = c.tickValue ? ` (${formatUSD(c.tickValue)}/contract)` : '';
+    const lotStr = spec ? spec.lotDescription : `${c.contractSize} ${c.unit}/contract`;
+    const settlStr = spec ? spec.settlementType : '';
+    const gradeStr = spec ? spec.qualityGrade : '';
+    return `<strong>${c.name} (${sym})</strong> &mdash; ${lotStr} &bull;
+            Exchange: ${tip(c.exchange)} &bull; Futures code: <strong>${c.futuresCode}</strong> &bull;
+            Tick: $${c.tick}/${c.unit}${tickValStr} &bull;
+            ${settlStr ? 'Settlement: ' + settlStr + ' &bull; ' : ''}${gradeStr ? 'Grade: ' + gradeStr + ' &bull; ' : ''}Current market: <strong>${formatUSD(getMarketPrice(sym))}</strong>`;
 }
 
 function renderStage1(trade) {
@@ -5350,20 +5794,85 @@ function renderMarketDataView() {
     html += `<div class="card">
         <div class="card-title">Contract Specifications</div>
         <table class="data-table">
-            <thead><tr><th>Commodity</th><th>Exchange</th><th>Futures Code</th><th>Contract Size</th><th>Unit</th><th>Tick</th><th>Type</th></tr></thead>
+            <thead><tr><th>Commodity</th><th>Exchange</th><th>Futures Code</th><th>1 Lot =</th><th>Tick Size</th><th>Tick Value</th><th>Settlement</th><th>Grade</th><th>Delivery Months</th></tr></thead>
             <tbody>`;
     for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const spec = CONTRACT_SPECIFICATIONS[sym];
+        const deliveryMonths = spec ? (Array.isArray(spec.deliveryMonths)
+            ? spec.deliveryMonths.map(m => FUTURES_MONTH_NAMES[m] || m).join(', ')
+            : spec.deliveryMonths) : '';
         html += `<tr>
             <td class="fw-bold">${com.name} (${sym})</td>
             <td>${com.exchange}</td>
             <td style="font-family:'Courier New',monospace; font-weight:700; letter-spacing:1px;">${com.futuresCode}</td>
-            <td>${formatNum(com.contractSize, 0)}</td>
-            <td>${com.unit}</td>
-            <td>$${com.tick}</td>
-            <td>${com.type}</td>
+            <td>${spec ? spec.contractUnit : formatNum(com.contractSize, 0) + ' ' + com.unit}</td>
+            <td>$${com.tick}/${com.unit}</td>
+            <td>${com.tickValue ? formatUSD(com.tickValue) : ''}</td>
+            <td>${spec ? spec.settlementType : ''}</td>
+            <td style="font-size:0.72rem;">${spec ? spec.qualityGrade : ''}</td>
+            <td style="font-size:0.72rem;">${deliveryMonths}</td>
+        </tr>`;
+    }
+    html += `</tbody></table>`;
+
+    // Expandable detail: Settlement Conventions
+    html += `<div style="margin-top:14px;">
+        <div class="card-title" style="font-size:0.85rem;">Settlement Conventions by Product Type</div>
+        <table class="data-table" style="font-size:0.78rem;">
+            <thead><tr><th>Product Type</th><th>Standard</th><th>COMEX/NYMEX</th><th>LME</th></tr></thead>
+            <tbody>`;
+    for (const [prod, conv] of Object.entries(SETTLEMENT_CONVENTIONS)) {
+        html += `<tr>
+            <td class="fw-bold">${prod}</td>
+            <td>${conv.standard}</td>
+            <td style="font-size:0.72rem;">${conv.comex || ''}</td>
+            <td style="font-size:0.72rem;">${conv.lme || ''}</td>
         </tr>`;
     }
     html += `</tbody></table></div>`;
+
+    // Expandable detail: Exchange Reference
+    html += `<div style="margin-top:14px;">
+        <div class="card-title" style="font-size:0.85rem;">Exchange Reference</div>
+        <table class="data-table" style="font-size:0.78rem;">
+            <thead><tr><th>Exchange</th><th>MIC</th><th>Clearing House</th><th>Trading System</th><th>Margin Method</th><th>Regulator</th></tr></thead>
+            <tbody>`;
+    for (const [exch, info] of Object.entries(EXCHANGE_DETAILS)) {
+        html += `<tr>
+            <td class="fw-bold">${exch}</td>
+            <td style="font-family:'Courier New',monospace;">${info.mic}</td>
+            <td>${info.clearingHouse}</td>
+            <td style="font-size:0.72rem;">${info.tradingSystem}</td>
+            <td>${info.marginSystem || ''}</td>
+            <td>${info.regulator}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    // LME-specific: Ring Trading Schedule
+    html += `<div style="margin-top:14px;">
+        <div class="card-title" style="font-size:0.85rem;">LME Ring Trading Schedule</div>
+        <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:8px;">Official Settlement Prices are set at the close of the 2nd Ring session for each metal.</p>
+        <table class="data-table" style="font-size:0.78rem;">
+            <thead><tr><th>Metal</th><th>1st Ring (London)</th><th>2nd Ring (London)</th><th>Tick (Outright)</th><th>Tick (Spread)</th><th>Prompt Structure</th></tr></thead>
+            <tbody>`;
+    for (const [sym, com] of Object.entries(COMMODITIES)) {
+        const spec = CONTRACT_SPECIFICATIONS[sym];
+        if (!spec || spec.mic !== 'XLME') continue;
+        const rings = spec.ringTradingSessions || '';
+        const ringParts = rings.split(', ');
+        html += `<tr>
+            <td class="fw-bold">${com.name} (${sym})</td>
+            <td>${ringParts[0] ? ringParts[0].replace('1st Ring: ', '') : ''}</td>
+            <td>${ringParts[1] ? ringParts[1].replace('2nd Ring: ', '') : ''}</td>
+            <td>$${spec.tickSize}/${com.unit} = ${formatUSD(spec.tickValue)}/lot</td>
+            <td>$${spec.spreadTickSize}/${com.unit} = ${formatUSD(spec.spreadTickValue)}/lot</td>
+            <td style="font-size:0.70rem;">${spec.promptDateStructure || ''}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div>`;
+
+    html += `</div>`;
 
     // Sub-panel B: Counterparty Reference
     html += `<div class="card">
@@ -9305,6 +9814,219 @@ function renderSIPTradePanel(trade) {
 
 
 
+
+
+// ============================================================
+// SECTION 40A: CREDIT RISK — PD, LGD, EAD, RWA MODULE
+// ============================================================
+
+var CREDIT_RATING_PD = {
+    'AAA': 0.0002, 'AA+': 0.0003, 'AA': 0.0005, 'AA-': 0.0008,
+    'A+': 0.0010, 'A': 0.0015, 'A-': 0.0025,
+    'BBB+': 0.0040, 'BBB': 0.0070, 'BBB-': 0.0120,
+    'BB+': 0.0200, 'BB': 0.0350, 'BB-': 0.0550,
+    'B+': 0.0800, 'B': 0.1200, 'B-': 0.1800,
+    'CCC+': 0.2500, 'CCC': 0.3500, 'D': 1.0000
+};
+
+var COUNTERPARTY_CREDIT = {
+    'HSBC':               { rating: 'A+',  pd: 0.0010, lgd: 0.45, sector: 'G-SIB Bank' },
+    'JP Morgan':          { rating: 'A+',  pd: 0.0010, lgd: 0.45, sector: 'G-SIB Bank' },
+    'Standard Chartered': { rating: 'A',   pd: 0.0015, lgd: 0.45, sector: 'G-SIB Bank' },
+    'Goldman Sachs':      { rating: 'A+',  pd: 0.0010, lgd: 0.45, sector: 'G-SIB Bank' },
+    'Citi':               { rating: 'A+',  pd: 0.0010, lgd: 0.45, sector: 'G-SIB Bank' }
+};
+
+function baselRiskWeight(pd, lgd) {
+    if (pd <= 0.0003) return 0.20;
+    if (pd <= 0.001)  return 0.50;
+    if (pd <= 0.005)  return 0.75;
+    if (pd <= 0.015)  return 1.00;
+    if (pd <= 0.05)   return 1.50;
+    if (pd <= 0.15)   return 2.50;
+    return 4.00;
+}
+
+function calculateEAD(trade) {
+    var ce = Math.max(trade.notional, 0);
+    var pfe = 0;
+    if (trade.productType === 'Forward' || trade.productType === 'Future') pfe = trade.notional * 0.10;
+    else if (trade.productType === 'Swap') pfe = trade.notional * 0.15;
+    else if (trade.productType === 'Spot') pfe = trade.notional * 0.02;
+    else pfe = trade.notional * 0.12;
+    return ce + pfe;
+}
+
+function calculateTradeCreditRisk(trade) {
+    var cp = COUNTERPARTY_CREDIT[trade.counterparty] || { rating: 'BBB', pd: 0.007, lgd: 0.45, sector: 'Corporate' };
+    var ead = calculateEAD(trade);
+    var rw = baselRiskWeight(cp.pd, cp.lgd);
+    var rwa = ead * rw;
+    var el = cp.pd * cp.lgd * ead;
+    return { counterparty: trade.counterparty, rating: cp.rating, pd: cp.pd, lgd: cp.lgd, ead: ead, riskWeight: rw, rwa: rwa, el: el, capitalRequired: rwa * 0.08, sector: cp.sector, tradeId: trade.id, commodity: trade.commodity, productType: trade.productType, notional: trade.notional };
+}
+
+function aggregatePortfolioCreditRisk() {
+    var byCounterparty = {};
+    var totalEAD = 0, totalRWA = 0, totalEL = 0, totalCapital = 0;
+    state.trades.forEach(function(t) {
+        var cr = calculateTradeCreditRisk(t);
+        if (!byCounterparty[t.counterparty]) byCounterparty[t.counterparty] = { counterparty: t.counterparty, rating: cr.rating, pd: cr.pd, lgd: cr.lgd, sector: cr.sector, ead: 0, rwa: 0, el: 0, capitalRequired: 0, tradeCount: 0 };
+        byCounterparty[t.counterparty].ead += cr.ead;
+        byCounterparty[t.counterparty].rwa += cr.rwa;
+        byCounterparty[t.counterparty].el += cr.el;
+        byCounterparty[t.counterparty].capitalRequired += cr.capitalRequired;
+        byCounterparty[t.counterparty].tradeCount++;
+        totalEAD += cr.ead; totalRWA += cr.rwa; totalEL += cr.el; totalCapital += cr.capitalRequired;
+    });
+    return { byCounterparty: byCounterparty, totalEAD: totalEAD, totalRWA: totalRWA, totalEL: totalEL, totalCapital: totalCapital };
+}
+
+function switchCRTab(tabId) {
+    document.querySelectorAll('.cr-tab-content').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.cr-tab').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById('crTab_' + tabId).classList.add('active');
+    event.target.classList.add('active');
+    if (tabId === 'portfolio') renderCRPortfolioTab();
+    if (tabId === 'calculator') renderCRCalculatorTab();
+}
+
+function renderCRPortfolioTab() {
+    var container = document.getElementById('crPortfolioContent');
+    if (!container) return;
+    if (state.trades.length === 0) { container.innerHTML = '<div class="rp-callout"><div class="rp-callout-title">No Trades Booked</div><p>Seed demo trades or book trades to see live portfolio credit risk metrics. Use the "Seed 7 Demo Trades" button in the navigation bar.</p></div>'; return; }
+    var agg = aggregatePortfolioCreditRisk();
+    var cpEntries = Object.values(agg.byCounterparty).sort(function(a, b) { return b.ead - a.ead; });
+    var html = '<div class="cr-metric-grid" style="margin-bottom:18px;">' +
+        '<div class="cr-metric-card highlight"><div class="cr-metric-abbr ead">' + tip('EAD') + '</div><div class="cr-metric-name">Total Portfolio</div><div class="cr-metric-value">' + formatUSD(agg.totalEAD) + '</div><div class="cr-metric-detail">Across ' + state.trades.length + ' trades</div></div>' +
+        '<div class="cr-metric-card highlight"><div class="cr-metric-abbr rwa">' + tip('RWA') + '</div><div class="cr-metric-name">Total Portfolio</div><div class="cr-metric-value">' + formatUSD(agg.totalRWA) + '</div><div class="cr-metric-detail">Risk Weight: ' + (agg.totalRWA / Math.max(agg.totalEAD, 1) * 100).toFixed(1) + '% avg</div></div>' +
+        '<div class="cr-metric-card"><div class="cr-metric-abbr pd">' + tip('EL') + '</div><div class="cr-metric-name">Expected Loss</div><div class="cr-metric-value">' + formatUSD(agg.totalEL) + '</div><div class="cr-metric-detail">PD x LGD x EAD</div></div>' +
+        '<div class="cr-metric-card"><div class="cr-metric-abbr" style="color:var(--primary);">' + tip('CET1') + '</div><div class="cr-metric-name">Capital Required</div><div class="cr-metric-value">' + formatUSD(agg.totalCapital) + '</div><div class="cr-metric-detail">8% of RWA (' + tip('Basel III') + ' minimum)</div></div></div>';
+    html += '<div class="rp-section"><div class="rp-section-title">Counterparty Credit Risk Breakdown</div><table class="cr-portfolio-table"><thead><tr><th>Counterparty</th><th>Rating</th><th>Sector</th><th>' + tip('PD') + '</th><th>' + tip('LGD') + '</th><th>Trades</th><th>' + tip('EAD') + '</th><th>' + tip('Risk Weight') + '</th><th>' + tip('RWA') + '</th><th>' + tip('EL') + '</th><th>Capital</th></tr></thead><tbody>';
+    cpEntries.forEach(function(cp) { html += '<tr><td class="fw-bold">' + cp.counterparty + '</td><td><span class="rp-badge ' + (cp.pd <= 0.003 ? 'rp-badge-delta' : 'rp-badge-var') + '">' + cp.rating + '</span></td><td>' + cp.sector + '</td><td>' + (cp.pd * 100).toFixed(2) + '%</td><td>' + (cp.lgd * 100).toFixed(0) + '%</td><td style="text-align:center">' + cp.tradeCount + '</td><td>' + formatUSD(cp.ead) + '</td><td>' + (cp.rwa / Math.max(cp.ead, 1) * 100).toFixed(0) + '%</td><td>' + formatUSD(cp.rwa) + '</td><td class="neg">' + formatUSD(cp.el) + '</td><td>' + formatUSD(cp.capitalRequired) + '</td></tr>'; });
+    html += '</tbody><tfoot><tr><td colspan="6" style="text-align:right;">Portfolio Total</td><td>' + formatUSD(agg.totalEAD) + '</td><td>' + (agg.totalRWA / Math.max(agg.totalEAD, 1) * 100).toFixed(0) + '%</td><td>' + formatUSD(agg.totalRWA) + '</td><td class="neg">' + formatUSD(agg.totalEL) + '</td><td>' + formatUSD(agg.totalCapital) + '</td></tr></tfoot></table></div>';
+    html += '<div class="rp-section"><div class="rp-section-title">Trade-Level Credit Risk Detail</div><table class="cr-portfolio-table"><thead><tr><th>Trade ID</th><th>Commodity</th><th>Product</th><th>Counterparty</th><th>Notional</th><th>PFE Add-On</th><th>' + tip('EAD') + '</th><th>' + tip('RWA') + '</th><th>' + tip('EL') + '</th></tr></thead><tbody>';
+    state.trades.forEach(function(t) { var cr = calculateTradeCreditRisk(t); var pfe = cr.ead - t.notional; html += '<tr><td class="fw-bold">' + t.id + '</td><td>' + t.commodity + '</td><td>' + t.productType + '</td><td>' + t.counterparty + '</td><td>' + formatUSD(t.notional) + '</td><td>' + formatUSD(pfe) + '</td><td>' + formatUSD(cr.ead) + '</td><td>' + formatUSD(cr.rwa) + '</td><td class="neg">' + formatUSD(cr.el) + '</td></tr>'; });
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+}
+
+function renderCRCalculatorTab() {
+    var container = document.getElementById('crCalculatorContent');
+    if (!container) return;
+    container.innerHTML = '<div class="rp-section"><div class="rp-section-title">Interactive Credit Risk Calculator</div><p style="font-size:0.8rem; color:var(--text-body); margin-bottom:14px;">Adjust the inputs below to see how PD, LGD, and EAD interact to produce Expected Loss and RWA.</p><div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px; margin-bottom:16px;"><div><label style="font-size:0.75rem; font-weight:600; color:var(--primary); display:block; margin-bottom:4px;">Counterparty Rating (' + tip('PD') + ')</label><select id="crCalcRating" onchange="updateCRCalculator()" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.82rem;">' + Object.entries(CREDIT_RATING_PD).map(function(e) { return '<option value="' + e[0] + '"' + (e[0] === 'BBB' ? ' selected' : '') + '>' + e[0] + ' (PD: ' + (e[1] * 100).toFixed(2) + '%)</option>'; }).join('') + '</select></div><div><label style="font-size:0.75rem; font-weight:600; color:var(--primary); display:block; margin-bottom:4px;">' + tip('LGD') + ' (%)</label><input type="range" id="crCalcLGD" min="10" max="90" value="45" oninput="updateCRCalculator()" style="width:100%;"><div style="font-size:0.75rem; color:var(--text-muted); text-align:center;" id="crCalcLGDLabel">45%</div></div><div><label style="font-size:0.75rem; font-weight:600; color:var(--primary); display:block; margin-bottom:4px;">' + tip('EAD') + ' (USD millions)</label><input type="range" id="crCalcEAD" min="1" max="100" value="25" oninput="updateCRCalculator()" style="width:100%;"><div style="font-size:0.75rem; color:var(--text-muted); text-align:center;" id="crCalcEADLabel">$25M</div></div></div><div id="crCalcResults"></div></div>';
+    updateCRCalculator();
+}
+
+function updateCRCalculator() {
+    var rating = document.getElementById('crCalcRating').value;
+    var lgdPct = parseInt(document.getElementById('crCalcLGD').value);
+    var eadM = parseInt(document.getElementById('crCalcEAD').value);
+    document.getElementById('crCalcLGDLabel').textContent = lgdPct + '%';
+    document.getElementById('crCalcEADLabel').textContent = '$' + eadM + 'M';
+    var pd = CREDIT_RATING_PD[rating], lgd = lgdPct / 100, ead = eadM * 1000000;
+    var el = pd * lgd * ead, rw = baselRiskWeight(pd, lgd), rwa = ead * rw, capital = rwa * 0.08, rr = 1 - lgd;
+    document.getElementById('crCalcResults').innerHTML =
+        '<div class="cr-el-banner"><span class="cr-el-formula">' + tip('EL') + ' = ' + tip('PD') + ' x ' + tip('LGD') + ' x ' + tip('EAD') + '</span><span class="cr-el-formula">= ' + (pd * 100).toFixed(2) + '% x ' + (lgd * 100).toFixed(0) + '% x ' + formatUSD(ead) + '</span><span class="cr-el-equals">= ' + formatUSD(el) + '</span></div>' +
+        '<div class="cr-metric-grid"><div class="cr-metric-card"><div class="cr-metric-abbr pd">' + (pd * 100).toFixed(2) + '%</div><div class="cr-metric-name">' + tip('PD') + ' (' + rating + ')</div><div class="cr-metric-detail">1-year default probability</div></div><div class="cr-metric-card"><div class="cr-metric-abbr lgd">' + (lgd * 100).toFixed(0) + '%</div><div class="cr-metric-name">' + tip('LGD') + '</div><div class="cr-metric-detail">' + tip('Recovery Rate') + ': ' + (rr * 100).toFixed(0) + '%</div></div><div class="cr-metric-card"><div class="cr-metric-abbr ead">' + formatUSD(ead) + '</div><div class="cr-metric-name">' + tip('EAD') + '</div><div class="cr-metric-detail">Total exposure at default</div></div><div class="cr-metric-card highlight"><div class="cr-metric-abbr rwa">' + formatUSD(rwa) + '</div><div class="cr-metric-name">' + tip('RWA') + '</div><div class="cr-metric-detail">' + tip('Risk Weight') + ': ' + (rw * 100).toFixed(0) + '% | Capital: ' + formatUSD(capital) + '</div></div></div>' +
+        '<div class="rp-worked-example"><div class="rp-worked-title">Step-by-Step Calculation</div>' +
+        '<div class="rp-step-line">1. Counterparty rated <strong>' + rating + '</strong> &rarr; PD = ' + (pd * 100).toFixed(4) + '% (annualised probability of default)</div>' +
+        '<div class="rp-step-line">2. LGD = ' + (lgd * 100).toFixed(0) + '% (loss severity if default occurs, recovery rate = ' + (rr * 100).toFixed(0) + '%)</div>' +
+        '<div class="rp-step-line">3. EAD = ' + formatUSD(ead) + ' (current exposure + potential future exposure)</div>' +
+        '<div class="rp-step-line">4. <strong>Expected Loss</strong> = PD x LGD x EAD = ' + (pd * 100).toFixed(4) + '% x ' + (lgd * 100).toFixed(0) + '% x ' + formatUSD(ead) + ' = <span class="neg">' + formatUSD(el) + '</span></div>' +
+        '<div class="rp-step-line">5. Risk Weight (Basel standardised) = ' + (rw * 100).toFixed(0) + '% for PD = ' + (pd * 100).toFixed(2) + '%</div>' +
+        '<div class="rp-step-line">6. <strong>RWA</strong> = EAD x Risk Weight = ' + formatUSD(ead) + ' x ' + (rw * 100).toFixed(0) + '% = <span class="neg">' + formatUSD(rwa) + '</span></div>' +
+        '<div class="rp-step-line result">7. <strong>Minimum Capital (8% of RWA)</strong> = ' + formatUSD(rwa) + ' x 8% = <span class="neg">' + formatUSD(capital) + '</span></div></div>';
+}
+
+function getCreditRiskHTML() {
+    return '<div class="rp-section"><div class="rp-section-title" style="font-size:1.05rem;">Credit Risk: PD, LGD, EAD & RWA</div><div class="rp-hero-sub">Credit risk is the risk of financial loss arising from a counterparty\'s failure to fulfil its contractual obligations. In commodities trading, this manifests when a counterparty defaults on a forward delivery, swap payment, or margin call. The four pillars &mdash; PD, LGD, EAD, and RWA &mdash; form the foundation of modern credit risk measurement under the Basel III regulatory framework.</div></div>' +
+    '<div class="card" style="padding: 0;"><div class="cr-tab-bar">' +
+        '<button class="cr-tab active" onclick="switchCRTab(\'concepts\')">Core Concepts</button>' +
+        '<button class="cr-tab" onclick="switchCRTab(\'example\')">Worked Trade Example</button>' +
+        '<button class="cr-tab" onclick="switchCRTab(\'portfolio\')">Live Portfolio Risk</button>' +
+        '<button class="cr-tab" onclick="switchCRTab(\'calculator\')">Interactive Calculator</button>' +
+        '<button class="cr-tab" onclick="switchCRTab(\'basel\')">Basel Framework</button></div>' +
+    // TAB 1: CORE CONCEPTS
+    '<div class="cr-tab-content active" id="crTab_concepts" style="padding: 18px;">' +
+        '<div class="rp-section"><div class="rp-section-title">How the Four Pillars Fit Together</div>' +
+        '<p style="font-size: 0.82rem; line-height: 1.7; color: var(--text-body); margin-bottom: 14px;">When a bank or trading house extends credit to a counterparty (by entering a trade, lending money, or granting a credit line), it needs to answer three fundamental questions: <strong>How likely is the counterparty to default?</strong> (PD), <strong>How much will we lose if they do?</strong> (LGD), and <strong>How much are we exposed to them for?</strong> (EAD). The answers feed into the calculation of <strong>RWA</strong>, which determines how much regulatory capital must be held.</p>' +
+        '<div class="cr-flow">' +
+            '<div class="cr-flow-step"><div class="cr-flow-step-icon" style="color:#e53e3e;">&#x26A0;</div><div class="cr-flow-step-label">' + tip('PD') + '</div><div class="cr-flow-step-sub">Will they default?</div></div>' +
+            '<div class="cr-flow-arrow">&times;</div>' +
+            '<div class="cr-flow-step"><div class="cr-flow-step-icon" style="color:#dd6b20;">&#x1F4C9;</div><div class="cr-flow-step-label">' + tip('LGD') + '</div><div class="cr-flow-step-sub">How much do we lose?</div></div>' +
+            '<div class="cr-flow-arrow">&times;</div>' +
+            '<div class="cr-flow-step"><div class="cr-flow-step-icon" style="color:#3182ce;">&#x1F4B0;</div><div class="cr-flow-step-label">' + tip('EAD') + '</div><div class="cr-flow-step-sub">How much is at risk?</div></div>' +
+            '<div class="cr-flow-arrow">=</div>' +
+            '<div class="cr-flow-step" style="border-color:var(--success); background:#f0fff4;"><div class="cr-flow-step-icon" style="color:var(--success);">&#x2714;</div><div class="cr-flow-step-label">' + tip('EL') + '</div><div class="cr-flow-step-sub">Expected Loss</div></div>' +
+            '<div class="cr-flow-arrow">&rarr;</div>' +
+            '<div class="cr-flow-step" style="border-color:#805ad5; background:#faf5ff;"><div class="cr-flow-step-icon" style="color:#805ad5;">&#x1F3E6;</div><div class="cr-flow-step-label">' + tip('RWA') + '</div><div class="cr-flow-step-sub">Capital required</div></div>' +
+        '</div></div>' +
+        '<div class="cr-el-banner"><span class="cr-el-formula">Expected Loss (EL) = PD &times; LGD &times; EAD</span><span style="font-size:0.75rem; opacity:0.8;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span class="cr-el-formula">RWA = EAD &times; Risk Weight(PD, LGD)</span><span style="font-size:0.75rem; opacity:0.8;">&nbsp;&nbsp;|&nbsp;&nbsp;</span><span class="cr-el-formula">Capital = RWA &times; 8%</span></div>' +
+        '<div class="rp-concept-grid">' +
+            '<div class="rp-concept-card"><h4><span style="color:#e53e3e; font-size:1.1rem;">&#x26A0;</span> ' + tip('PD') + ' &mdash; Probability of Default</h4><p>The likelihood that a counterparty will default on its obligations within a specified time horizon, typically <strong>one year</strong>. PD is the starting point of all credit risk measurement.</p><div class="rp-formula">PD = Number of defaults / Total obligors in rating grade</div><p style="margin-top:8px;"><strong>How it\'s determined:</strong> External credit ratings (S&P, Moody\'s, Fitch) map to historical default frequencies. For unrated counterparties, banks use internal scorecards based on financial ratios (leverage, interest coverage, profitability), industry risk, and qualitative factors (management quality, country risk).</p><p style="margin-top:6px;"><strong>In commodities:</strong> A gold producer rated BBB with PD = 0.70% means that out of 1,000 similar producers, approximately 7 are expected to default within one year.</p></div>' +
+            '<div class="rp-concept-card"><h4><span style="color:#dd6b20; font-size:1.1rem;">&#x1F4C9;</span> ' + tip('LGD') + ' &mdash; Loss Given Default</h4><p>The fraction of the exposure that is actually lost when a counterparty defaults, expressed as a percentage. LGD = 1 &minus; Recovery Rate. A higher recovery rate means lower LGD.</p><div class="rp-formula">LGD = 1 - Recovery Rate = (EAD - Amount Recovered) / EAD</div><p style="margin-top:8px;"><strong>Key drivers:</strong> Collateral quality and coverage (e.g., physical metal held as security), seniority of the claim (senior secured vs. unsecured), jurisdiction (recovery rates vary by legal system), and the type of counterparty (banks typically have higher recovery than corporates).</p><p style="margin-top:6px;"><strong>Typical values:</strong> Senior secured commodity finance: LGD 20-35% (metal collateral). Senior unsecured bank exposure: LGD 45% (Basel foundation IRB default). Subordinated claims: LGD 75%.</p></div>' +
+            '<div class="rp-concept-card"><h4><span style="color:#3182ce; font-size:1.1rem;">&#x1F4B0;</span> ' + tip('EAD') + ' &mdash; Exposure at Default</h4><p>The total economic exposure to a counterparty at the moment of default. For on-balance-sheet items, EAD is typically the outstanding balance. For derivatives and off-balance-sheet items, it requires modelling <strong>potential future exposure (PFE)</strong>.</p><div class="rp-formula">EAD = Current Exposure + PFE Add-on (SA-CCR for derivatives)</div><p style="margin-top:8px;"><strong>' + tip('SA-CCR') + ' for commodities:</strong> Under Basel III\'s Standardised Approach for Counterparty Credit Risk, EAD = max(0, Replacement Cost) + PFE. The PFE add-on uses supervisory factors: 18% for electricity, 18% for oil/gas, 18% for metals, 18% for agricultural, applied to notional adjusted for maturity.</p><p style="margin-top:6px;"><strong>Off-balance-sheet:</strong> Undrawn credit lines use a ' + tip('CCF') + ' (Credit Conversion Factor). E.g., a $10M undrawn facility with 50% CCF &rarr; EAD = $5M.</p></div>' +
+            '<div class="rp-concept-card"><h4><span style="color:#805ad5; font-size:1.1rem;">&#x1F3E6;</span> ' + tip('RWA') + ' &mdash; Risk-Weighted Assets</h4><p>RWA translates exposure amounts into a risk-adjusted measure that determines how much regulatory capital a bank must hold. Riskier exposures receive higher risk weights, requiring more capital.</p><div class="rp-formula">RWA = EAD &times; Risk Weight(PD, LGD, Maturity)</div><p style="margin-top:8px;"><strong>Capital charge:</strong> Under ' + tip('Basel III') + ', banks must hold minimum ' + tip('CET1') + ' capital of <strong>4.5%</strong> of RWA, with buffers bringing the effective minimum to <strong>8-13%</strong> depending on the bank\'s systemic importance. So RWA of $50M requires $4-6.5M in capital.</p><p style="margin-top:6px;"><strong>Why it matters in trading:</strong> Every trade consumes RWA and therefore capital. Desks must earn a return (RAROC) above the cost of that capital. Low-RWA trades with G-SIB bank counterparties are more capital-efficient than high-RWA trades with unrated corporates.</p></div>' +
+        '</div>' +
+        '<div class="rp-section"><div class="rp-section-title">Credit Rating to PD Mapping</div>' +
+        '<p style="font-size: 0.8rem; color: var(--text-body); margin-bottom: 10px;">Rating agencies publish historical default studies mapping each rating grade to an observed default frequency. The table below shows typical 1-year PDs used by banks for capital calculation:</p>' +
+        '<div class="cr-rating-grid">' + Object.entries(CREDIT_RATING_PD).map(function(e) { var cls = e[1] <= 0.003 ? 'inv-grade' : e[1] < 0.2 ? 'spec-grade' : 'default-grade'; return '<div class="cr-rating-cell ' + cls + '"><div class="grade">' + e[0] + '</div><div class="pd-val">PD: ' + (e[1] * 100).toFixed(2) + '%</div></div>'; }).join('') + '</div>' +
+        '<div class="rp-legend" style="margin-top:8px;"><div class="rp-legend-item"><div class="rp-legend-swatch" style="background:var(--success);"></div> Investment Grade (AAA to BBB-)</div><div class="rp-legend-item"><div class="rp-legend-swatch" style="background:var(--warning);"></div> Speculative Grade (BB+ to B-)</div><div class="rp-legend-item"><div class="rp-legend-swatch" style="background:var(--danger);"></div> Default / Near Default (CCC+, D)</div></div></div>' +
+    '</div>' +
+    // TAB 2: WORKED TRADE EXAMPLE
+    '<div class="cr-tab-content" id="crTab_example" style="padding: 18px;">' +
+        '<div class="rp-section"><div class="rp-section-title">Worked Example: Gold Forward Trade</div>' +
+        '<p style="font-size: 0.82rem; line-height: 1.7; color: var(--text-body); margin-bottom: 14px;">Let\'s walk through a complete credit risk calculation for a single commodities trade, step by step, showing how PD, LGD, EAD, and RWA are computed and what they mean in practice.</p>' +
+        '<div class="rp-callout"><div class="rp-callout-title">Trade Details</div><p><strong>Product:</strong> Gold Forward (OTC, 6-month tenor)<br><strong>Counterparty:</strong> Standard Chartered Bank (S&P: A, Moody\'s: A1)<br><strong>Direction:</strong> We buy 100 lots (100 x 100 troy oz = 10,000 oz) at $2,350/oz<br><strong>Notional Value:</strong> $23,500,000<br><strong>Collateral:</strong> None (unsecured interbank, under ISDA Master Agreement with CSA)</p></div>' +
+        '<div class="rp-worked-example"><div class="rp-worked-title">Step 1: Determine PD (Probability of Default)</div><div class="rp-step-line">Standard Chartered rated A by S&P</div><div class="rp-step-line">Historical 1-year default rate for A-rated financial institutions: <strong>0.15%</strong></div><div class="rp-step-line">Internal model adjustment for country risk (emerging market revenue mix): +0.00%</div><div class="rp-step-line result">PD = <span class="neg">0.15%</span> (1.5 basis points)</div><div class="rp-step-line" style="font-style:italic; color:var(--text-muted);">Interpretation: Out of 10,000 similar A-rated banks, ~15 would be expected to default within one year.</div></div>' +
+        '<div class="rp-worked-example"><div class="rp-worked-title">Step 2: Determine LGD (Loss Given Default)</div><div class="rp-step-line">Exposure type: Senior unsecured (no specific collateral pledged)</div><div class="rp-step-line">Basel Foundation IRB default LGD for senior unsecured: <strong>45%</strong></div><div class="rp-step-line">ISDA CSA with daily margin calls could reduce effective LGD</div><div class="rp-step-line">However, for regulatory capital, floor of 45% applies</div><div class="rp-step-line result">LGD = <span class="neg">45%</span></div><div class="rp-step-line" style="font-style:italic; color:var(--text-muted);">Interpretation: If Standard Chartered defaults, we expect to recover 55 cents on the dollar (Recovery Rate = 55%), losing 45% of whatever we are owed.</div></div>' +
+        '<div class="rp-worked-example"><div class="rp-worked-title">Step 3: Calculate EAD (Exposure at Default)</div><div class="rp-step-line"><strong>Current Exposure (Replacement Cost):</strong></div><div class="rp-step-line">&nbsp;&nbsp;Current gold price: $2,380/oz (market moved in our favour)</div><div class="rp-step-line">&nbsp;&nbsp;MTM gain = (2,380 - 2,350) x 10,000 oz = <span class="pos">+$300,000</span></div><div class="rp-step-line">&nbsp;&nbsp;Replacement Cost (RC) = max(MTM, 0) = $300,000</div><div class="rp-step-line">&nbsp;</div><div class="rp-step-line"><strong>Potential Future Exposure (PFE) under SA-CCR:</strong></div><div class="rp-step-line">&nbsp;&nbsp;Supervisory factor for metals: 18%</div><div class="rp-step-line">&nbsp;&nbsp;Maturity factor for 6-month trade: sqrt(min(1, 0.5)) = 0.707</div><div class="rp-step-line">&nbsp;&nbsp;Adjusted notional = $23,500,000 x 0.707 = $16,614,500</div><div class="rp-step-line">&nbsp;&nbsp;PFE add-on = $16,614,500 x 18% = <span class="neg">$2,990,610</span></div><div class="rp-step-line">&nbsp;</div><div class="rp-step-line"><strong>EAD = RC + PFE = $300,000 + $2,990,610</strong></div><div class="rp-step-line result">EAD = <span class="neg">$3,290,610</span></div><div class="rp-step-line" style="font-style:italic; color:var(--text-muted);">Interpretation: Although our current mark-to-market gain is only $300K, the potential for gold to move further before the 6-month settlement means our exposure could grow to ~$3.3M.</div></div>' +
+        '<div class="rp-worked-example"><div class="rp-worked-title">Step 4: Calculate RWA (Risk-Weighted Assets)</div><div class="rp-step-line"><strong>Under Basel Standardised Approach:</strong></div><div class="rp-step-line">&nbsp;&nbsp;A-rated bank counterparty &rarr; Risk Weight = 50%</div><div class="rp-step-line">&nbsp;&nbsp;RWA = EAD x Risk Weight = $3,290,610 x 50%</div><div class="rp-step-line result">RWA = <span class="neg">$1,645,305</span></div><div class="rp-step-line">&nbsp;</div><div class="rp-step-line"><strong>Minimum Capital Requirement (Pillar 1):</strong></div><div class="rp-step-line">&nbsp;&nbsp;Capital = RWA x 8% = $1,645,305 x 8%</div><div class="rp-step-line result">Capital Required = <span class="neg">$131,624</span></div><div class="rp-step-line" style="font-style:italic; color:var(--text-muted);">Interpretation: The bank must hold at least $131,624 in CET1 capital against this single gold forward trade. The trading desk must earn more than this cost of capital to generate positive economic profit.</div></div>' +
+        '<div class="rp-worked-example"><div class="rp-worked-title">Step 5: Expected Loss (EL)</div><div class="rp-step-line">EL = PD x LGD x EAD</div><div class="rp-step-line">EL = 0.15% x 45% x $3,290,610</div><div class="rp-step-line">EL = 0.0015 x 0.45 x $3,290,610</div><div class="rp-step-line result">Expected Loss = <span class="neg">$2,221</span> (per annum)</div><div class="rp-step-line" style="font-style:italic; color:var(--text-muted);">Interpretation: The bank expects to lose about $2,221 per year on average from credit risk on this trade. This is provisioned through credit reserves (loan loss provisions), not capital. Capital covers unexpected losses above this level.</div></div>' +
+        '<div class="cr-metric-grid" style="margin-top:18px;"><div class="cr-metric-card"><div class="cr-metric-abbr pd">0.15%</div><div class="cr-metric-name">PD</div><div class="cr-metric-value" style="font-size:0.9rem;">S&P: A</div></div><div class="cr-metric-card"><div class="cr-metric-abbr lgd">45%</div><div class="cr-metric-name">LGD</div><div class="cr-metric-value" style="font-size:0.9rem;">Sr. Unsecured</div></div><div class="cr-metric-card"><div class="cr-metric-abbr ead">$3.29M</div><div class="cr-metric-name">EAD</div><div class="cr-metric-value" style="font-size:0.9rem;">RC + PFE</div></div><div class="cr-metric-card highlight"><div class="cr-metric-abbr rwa">$1.65M</div><div class="cr-metric-name">RWA</div><div class="cr-metric-value" style="font-size:0.9rem;">Capital: $131.6K</div></div></div></div>' +
+        '<div class="rp-section"><div class="rp-section-title">Portfolio Example: 5-Trade Commodity Book</div><p style="font-size: 0.8rem; color: var(--text-body); margin-bottom: 10px;">Credit risk is always assessed at the portfolio level. Below is a sample 5-trade book showing how different counterparties, products, and tenors produce varying risk profiles:</p>' +
+        '<table class="cr-portfolio-table"><thead><tr><th>#</th><th>Trade</th><th>Counterparty</th><th>Rating</th><th>Notional</th><th>PD</th><th>LGD</th><th>EAD</th><th>Risk Wt</th><th>RWA</th><th>EL</th></tr></thead><tbody>' +
+        '<tr><td>1</td><td>Gold Forward 6M</td><td>Standard Chartered</td><td><span class="rp-badge rp-badge-delta">A</span></td><td>$23,500,000</td><td>0.15%</td><td>45%</td><td>$3,290,610</td><td>50%</td><td>$1,645,305</td><td>$2,221</td></tr>' +
+        '<tr><td>2</td><td>Copper Swap 12M</td><td>JP Morgan</td><td><span class="rp-badge rp-badge-delta">A+</span></td><td>$15,000,000</td><td>0.10%</td><td>45%</td><td>$2,850,000</td><td>50%</td><td>$1,425,000</td><td>$1,283</td></tr>' +
+        '<tr><td>3</td><td>Silver Spot</td><td>HSBC</td><td><span class="rp-badge rp-badge-delta">A+</span></td><td>$5,200,000</td><td>0.10%</td><td>45%</td><td>$5,304,000</td><td>50%</td><td>$2,652,000</td><td>$2,387</td></tr>' +
+        '<tr><td>4</td><td>Oil Future 3M</td><td>Goldman Sachs</td><td><span class="rp-badge rp-badge-delta">A+</span></td><td>$8,750,000</td><td>0.10%</td><td>45%</td><td>$1,662,500</td><td>50%</td><td>$831,250</td><td>$748</td></tr>' +
+        '<tr style="background: var(--warning-bg);"><td>5</td><td>Platinum Fwd 9M</td><td>Mining Corp (Unrated)</td><td><span class="rp-badge rp-badge-var">BB</span></td><td>$4,000,000</td><td>3.50%</td><td>55%</td><td>$760,000</td><td>150%</td><td>$1,140,000</td><td>$14,630</td></tr>' +
+        '</tbody><tfoot><tr><td colspan="7" style="text-align:right;">Portfolio Total</td><td>$13,867,110</td><td>&mdash;</td><td>$7,693,555</td><td>$21,269</td></tr></tfoot></table>' +
+        '<div class="rp-callout" style="margin-top:14px;"><div class="rp-callout-title">Key Observation</div><p>Trade #5 (Platinum Forward with the unrated mining company) has the <strong>smallest notional</strong> ($4M) but generates <strong>$14,630 in Expected Loss</strong> &mdash; nearly 7x more than the $23.5M gold forward with Standard Chartered. This illustrates why counterparty credit quality (PD) is the dominant driver of credit risk cost. A single BB-rated trade can consume disproportionate capital relative to its size.</p></div>' +
+        '<div class="rp-callout rp-callout-warn"><div class="rp-callout-title">Concentration Risk</div><p>Although individual trade ELs look small, a trading house with 500 trades across 30 counterparties must also consider <strong>concentration risk</strong> (large exposure to a single name or sector), <strong>wrong-way risk</strong> (exposure increases when counterparty credit deteriorates, common in commodities where a producer\'s default risk rises as the commodity price falls), and <strong>correlation</strong> between defaults.</p></div></div>' +
+    '</div>' +
+    // TAB 3: LIVE PORTFOLIO
+    '<div class="cr-tab-content" id="crTab_portfolio" style="padding: 18px;"><div id="crPortfolioContent"><div class="rp-callout"><div class="rp-callout-title">No Trades Booked</div><p>Seed demo trades or book trades to see live portfolio credit risk metrics. Use the "Seed 7 Demo Trades" button in the navigation bar.</p></div></div></div>' +
+    // TAB 4: CALCULATOR
+    '<div class="cr-tab-content" id="crTab_calculator" style="padding: 18px;"><div id="crCalculatorContent"></div></div>' +
+    // TAB 5: BASEL FRAMEWORK
+    '<div class="cr-tab-content" id="crTab_basel" style="padding: 18px;">' +
+        '<div class="rp-section"><div class="rp-section-title">Basel III/IV Credit Risk Framework</div><p style="font-size: 0.82rem; line-height: 1.7; color: var(--text-body); margin-bottom: 14px;">The Basel framework, set by the Basel Committee on Banking Supervision (BCBS), provides two main approaches for calculating credit risk capital requirements. Both aim to ensure banks hold sufficient capital to absorb credit losses, but they differ in how PD, LGD, and EAD are determined.</p>' +
+        '<table class="rp-table"><thead><tr><th style="width:20%;">Aspect</th><th style="width:40%;">Standardised Approach (SA)</th><th style="width:40%;">' + tip('IRB') + ' Approach</th></tr></thead><tbody>' +
+        '<tr><td class="fw-bold">PD</td><td>Implied by external credit ratings (S&P, Moody\'s, Fitch) &mdash; fixed risk weight buckets per rating grade</td><td>Bank\'s own internal estimate based on historical default data, scorecards, and statistical models (subject to regulatory floors)</td></tr>' +
+        '<tr><td class="fw-bold">LGD</td><td>Fixed supervisory values: 45% senior unsecured, 75% subordinated. No bank estimation.</td><td><strong>Foundation IRB:</strong> Supervisory LGD (45%/75%). <strong>Advanced IRB:</strong> Bank\'s own LGD estimates from workout/recovery data.</td></tr>' +
+        '<tr><td class="fw-bold">EAD</td><td>SA-CCR for derivatives (RC + PFE). CCFs for off-balance-sheet: 20-100% depending on facility type.</td><td><strong>Foundation IRB:</strong> Supervisory CCFs. <strong>Advanced IRB:</strong> Bank\'s own EAD/CCF estimates.</td></tr>' +
+        '<tr><td class="fw-bold">RWA Calculation</td><td>RWA = EAD x Regulatory Risk Weight (from lookup table by rating/asset class)</td><td>RWA = EAD x K(PD, LGD, M, R) x 12.5 &mdash; where K uses the Basel IRB risk weight function (Vasicek single-factor model)</td></tr>' +
+        '<tr><td class="fw-bold">Complexity</td><td>Simple, transparent, but less risk-sensitive. Suitable for smaller banks.</td><td>Complex, requires regulatory approval, significant data infrastructure. Used by large/G-SIB banks.</td></tr>' +
+        '<tr><td class="fw-bold">Capital Floor</td><td colspan="2" style="text-align:center;">Basel IV (2028+): IRB RWA must be at least <strong>72.5%</strong> of Standardised RWA (output floor), preventing excessive divergence.</td></tr>' +
+        '</tbody></table></div>' +
+        '<div class="rp-section"><div class="rp-section-title">Standardised Risk Weights by Asset Class</div><table class="rp-table"><thead><tr><th>Counterparty Rating</th><th>Banks</th><th>Corporates</th><th>Sovereigns</th><th>Commodity Traders (Unrated)</th></tr></thead><tbody>' +
+        '<tr><td class="fw-bold">AAA to AA-</td><td>20%</td><td>20%</td><td>0%</td><td>20%</td></tr>' +
+        '<tr><td class="fw-bold">A+ to A-</td><td>50%</td><td>50%</td><td>20%</td><td>50%</td></tr>' +
+        '<tr><td class="fw-bold">BBB+ to BBB-</td><td>50%</td><td>75%</td><td>50%</td><td>100%</td></tr>' +
+        '<tr><td class="fw-bold">BB+ to BB-</td><td>100%</td><td>100%</td><td>100%</td><td>150%</td></tr>' +
+        '<tr><td class="fw-bold">B+ to B-</td><td>100%</td><td>150%</td><td>100%</td><td>150%</td></tr>' +
+        '<tr><td class="fw-bold">Below B- / Unrated</td><td>150%</td><td>150%</td><td>150%</td><td>150%</td></tr></tbody></table></div>' +
+        '<div class="rp-section"><div class="rp-section-title">Credit Risk in Commodities: Special Considerations</div><div class="rp-concept-grid">' +
+            '<div class="rp-concept-card"><h4>Wrong-Way Risk</h4><p>In commodities, wrong-way risk is prevalent. A gold mining company\'s default probability increases when gold prices fall &mdash; precisely when the bank\'s exposure to that company (via forward purchases) is highest. Basel III requires banks to identify and stress-test wrong-way risk positions.</p></div>' +
+            '<div class="rp-concept-card"><h4>Collateral & LGD Reduction</h4><p>Physical commodity collateral (warehouse receipts, LME warrants) can significantly reduce LGD. A $10M gold forward backed by allocated gold bars might have LGD of 15-25% instead of 45%. However, collateral must be legally enforceable, regularly revalued, and stored in approved facilities.</p></div>' +
+            '<div class="rp-concept-card"><h4>' + tip('CVA') + ' Capital Charge</h4><p>Beyond default risk capital, Basel III requires a separate CVA capital charge for the risk of mark-to-market losses due to counterparty credit spread widening (even without actual default). CVA = discounted expected loss from counterparty default over the life of derivatives.</p></div>' +
+            '<div class="rp-concept-card"><h4>Netting & Close-Out</h4><p>ISDA Master Agreements allow close-out netting: if a counterparty defaults, all trades under the agreement are netted to a single amount. This can dramatically reduce EAD. Example: if you owe $5M on Trade A but are owed $4M on Trade B, net EAD = $1M (not $5M).</p></div>' +
+        '</div></div>' +
+    '</div></div>';
+}
+
 // ============================================================
 // SECTION 40: FORWARD CURVES MODULE
 // ============================================================
@@ -10752,8 +11474,8 @@ function renderRiskParametersView() {
         <div class="rp-hero-title">Risk Parameters & Measurement</div>
         <div class="rp-hero-sub">
             Comprehensive risk measurement is the backbone of any commodities trading operation. This module covers
-            delta risk (spot, forward, weighted, bucketed), basis risk between physical and financial positions,
-            mark-to-market (MTM) valuation with worked examples, and Value at Risk (VaR) methodology.
+            delta risk, basis risk, mark-to-market valuation, Value at Risk methodology, and credit risk
+            (PD, LGD, EAD, RWA) under the Basel III framework.
         </div>
     </div>
 
@@ -10763,6 +11485,7 @@ function renderRiskParametersView() {
             <button class="fc-tab" onclick="switchRPTab('basis')">Basis Risk</button>
             <button class="fc-tab" onclick="switchRPTab('mtm')">MTM Calculations</button>
             <button class="fc-tab" onclick="switchRPTab('var')">Value at Risk (VaR)</button>
+            <button class="fc-tab" onclick="switchRPTab('credit')">Credit Risk (PD/LGD/EAD/RWA)</button>
         </div>
 
         <!-- TAB 1: DELTA RISK -->
@@ -11158,6 +11881,11 @@ function renderRiskParametersView() {
                 Always complement VaR with <strong>stress testing</strong> (what if gold drops 10% in a day?) and <strong>scenario analysis</strong> (what if 2008 repeats?).</p>
             </div>
         </div>
+
+        <!-- TAB 5: CREDIT RISK -->
+        <div class="fc-tab-content" id="rpTab_credit" style="padding: 18px;">
+            ${getCreditRiskHTML()}
+        </div>
     </div>
     `;
 
@@ -11172,7 +11900,7 @@ function switchRPTab(tabName) {
     document.querySelectorAll('.fc-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.fc-tab-content').forEach(t => t.classList.remove('active'));
     const tabs = document.querySelectorAll('.fc-tab');
-    const tabNames = ['delta', 'basis', 'mtm', 'var'];
+    const tabNames = ['delta', 'basis', 'mtm', 'var', 'credit'];
     const idx = tabNames.indexOf(tabName);
     if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
     const tabEl = document.getElementById('rpTab_' + tabName);
@@ -11181,6 +11909,7 @@ function switchRPTab(tabName) {
         if (tabName === 'delta') drawBucketedDeltaChart('rpBucketedDeltaChart');
         if (tabName === 'basis') drawBasisRiskChart('rpBasisRiskChart');
         if (tabName === 'var') drawVaRHistogram('rpVaRHistogram');
+        if (tabName === 'credit') { renderCRPortfolioTab(); }
     }, 50);
 }
 
