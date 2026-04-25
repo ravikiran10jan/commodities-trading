@@ -11122,6 +11122,445 @@ function renderCollateralReport(trade) {
 // SECTION 42: RISK PARAMETERS MODULE
 // ============================================================
 
+
+
+function drawSpotDeltaChart(canvasId) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    var W = canvas.width, H = canvas.height;
+    var pad = { top: 30, right: 40, bottom: 45, left: 75 };
+    var plotW = W - pad.left - pad.right;
+    var plotH = H - pad.top - pad.bottom;
+
+    ctx.fillStyle = '#f7f9fc';
+    ctx.fillRect(0, 0, W, H);
+
+    // Spot price range: entry +/- $50
+    var entryPrice = Math.round(getMarketPrice('Au'));
+    var range = 50;
+    var maxPnL = range * 1000; // 1000 oz delta x $50
+    var toX = function(price) { return pad.left + ((price - (entryPrice - range)) / (range * 2)) * plotW; };
+    var toY = function(pnl) { return pad.top + ((maxPnL - pnl) / (maxPnL * 2)) * plotH; };
+    var zeroY = toY(0);
+
+    // Grid lines
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 0.5;
+    for (var p = -40000; p <= 40000; p += 10000) {
+        var y = toY(p);
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#718096';
+        ctx.font = '9px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('$' + (p / 1000).toFixed(0) + 'K', pad.left - 5, y + 3);
+    }
+
+    // Price labels on x-axis
+    for (var dp = -range; dp <= range; dp += 10) {
+        var x = toX(entryPrice + dp);
+        ctx.fillStyle = '#718096';
+        ctx.font = '9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('$' + (entryPrice + dp), x, H - pad.bottom + 16);
+    }
+
+    // Zero line
+    ctx.strokeStyle = '#a0aec0';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, zeroY); ctx.lineTo(W - pad.right, zeroY); ctx.stroke();
+
+    // Entry price vertical line
+    var entryX = toX(entryPrice);
+    ctx.strokeStyle = '#1a202c';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(entryX, pad.top); ctx.lineTo(entryX, H - pad.bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#1a202c';
+    ctx.font = 'bold 9px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Entry: $' + entryPrice, entryX, pad.top - 5);
+
+    // Long position P&L line (blue)
+    ctx.strokeStyle = '#3182ce';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (var i = 0; i <= 100; i++) {
+        var price = entryPrice - range + (range * 2) * (i / 100);
+        var pnl = (price - entryPrice) * 1000;
+        var px = toX(price), py = toY(pnl);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Short position P&L line (red, dashed)
+    ctx.strokeStyle = '#e53e3e';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    for (var i = 0; i <= 100; i++) {
+        var price = entryPrice - range + (range * 2) * (i / 100);
+        var pnl = (entryPrice - price) * 1000;
+        var px = toX(price), py = toY(pnl);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Shade profit zone for long (green fill above zero on right side)
+    ctx.fillStyle = 'rgba(47,133,90,0.08)';
+    ctx.beginPath();
+    ctx.moveTo(entryX, zeroY);
+    ctx.lineTo(W - pad.right, toY(range * 1000));
+    ctx.lineTo(W - pad.right, zeroY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Shade loss zone for long (red fill below zero on left side)
+    ctx.fillStyle = 'rgba(229,62,62,0.08)';
+    ctx.beginPath();
+    ctx.moveTo(pad.left, zeroY);
+    ctx.lineTo(pad.left, toY(-range * 1000));
+    ctx.lineTo(entryX, zeroY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Annotate key points
+    ctx.fillStyle = '#2f855a';
+    ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('+$' + (30 * 1000 / 1000).toFixed(0) + 'K if gold +$30', toX(entryPrice + 30) + 6, toY(30000) + 4);
+
+    ctx.fillStyle = '#c53030';
+    ctx.fillText('-$' + (20 * 1000 / 1000).toFixed(0) + 'K if gold -$20', toX(entryPrice - 20) + 6, toY(-20000) - 6);
+
+    // Axes
+    ctx.strokeStyle = '#a0aec0';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, H - pad.bottom); ctx.lineTo(W - pad.right, H - pad.bottom); ctx.stroke();
+    ctx.fillStyle = '#718096';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Gold Spot Price ($/oz)', W / 2, H - 5);
+    ctx.save(); ctx.translate(12, H / 2); ctx.rotate(-Math.PI / 2); ctx.fillText('P&L (USD)', 0, 0); ctx.restore();
+    ctx.fillStyle = '#1a202c';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Spot Delta: P&L vs Gold Price (Long 10 lots = 1,000 oz, Delta = +1,000)', pad.left, pad.top - 14);
+}
+
+function drawForwardDeltaChart(canvasId) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    var W = canvas.width, H = canvas.height;
+    var pad = { top: 35, right: 40, bottom: 50, left: 75 };
+    var plotW = W - pad.left - pad.right;
+    var plotH = H - pad.top - pad.bottom;
+
+    ctx.fillStyle = '#f7f9fc';
+    ctx.fillRect(0, 0, W, H);
+
+    var rate = 0.05;
+    var spotDelta = 1000;
+    var tenors = [
+        { label: 'Spot', t: 0 },
+        { label: '1M', t: 1/12 },
+        { label: '3M', t: 3/12 },
+        { label: '6M', t: 6/12 },
+        { label: '9M', t: 9/12 },
+        { label: '1Y', t: 1 },
+        { label: '18M', t: 1.5 },
+        { label: '2Y', t: 2 },
+        { label: '3Y', t: 3 },
+    ];
+
+    var maxY = 1050, minY = 800;
+    var toX = function(i) { return pad.left + (i / (tenors.length - 1)) * plotW; };
+    var toY = function(v) { return pad.top + ((maxY - v) / (maxY - minY)) * plotH; };
+
+    // Grid
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 0.5;
+    for (var v = 850; v <= 1050; v += 50) {
+        var y = toY(v);
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#718096';
+        ctx.font = '9px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(v.toFixed(0) + ' oz', pad.left - 5, y + 3);
+    }
+
+    // Spot delta reference line (dashed grey)
+    ctx.strokeStyle = '#cbd5e0';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    var spotY = toY(spotDelta);
+    ctx.beginPath(); ctx.moveTo(pad.left, spotY); ctx.lineTo(W - pad.right, spotY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#a0aec0';
+    ctx.font = '9px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Spot Delta = 1,000 oz', W - pad.right - 120, spotY - 6);
+
+    // Forward delta curve (blue with area fill)
+    var points = tenors.map(function(t, i) {
+        var fwdDelta = spotDelta * Math.exp(-rate * t.t);
+        return { x: toX(i), y: toY(fwdDelta), val: fwdDelta, label: t.label, tenor: t.t };
+    });
+
+    // Area fill
+    ctx.fillStyle = 'rgba(49,130,206,0.12)';
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, spotY);
+    points.forEach(function(p) { ctx.lineTo(p.x, p.y); });
+    ctx.lineTo(points[points.length-1].x, spotY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Line
+    ctx.strokeStyle = '#3182ce';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    points.forEach(function(p, i) {
+        if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    });
+    ctx.stroke();
+
+    // Points and labels
+    points.forEach(function(p, i) {
+        ctx.fillStyle = '#3182ce';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill();
+
+        // Tenor label on x-axis
+        ctx.fillStyle = '#4a5568';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(p.label, p.x, H - pad.bottom + 16);
+
+        // Value label above point (every other one to avoid clutter)
+        if (i === 0 || i === 3 || i === 5 || i === 7 || i === 8) {
+            ctx.fillStyle = '#2c5282';
+            ctx.font = 'bold 9px Inter, sans-serif';
+            ctx.fillText(p.val.toFixed(1), p.x, p.y - 10);
+        }
+    });
+
+    // Annotation: delta difference for 2Y
+    var p2y = points[7]; // 2Y
+    var diff = spotDelta - p2y.val;
+    ctx.strokeStyle = '#e53e3e';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 2]);
+    ctx.beginPath(); ctx.moveTo(p2y.x + 8, spotY); ctx.lineTo(p2y.x + 8, p2y.y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#e53e3e';
+    ctx.font = 'bold 9px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('-' + diff.toFixed(1) + ' oz', p2y.x + 12, (spotY + p2y.y) / 2 + 3);
+    ctx.font = '8px Inter, sans-serif';
+    ctx.fillText('(' + (diff / spotDelta * 100).toFixed(1) + '% discount)', p2y.x + 12, (spotY + p2y.y) / 2 + 14);
+
+    // Axes
+    ctx.strokeStyle = '#a0aec0';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, H - pad.bottom); ctx.lineTo(W - pad.right, H - pad.bottom); ctx.stroke();
+    ctx.fillStyle = '#718096';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Delivery Tenor', W / 2, H - 8);
+    ctx.save(); ctx.translate(12, H / 2); ctx.rotate(-Math.PI / 2); ctx.fillText('Delta (oz equivalent)', 0, 0); ctx.restore();
+    ctx.fillStyle = '#1a202c';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Forward Delta Decay: 1,000 oz Gold Position Across Tenors (r = 5%)', pad.left, pad.top - 14);
+}
+
+function drawWeightedDeltaChart(canvasId) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    var W = canvas.width, H = canvas.height;
+    var pad = { top: 35, right: 40, bottom: 55, left: 75 };
+    var plotW = W - pad.left - pad.right;
+    var plotH = H - pad.top - pad.bottom;
+
+    ctx.fillStyle = '#f7f9fc';
+    ctx.fillRect(0, 0, W, H);
+
+    var rate = 0.05;
+    var spotDelta = 1000;
+    var tRef = 1.0;
+    var tenors = [
+        { label: '1M',  t: 1/12 },
+        { label: '2M',  t: 2/12 },
+        { label: '3M',  t: 3/12 },
+        { label: '6M',  t: 6/12 },
+        { label: '9M',  t: 9/12 },
+        { label: '1Y',  t: 1 },
+        { label: '18M', t: 1.5 },
+        { label: '2Y',  t: 2 },
+        { label: '3Y',  t: 3 },
+        { label: '5Y',  t: 5 },
+    ];
+
+    var maxY = 1800, minY = 0;
+    var toX = function(i) { return pad.left + (i / (tenors.length - 1)) * plotW; };
+    var toY = function(v) { return pad.top + ((maxY - v) / (maxY - minY)) * plotH; };
+
+    // Grid
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 0.5;
+    for (var v = 200; v <= 1600; v += 200) {
+        var y = toY(v);
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+        ctx.fillStyle = '#718096';
+        ctx.font = '9px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(v.toFixed(0) + ' oz', pad.left - 5, y + 3);
+    }
+
+    // Calculate data
+    var spotPts = [], fwdPts = [], wtdPts = [];
+    tenors.forEach(function(t, i) {
+        var x = toX(i);
+        var fwdDelta = spotDelta * Math.exp(-rate * t.t);
+        var weight = Math.sqrt(t.t / tRef);
+        var weightedDelta = fwdDelta * weight;
+        spotPts.push({ x: x, y: toY(spotDelta), val: spotDelta });
+        fwdPts.push({ x: x, y: toY(fwdDelta), val: fwdDelta });
+        wtdPts.push({ x: x, y: toY(weightedDelta), val: weightedDelta });
+    });
+
+    // Spot delta line (grey dashed)
+    ctx.strokeStyle = '#cbd5e0';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    spotPts.forEach(function(p, i) { if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Forward delta line (blue)
+    ctx.strokeStyle = '#3182ce';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    fwdPts.forEach(function(p, i) { if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+    ctx.stroke();
+
+    // Forward delta dots
+    fwdPts.forEach(function(p, i) {
+        ctx.fillStyle = '#3182ce';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // Weighted delta area fill
+    ctx.fillStyle = 'rgba(229,62,62,0.10)';
+    ctx.beginPath();
+    ctx.moveTo(wtdPts[0].x, toY(0));
+    wtdPts.forEach(function(p) { ctx.lineTo(p.x, p.y); });
+    ctx.lineTo(wtdPts[wtdPts.length-1].x, toY(0));
+    ctx.closePath();
+    ctx.fill();
+
+    // Weighted delta line (red)
+    ctx.strokeStyle = '#e53e3e';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    wtdPts.forEach(function(p, i) { if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+    ctx.stroke();
+
+    // Weighted delta dots and labels
+    wtdPts.forEach(function(p, i) {
+        ctx.fillStyle = '#e53e3e';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // Tenor labels on x-axis
+    tenors.forEach(function(t, i) {
+        ctx.fillStyle = '#4a5568';
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(t.label, toX(i), H - pad.bottom + 16);
+    });
+
+    // Annotate key values
+    // At 1M - weighted delta is low (short tenor, low weight)
+    ctx.fillStyle = '#c53030';
+    ctx.font = 'bold 9px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(wtdPts[0].val.toFixed(0), wtdPts[0].x + 6, wtdPts[0].y - 4);
+
+    // At 1Y - weighted delta ~ forward delta (weight = 1.0)
+    ctx.fillText(wtdPts[5].val.toFixed(0), wtdPts[5].x + 6, wtdPts[5].y - 4);
+
+    // At 5Y - weighted delta > spot delta (weight > 1)
+    ctx.fillText(wtdPts[9].val.toFixed(0), wtdPts[9].x - 30, wtdPts[9].y - 8);
+
+    // Forward delta labels at key points
+    ctx.fillStyle = '#2c5282';
+    ctx.fillText(fwdPts[5].val.toFixed(0), fwdPts[5].x + 6, fwdPts[5].y + 14);
+    ctx.fillText(fwdPts[9].val.toFixed(0), fwdPts[9].x + 6, fwdPts[9].y + 14);
+
+    // Annotation box: explain the crossover
+    var crossIdx = -1;
+    for (var i = 1; i < wtdPts.length; i++) {
+        if (wtdPts[i].val >= spotDelta && wtdPts[i-1].val < spotDelta) { crossIdx = i; break; }
+    }
+    if (crossIdx > 0) {
+        ctx.fillStyle = 'rgba(229,62,62,0.12)';
+        ctx.fillRect(wtdPts[crossIdx].x - 2, pad.top + 4, plotW - (wtdPts[crossIdx].x - pad.left) + 2, 32);
+        ctx.fillStyle = '#c53030';
+        ctx.font = 'bold 9px Inter, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('Weighted > Spot: longer tenor = more risk', wtdPts[crossIdx].x + 4, pad.top + 18);
+        ctx.font = '8px Inter, sans-serif';
+        ctx.fillText('Time weight sqrt(T) > 1 when T > 1yr, amplifying delta', wtdPts[crossIdx].x + 4, pad.top + 30);
+    }
+
+    // Axes
+    ctx.strokeStyle = '#a0aec0';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, H - pad.bottom); ctx.lineTo(W - pad.right, H - pad.bottom); ctx.stroke();
+    ctx.fillStyle = '#718096';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Delivery Tenor', W / 2, H - 8);
+    ctx.save(); ctx.translate(12, H / 2); ctx.rotate(-Math.PI / 2); ctx.fillText('Delta (oz equivalent)', 0, 0); ctx.restore();
+    ctx.fillStyle = '#1a202c';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Spot vs Forward vs Weighted Delta: 1,000 oz Gold Position', pad.left, pad.top - 14);
+
+    // Data table below chart
+    ctx.font = '8px Inter, sans-serif';
+    ctx.fillStyle = '#718096';
+    var tableY = H - pad.bottom + 28;
+    tenors.forEach(function(t, i) {
+        var x = toX(i);
+        ctx.textAlign = 'center';
+        var wt = Math.sqrt(t.t / tRef);
+        ctx.fillText('wt:' + wt.toFixed(2), x, tableY);
+    });
+    ctx.textAlign = 'right';
+    ctx.fillText('Weight:', pad.left - 5, tableY);
+}
+
+
 function drawBucketedDeltaChart(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -11579,6 +12018,60 @@ function renderRiskParametersView() {
                 When delta exceeds the limit, the trader must hedge — usually by trading futures, which have a delta of exactly 1.0 per contract.
                 Options desks must rebalance their delta hedges frequently because option delta changes as the underlying price moves (this is <strong>gamma risk</strong>).</p>
             </div>
+
+            <div class="rp-section" style="margin-top: 22px;">
+                <div class="rp-section-title">Visual Example: Spot Delta — P&L Sensitivity to Price Moves</div>
+                <p style="font-size: 0.82rem; line-height: 1.6; color: var(--text-body); margin-bottom: 10px;">
+                    The chart below shows how a <strong>long 10-lot Gold position</strong> (1,000 oz, delta = +1,000) responds to
+                    spot price changes. Each $1 move in gold creates a $1,000 P&L change — this linear relationship is the hallmark of spot delta.
+                    A <strong>short</strong> position would mirror this chart below the zero line.
+                </p>
+                <div class="rp-canvas-wrap" style="height: 280px;">
+                    <canvas id="rpSpotDeltaChart"></canvas>
+                </div>
+                <div class="rp-legend" style="margin-top:4px;">
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#3182ce;"></div> Long position P&L (Delta = +1,000 oz)</div>
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#e53e3e;"></div> Short position P&L (Delta = -1,000 oz)</div>
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#1a202c; height:2px;"></div> Entry price (breakeven)</div>
+                </div>
+            </div>
+
+            <div class="rp-section" style="margin-top: 22px;">
+                <div class="rp-section-title">Visual Example: Forward Delta — How Discounting Reduces Delta Over Tenor</div>
+                <p style="font-size: 0.82rem; line-height: 1.6; color: var(--text-body); margin-bottom: 10px;">
+                    Forward delta is always <strong>less</strong> than spot delta because the present value of a future cashflow is
+                    discounted. The chart below shows how 1,000 oz of spot delta decays as the delivery date extends further
+                    into the future. At 5% interest rate, a 2-year forward has ~90.5% of the spot delta.
+                </p>
+                <div class="rp-canvas-wrap" style="height: 280px;">
+                    <canvas id="rpForwardDeltaChart"></canvas>
+                </div>
+                <div class="rp-legend" style="margin-top:4px;">
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#3182ce; width:20px; height:3px;"></div> Forward Delta (discounted)</div>
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#cbd5e0; height:2px;"></div> Spot Delta reference (1,000 oz)</div>
+                    <div class="rp-legend-item" style="font-style:italic;">Formula: Fwd Delta = Spot Delta &times; e<sup>-rT</sup> (r = 5%)</div>
+                </div>
+            </div>
+
+            <div class="rp-section" style="margin-top: 22px;">
+                <div class="rp-section-title">Visual Example: Weighted Delta — Time-Adjusting for Risk Comparability</div>
+                <p style="font-size: 0.82rem; line-height: 1.6; color: var(--text-body); margin-bottom: 10px;">
+                    Weighted delta adjusts forward delta by a <strong>square-root-of-time factor</strong> to make positions of
+                    different tenors comparable on a risk basis. A 1-month position with $1,000 delta poses less risk than
+                    a 2-year position with the same delta, because the longer position has more time for adverse price moves.
+                    The chart below shows all three measures side by side for a 1,000 oz Gold position.
+                </p>
+                <div class="rp-canvas-wrap" style="height: 300px;">
+                    <canvas id="rpWeightedDeltaChart"></canvas>
+                </div>
+                <div class="rp-legend" style="margin-top:4px;">
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#cbd5e0; width:20px; height:2px;"></div> Spot Delta (flat at 1,000 oz)</div>
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#3182ce;"></div> Forward Delta (discounted, declining)</div>
+                    <div class="rp-legend-item"><div class="rp-legend-swatch" style="background:#e53e3e;"></div> Weighted Delta (time-adjusted for risk)</div>
+                    <div class="rp-legend-item" style="font-style:italic;">Weight = &radic;(T / T<sub>ref</sub>) where T<sub>ref</sub> = 1 year</div>
+                </div>
+            </div>
+
         </div>
 
         <!-- TAB 2: BASIS RISK -->
@@ -11893,6 +12386,9 @@ function renderRiskParametersView() {
         drawBucketedDeltaChart('rpBucketedDeltaChart');
         drawBasisRiskChart('rpBasisRiskChart');
         drawVaRHistogram('rpVaRHistogram');
+        drawSpotDeltaChart('rpSpotDeltaChart');
+        drawForwardDeltaChart('rpForwardDeltaChart');
+        drawWeightedDeltaChart('rpWeightedDeltaChart');
     }, 60);
 }
 
@@ -11906,7 +12402,7 @@ function switchRPTab(tabName) {
     const tabEl = document.getElementById('rpTab_' + tabName);
     if (tabEl) tabEl.classList.add('active');
     setTimeout(() => {
-        if (tabName === 'delta') drawBucketedDeltaChart('rpBucketedDeltaChart');
+        if (tabName === 'delta') { drawBucketedDeltaChart('rpBucketedDeltaChart'); drawSpotDeltaChart('rpSpotDeltaChart'); drawForwardDeltaChart('rpForwardDeltaChart'); drawWeightedDeltaChart('rpWeightedDeltaChart'); }
         if (tabName === 'basis') drawBasisRiskChart('rpBasisRiskChart');
         if (tabName === 'var') drawVaRHistogram('rpVaRHistogram');
         if (tabName === 'credit') { renderCRPortfolioTab(); }
