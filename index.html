@@ -554,6 +554,151 @@
         .badge-buy { background: #ebf8ff; color: #2b6cb0; }
         .badge-sell { background: #fff5f5; color: #c53030; }
         .badge-stage { background: var(--bg-page); color: var(--primary); border: 1px solid var(--border); }
+
+        /* ============================================================
+           PAYOFF DIAGRAM
+           ============================================================ */
+        .payoff-container {
+            position: relative; width: 100%; height: 220px;
+            background: var(--bg-page); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden; margin: 12px 0;
+        }
+        .payoff-canvas { width: 100%; height: 100%; }
+        .payoff-legend {
+            display: flex; gap: 16px; font-size: 0.72rem; margin-top: 4px;
+            color: var(--text-muted);
+        }
+        .payoff-legend-item { display: flex; align-items: center; gap: 4px; }
+        .payoff-legend-swatch {
+            width: 16px; height: 3px; border-radius: 2px;
+        }
+
+        /* ============================================================
+           REGULATORY REPORT PANELS
+           ============================================================ */
+        .reg-report {
+            background: var(--bg-page); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 14px; margin: 12px 0;
+            font-family: 'Courier New', Courier, monospace; font-size: 0.75rem;
+            line-height: 1.5; white-space: pre-wrap; overflow-x: auto;
+        }
+        .reg-report-header {
+            font-weight: 700; color: var(--primary); font-size: 0.82rem;
+            margin-bottom: 8px; font-family: 'Inter', sans-serif;
+        }
+        .reg-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 0.68rem; font-weight: 700;
+        }
+        .reg-badge-mifid { background: #ebf4ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+        .reg-badge-emir { background: #faf5ff; color: #6b46c1; border: 1px solid #e9d8fd; }
+
+        /* ============================================================
+           HEDGING STRATEGY PANEL
+           ============================================================ */
+        .hedge-panel {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 14px; margin: 10px 0; background: #fefefe;
+        }
+        .hedge-panel-title {
+            font-size: 0.82rem; font-weight: 700; color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .hedge-example {
+            background: var(--bg-page); border: 1px solid var(--border-light);
+            border-radius: var(--radius); padding: 10px; margin: 8px 0;
+            font-size: 0.78rem;
+        }
+        .hedge-example-title {
+            font-weight: 700; color: var(--accent); font-size: 0.75rem;
+            text-transform: uppercase; margin-bottom: 4px;
+        }
+        .hedge-calc {
+            font-family: 'Courier New', monospace; font-size: 0.78rem;
+            background: var(--primary-dark); color: #e2e8f0; padding: 10px;
+            border-radius: var(--radius); margin: 8px 0; line-height: 1.6;
+        }
+
+        /* ============================================================
+           WARRANT & METAL ACCOUNT PANELS
+           ============================================================ */
+        .warrant-panel {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden; margin: 10px 0;
+        }
+        .warrant-panel-header {
+            background: var(--primary); color: #fff; padding: 8px 12px;
+            font-size: 0.78rem; font-weight: 700;
+        }
+        .warrant-panel-body { padding: 12px; font-size: 0.82rem; }
+        .warrant-field {
+            display: flex; justify-content: space-between; padding: 4px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .warrant-field .label { color: var(--text-muted); font-size: 0.78rem; }
+        .warrant-field .value { font-weight: 600; }
+        .metal-account-info {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0;
+        }
+        .metal-account-card {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 12px; cursor: pointer; transition: all 0.15s;
+        }
+        .metal-account-card:hover { border-color: var(--accent); }
+        .metal-account-card.selected {
+            border-color: var(--primary); background: #f0f5ff;
+            box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+        }
+        .metal-account-card h4 {
+            font-size: 0.82rem; color: var(--primary); margin-bottom: 4px;
+        }
+        .metal-account-card p { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+        .metal-account-card .detail-row {
+            font-size: 0.72rem; display: flex; justify-content: space-between;
+            padding: 2px 0;
+        }
+
+        /* ============================================================
+           GREEK EXPLANATION PANEL
+           ============================================================ */
+        .greek-explain-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;
+        }
+        .greek-explain-card {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 10px;
+        }
+        .greek-explain-card h4 {
+            font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-bottom: 4px;
+        }
+        .greek-explain-card .definition {
+            font-size: 0.75rem; color: var(--text-body); margin-bottom: 6px; line-height: 1.4;
+        }
+        .greek-explain-card .formula {
+            font-family: 'Courier New', monospace; font-size: 0.72rem;
+            background: var(--bg-page); padding: 4px 8px; border-radius: 3px;
+            margin-bottom: 6px; color: var(--primary);
+        }
+        .greek-explain-card .hedge-action {
+            font-size: 0.72rem; color: var(--accent); font-weight: 600;
+            border-top: 1px solid var(--border-light); padding-top: 4px;
+        }
+
+        /* ============================================================
+           MTM FORMULA DISPLAY
+           ============================================================ */
+        .mtm-formula-box {
+            background: #f7f8fc; border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 12px; margin: 10px 0;
+        }
+        .mtm-formula-box .formula-line {
+            font-family: 'Courier New', monospace; font-size: 0.82rem;
+            color: var(--primary); padding: 2px 0;
+        }
+        .mtm-formula-box .source {
+            font-size: 0.68rem; color: var(--text-muted); margin-top: 6px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -734,7 +879,111 @@ const TOOLTIPS = {
     'Knock-Out':        'Barrier option that ceases to exist if the underlying reaches the barrier level',
     'Knock-In':         'Barrier option that only activates if the underlying reaches the barrier level',
     'SPAN':             'Standard Portfolio Analysis of Risk — CME\'s margin methodology for derivatives',
-    'Exchange Ticker':  'Standardised contract code: Product + Month letter (F-Z) + Year. E.g. GCZ26 = Gold Dec 2026'
+    'Exchange Ticker':  'Standardised contract code: Product + Month letter (F-Z) + Year. E.g. GCZ26 = Gold Dec 2026',
+    'MiFID II':         'Markets in Financial Instruments Directive II — EU regulation requiring transaction reporting via RTS 22 (65 fields)',
+    'EMIR':             'European Market Infrastructure Regulation — mandates reporting of all derivative contracts to trade repositories',
+    'UTI':              'Unique Transaction Identifier — globally unique code identifying a derivative transaction under EMIR',
+    'UPI':              'Unique Product Identifier — ISO 4914 standard code classifying the derivative product (assigned by DSB)',
+    'ISIN':             'International Securities Identification Number — 12-character alphanumeric code uniquely identifying a security',
+    'CFI Code':         'Classification of Financial Instruments — 6-character code per ISO 10962 (e.g. OCAFPS = Option/Call/American/Future/Physical/Standardised)',
+    'MIC':              'Market Identifier Code — ISO 10383 code identifying a trading venue (e.g. XLME = London Metal Exchange)',
+    'RTS 25':           'Regulatory Technical Standard 25 — MiFID II clock synchronisation requirement for timestamping trades',
+    'LME Warrant':      'A document of title to a specific lot of metal stored in an LME-approved warehouse — transferable via LMEsword',
+    'LMEsword':         'LME\'s electronic Sword system for transfer of warrants — the electronic register of warrant ownership',
+    'Allocated':        'Metal account where specific bars (with serial numbers) are held for the client — no counterparty risk',
+    'Unallocated':      'Metal account where client has a general claim on a pool of metal — client is unsecured creditor of the bank',
+    'Zero-Cost Collar': 'Hedging strategy combining a bought put and sold call (or vice versa) where premiums approximately offset',
+    'Delta Neutral':    'A hedging approach where the portfolio delta is brought to zero, eliminating directional price exposure',
+    'Protective Put':   'Buying a put option to protect a long physical position — limits downside while preserving upside',
+    'Covered Call':     'Selling a call option against a long physical position — generates income but caps upside potential',
+    'MTM Formula':      'Futures: (Market - Trade) x Qty x ContractSize | Options: (Theo - Premium) x Qty x ContractSize',
+    'ISO 20022':        'International standard for electronic data interchange between financial institutions (used by EMIR Refit)',
+    'DSB':              'Derivatives Service Bureau — assigns UPIs (Unique Product Identifiers) for OTC derivative reporting',
+    'TR':               'Trade Repository — entity that centrally collects and maintains records of derivatives under EMIR'
+};
+
+const HEDGING_STRATEGIES = {
+    'Zero-Cost Collar': {
+        description: 'Buy a protective put and sell a covered call (producer) or buy a call and sell a put (consumer) where premiums offset to zero net cost.',
+        legs: ['Buy Put (floor)', 'Sell Call (cap)'],
+        bestFor: 'Producers wanting downside protection without paying net premium',
+        example: {
+            commodity: 'Gold', spot: 2000,
+            putStrike: 1900, callStrike: 2100,
+            putPremium: 45, callPremium: 45,
+            netCost: 0,
+            explanation: 'Producer buys $1,900 Put (pays $45) and sells $2,100 Call (receives $45). Net cost = $0. Protected below $1,900, capped above $2,100.'
+        }
+    },
+    'Protective Put': {
+        description: 'Buy a put option to protect an existing long position against downside price moves.',
+        legs: ['Long Physical/Future', 'Buy Put'],
+        bestFor: 'Holders of physical metal wanting insurance against price drops',
+        example: {
+            commodity: 'Copper', spot: 9500,
+            putStrike: 9000, putPremium: 200, netCost: 200,
+            explanation: 'Holding 25MT copper. Buy $9,000 Put for $200/MT. Max loss = $500/MT + $200 premium = $700/MT.'
+        }
+    },
+    'Covered Call': {
+        description: 'Sell a call option against an existing long position to generate premium income.',
+        legs: ['Long Physical/Future', 'Sell Call'],
+        bestFor: 'Holders looking to enhance yield on existing positions in sideways markets',
+        example: {
+            commodity: 'Gold', spot: 2000,
+            callStrike: 2100, callPremium: 35,
+            explanation: 'Holding 100oz gold. Sell $2,100 Call for $35/oz. Earn $3,500 income but give up gains above $2,100.'
+        }
+    },
+    'Delta Neutral Hedge': {
+        description: 'Offset the delta exposure of an option position by trading the underlying futures to achieve zero net delta.',
+        legs: ['Option Position', 'Offsetting Futures'],
+        bestFor: 'Market makers and traders wanting to isolate volatility exposure',
+        example: {
+            commodity: 'Gold', delta: 0.55, contracts: 10, contractSize: 100,
+            explanation: 'Long 10 Gold Call contracts (delta=0.55). Hedge = 0.55 x 10 x 100 = 550 oz. Sell 5.5 futures contracts.'
+        }
+    }
+};
+
+const LME_WARRANT_EXAMPLE = {
+    warrantNumber: 'LME-WNT-2026-04187',
+    metal: 'Copper', brand: 'Aurubis AG — Grade A Cathode', shape: 'Cathode',
+    weight: '24,987 kg', lotSize: '25 MT (standard parcel)',
+    warehouse: 'Henry Bath & Son Ltd', location: 'Rotterdam, Netherlands',
+    warehouseCode: 'HENBA-RTD', storageRate: '$0.45/MT/day',
+    rentPaidTo: '2026-05-25', status: 'Live (On Warrant)',
+    registeredOwner: 'JP Morgan Metals Ltd', system: 'LMEsword (electronic)',
+    issueDate: '2026-01-15', qualitySpec: 'LME Grade A (min 99.99% Cu)'
+};
+
+const METAL_ACCOUNT_TYPES = {
+    Allocated: {
+        title: 'Allocated Account',
+        description: 'Specific bars with unique serial numbers held in client\'s name. Client has full title to identified metal.',
+        ownership: 'Full title — specific bars owned',
+        counterpartyRisk: 'None — metal is off the bank\'s balance sheet',
+        balanceSheet: 'Off balance sheet for the bank',
+        storageCost: '0.3% — 0.8% per annum',
+        insurance: 'Client responsible for insurance',
+        settlement: 'Physical delivery of specific bars',
+        lbmaStandard: 'LBMA Good Delivery List bars with serial numbers',
+        useCase: 'Central banks, ETFs, high-value long-term storage',
+        riskRating: 'Low'
+    },
+    Unallocated: {
+        title: 'Unallocated Account',
+        description: 'General claim on a pool of metal. No specific bars. Client is unsecured creditor.',
+        ownership: 'General claim — fungible pool',
+        counterpartyRisk: 'Full — client is unsecured creditor if bank defaults',
+        balanceSheet: 'On balance sheet for the bank',
+        storageCost: 'Typically zero (bank uses metal)',
+        insurance: 'Covered by bank\'s general insurance',
+        settlement: 'Book entry transfer between accounts',
+        lbmaStandard: 'Loco London fine ounces (gold) / fine troy ounces (silver)',
+        useCase: 'Trading, short-term holding, cost-sensitive clients',
+        riskRating: 'Higher'
+    }
 };
 
 
@@ -1034,7 +1283,15 @@ function createTradeObject(formData) {
         reconBreakField: null,
         reconBreakValue: null,
         // P&L
-        realisedPnL: 0
+        realisedPnL: 0,
+        // Metal account type
+        metalAccount: formData.metalAccount || 'Unallocated',
+        // Regulatory fields (populated in Stage 2)
+        mifidFields: null,
+        emirFields: null,
+        // Hedging
+        hedgingStrategy: null,
+        deltaHedgeTrade: null
     };
 }
 
@@ -1343,6 +1600,31 @@ function buildCaptureFormHTML(t, isEdit) {
                 </div>
             </div>
 
+                <!-- Metal Account Type (Precious metals) -->
+                <div class="form-group full-width" id="metalAccountGroup" style="display:${COMMODITIES[defaultCom].type === 'precious' ? 'block' : 'none'}">
+                    <label>${tip('Allocated')} vs ${tip('Unallocated')} Metal Account</label>
+                    <div class="metal-account-info">
+                        <div class="metal-account-card ${(!t || t.metalAccount === 'Allocated') ? 'selected' : ''}" id="allocatedCard" onclick="selectMetalAccount('Allocated')">
+                            <h4>Allocated</h4>
+                            <p>Specific bars with serial numbers. Full title. No counterparty risk. Storage: 0.3-0.8% p.a.</p>
+                            <div class="detail-row"><span>Risk:</span><span class="text-success fw-bold">Low</span></div>
+                        </div>
+                        <div class="metal-account-card ${t && t.metalAccount === 'Unallocated' ? 'selected' : ''}" id="unallocatedCard" onclick="selectMetalAccount('Unallocated')">
+                            <h4>Unallocated</h4>
+                            <p>General claim on pool. Unsecured creditor. Lower cost. Book-entry transfer.</p>
+                            <div class="detail-row"><span>Risk:</span><span class="text-warning fw-bold">Higher</span></div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="metalAccount" value="${t ? t.metalAccount || 'Unallocated' : 'Unallocated'}">
+                </div>
+
+                <!-- Hedging Strategy Panel (Options only) -->
+                <div class="option-fields-group" id="hedgingStrategyGroup" style="display:${isOpt ? 'block' : 'none'}">
+                    <div class="option-section-label">Hedging Strategies</div>
+                    <div id="hedgingStrategiesContent">${renderHedgingStrategies(defaultCom)}</div>
+                </div>
+            </div>
+
             <!-- Contract details (informational) -->
             <div class="card mt-3" style="background: var(--bg-page); border: 1px solid var(--border-light);">
                 <div style="font-size:0.78rem; color: var(--text-muted);" id="contractInfo">
@@ -1411,6 +1693,9 @@ function onProductTypeChange() {
     }
 
     document.getElementById('venue').value = determineVenue(pt, com);
+    // Show/hide hedging strategy panel
+    const hedgeGroup = document.getElementById('hedgingStrategyGroup');
+    if (hedgeGroup) hedgeGroup.style.display = isOpt ? 'block' : 'none';
     updateValueDate();
     updateNotional();
 }
@@ -1430,6 +1715,12 @@ function onCommodityChange() {
         document.getElementById('strikePrice').step = COMMODITIES[com].tick;
         autoEstimatePremium();
     }
+    // Show/hide metal account for precious metals
+    const maGroup = document.getElementById('metalAccountGroup');
+    if (maGroup) maGroup.style.display = COMMODITIES[com].type === 'precious' ? 'block' : 'none';
+    // Update hedging strategies content
+    const hedgeContent = document.getElementById('hedgingStrategiesContent');
+    if (hedgeContent) hedgeContent.innerHTML = renderHedgingStrategies(com);
     updateNotional();
 }
 
@@ -1574,7 +1865,8 @@ function handleCapture(event, editTradeId) {
         barrierType: document.getElementById('barrierType')?.value || null,
         barrierLevel: document.getElementById('barrierLevel')?.value || null,
         barrierMonitoring: document.getElementById('barrierMonitoring')?.value || null,
-        rebateAmount: document.getElementById('rebateAmount')?.value || null
+        rebateAmount: document.getElementById('rebateAmount')?.value || null,
+        metalAccount: document.getElementById('metalAccount')?.value || 'Unallocated'
     };
 
     let trade;
@@ -1758,6 +2050,10 @@ function runValidation(trade) {
         }
     }
 
+    // Regulatory enrichment — MiFID II & EMIR
+    trade.mifidFields = generateMiFIDFields(trade);
+    trade.emirFields = generateEMIRFields(trade);
+
     return checks;
 }
 
@@ -1847,6 +2143,70 @@ function renderStage2(trade) {
             html += `</table></div>`;
         }
     }
+
+    // MiFID II Enrichment
+    if (trade.mifidFields) {
+        html += `<div class="card">
+            <div class="card-title"><span class="reg-badge reg-badge-mifid">MiFID II</span> Regulatory Enrichment — RTS 22</div>
+            <p style="font-size:0.78rem; color:var(--text-body); margin-bottom:10px;">
+                ${tip('MiFID II')} requires transaction reporting to the National Competent Authority (NCA) via an Approved Reporting Mechanism (ARM).
+                RTS 22 specifies 65 reportable fields. Key fields auto-enriched below:
+            </p>
+            <table class="enrich-table">
+                <tr><td>${tip('ISIN')}</td><td style="font-family:'Courier New',monospace;">${trade.mifidFields.instrumentISIN}</td></tr>
+                <tr><td>${tip('CFI Code')}</td><td style="font-family:'Courier New',monospace;">${trade.mifidFields.instrumentCFI}</td></tr>
+                <tr><td>Instrument Name</td><td>${trade.mifidFields.instrumentName}</td></tr>
+                <tr><td>Execution Venue (${tip('MIC')})</td><td>${trade.mifidFields.venueOfExecution}</td></tr>
+                <tr><td>Buy/Sell Indicator</td><td>${trade.mifidFields.buySellIndicator}</td></tr>
+                <tr><td>Buyer ${tip('LEI')}</td><td style="font-size:0.75rem;">${trade.mifidFields.buyerLEI}</td></tr>
+                <tr><td>Seller ${tip('LEI')}</td><td style="font-size:0.75rem;">${trade.mifidFields.sellerLEI}</td></tr>
+                <tr><td>Decision Maker (Buyer)</td><td>${trade.mifidFields.buyerDecisionMaker}</td></tr>
+                <tr><td>Decision Maker (Seller)</td><td>${trade.mifidFields.sellerDecisionMaker}</td></tr>
+                <tr><td>Trading Capacity</td><td>${trade.mifidFields.tradingCapacity} (Dealing on own account)</td></tr>
+                <tr><td>${tip('RTS 25')} Timestamp</td><td>${trade.mifidFields.rts25Timestamp}</td></tr>
+                <tr><td>Commodity Derivative</td><td>${trade.mifidFields.commodityDerivativeIndicator}</td></tr>
+            </table>
+        </div>`;
+    }
+
+    // EMIR Enrichment
+    if (trade.emirFields) {
+        html += `<div class="card">
+            <div class="card-title"><span class="reg-badge reg-badge-emir">EMIR</span> Regulatory Enrichment — Refit 2024</div>
+            <p style="font-size:0.78rem; color:var(--text-body); margin-bottom:10px;">
+                ${tip('EMIR')} Refit (2024) mandates reporting of 203 fields per derivative transaction to a ${tip('TR')}.
+                Key identifiers auto-generated below. Format: ${tip('ISO 20022')} XML.
+            </p>
+            <table class="enrich-table">
+                <tr><td>${tip('UTI')}</td><td style="font-family:'Courier New',monospace; font-size:0.72rem; word-break:break-all;">${trade.emirFields.uti}</td></tr>
+                <tr><td>${tip('UPI')} (from ${tip('DSB')})</td><td style="font-family:'Courier New',monospace;">${trade.emirFields.upi}</td></tr>
+                <tr><td>Action Type</td><td>${trade.emirFields.actionType} (New Trade)</td></tr>
+                <tr><td>Reporting Counterparty</td><td>${trade.emirFields.reportingCounterpartyLEI}</td></tr>
+                <tr><td>Other Counterparty</td><td>${trade.emirFields.otherCounterpartyLEI}</td></tr>
+                <tr><td>Counterparty Classification</td><td>${trade.emirFields.counterpartyClassification} (Financial Counterparty)</td></tr>
+                <tr><td>Clearing Obligation</td><td>${trade.emirFields.clearingObligation}</td></tr>
+                <tr><td>Delivery Type</td><td>${trade.emirFields.deliveryType}</td></tr>
+                <tr><td>Collateralisation</td><td>${trade.emirFields.collateralisationType}</td></tr>
+                <tr><td>Trade Repository</td><td>${trade.emirFields.tradeRepository}</td></tr>
+                <tr><td>Report Format</td><td>${trade.emirFields.reportFormat}</td></tr>
+            </table>
+        </div>`;
+    }
+
+    // Payoff Diagram (options)
+    html += renderPayoffDiagram(trade);
+
+    // Greek Explanations with hedging guidance (options)
+    html += renderGreekExplanations(trade);
+
+    // MTM Valuation Formula
+    html += renderMTMFormula(trade);
+
+    // LME Warrants (base metals)
+    html += renderLMEWarrantSection(trade);
+
+    // Allocated vs Unallocated (precious metals)
+    html += renderMetalAccountComparison(trade);
 
     html += `<div class="btn-group">
         <button class="btn btn-primary" ${allPass ? '' : 'disabled'} onclick="advanceStage('${trade.id}', 3)">
@@ -2502,7 +2862,36 @@ function renderBlotterHTML(highlightId) {
     }
 
     html += '</div></div>';
+
+    // Regulatory Reports Section
+    const reportableTrades = state.trades.filter(t => t.mifidFields || t.emirFields);
+    if (reportableTrades.length > 0) {
+        html += `<div class="card">
+            <div class="card-title">Regulatory Reports — ${tip('MiFID II')} & ${tip('EMIR')}</div>
+            <p style="font-size:0.82rem; margin-bottom:10px;">
+                Sample regulatory reports for trades with enriched MiFID II / EMIR data.
+                Select a trade to view its regulatory submissions.
+            </p>
+            <div style="margin-bottom:10px;">
+                <select id="regReportTradeSelect" onchange="renderSelectedRegReport()" style="padding:6px 10px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.85rem;">
+                    ${reportableTrades.map(t => `<option value="${t.id}">${t.id} — ${COMMODITIES[t.commodity].name} ${t.productType} (${t.buySell})</option>`).join('')}
+                </select>
+            </div>
+            <div id="regReportContainer"></div>
+        </div>`;
+        setTimeout(() => renderSelectedRegReport(), 50);
+    }
+
     return html;
+}
+
+function renderSelectedRegReport() {
+    const sel = document.getElementById('regReportTradeSelect');
+    const container = document.getElementById('regReportContainer');
+    if (!sel || !container) return;
+    const trade = state.trades.find(t => t.id === sel.value);
+    if (!trade) { container.innerHTML = ''; return; }
+    container.innerHTML = renderMiFIDReport(trade) + renderEMIRReport(trade);
 }
 
 
@@ -2592,6 +2981,10 @@ function updateSidebar() {
         <div class="risk-row">
             <span>Open Positions</span>
             <span class="risk-value">${state.trades.filter(t => !t.settled).length}</span>
+        </div>
+        <div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px; line-height:1.4;">
+            ${tip('MTM Formula')}: Futures: (Mkt-Trade)xQtyxCS<br>
+            Options: (Theo-Prem)xQtyxCS (${tip('Black-76')})
         </div>
     </div>
 
@@ -2760,6 +3153,57 @@ function renderAboutView() {
             <li><strong>Accounting</strong> — Cumulative realised P&L from settled trades</li>
             <li><strong>Portfolio Greeks</strong> — Aggregate ${tip('Delta')}, ${tip('Gamma')}, ${tip('Vega')}, ${tip('Theta')} across option positions</li>
         </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Regulatory Reporting</div>
+        <div class="about-section">
+            <h3><span class="reg-badge reg-badge-mifid">MiFID II</span> Transaction Reporting (RTS 22)</h3>
+            <p>${tip('MiFID II')} requires investment firms to report 65 fields per transaction to their NCA via an ARM.
+            Key fields include ${tip('ISIN')}, ${tip('CFI Code')}, ${tip('MIC')} venue code, buyer/seller ${tip('LEI')},
+            decision maker identification, and ${tip('RTS 25')} timestamps. All commodity derivative trades fall in scope.</p>
+        </div>
+        <div class="about-section">
+            <h3><span class="reg-badge reg-badge-emir">EMIR</span> Refit Trade Reporting (2024)</h3>
+            <p>${tip('EMIR')} Refit (2024) expanded reporting to 203 fields per derivative. New requirements include
+            ${tip('UTI')} (ISO 23897), ${tip('UPI')} from the ${tip('DSB')}, ${tip('ISO 20022')} XML format,
+            and detailed collateral/valuation data. Reports are submitted to a ${tip('TR')} such as DTCC GTR.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Hedging Strategies</div>
+        <div class="about-section">
+            <h3>${tip('Zero-Cost Collar')}</h3>
+            <p>A producer hedging strategy that combines buying a put (floor) and selling a call (cap) where
+            premiums approximately offset. The producer is protected below the put strike but gives up gains
+            above the call strike. Widely used by mining companies and physical commodity producers.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('Delta Neutral')} Hedging</h3>
+            <p>Option market makers maintain delta neutrality by trading the underlying futures to offset their
+            option delta exposure. Hedge ratio = Delta x Contracts x Contract Size. Requires frequent rebalancing
+            as delta changes (gamma effect), especially near expiry or when spot moves significantly.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Physical Metal — Warrants & Accounts</div>
+        <div class="about-section">
+            <h3>${tip('LME Warrant')}s</h3>
+            <p>An LME warrant is a document of title to a specific lot of metal in an LME-approved warehouse.
+            Standard parcel sizes: 25 MT (copper, zinc, aluminium), 6 MT (nickel), 1 MT (tin). Warrants are
+            transferred electronically via ${tip('LMEsword')}. "Cancelled" warrants indicate metal being withdrawn
+            from the warehouse system. Warrant premiums reflect brand and location preferences.</p>
+        </div>
+        <div class="about-section">
+            <h3>${tip('Allocated')} vs ${tip('Unallocated')} Accounts</h3>
+            <p>Precious metals (gold, silver, platinum, palladium) are held in either allocated accounts
+            (specific bars with serial numbers, no counterparty risk, 0.3-0.8% storage) or unallocated accounts
+            (general claim on a pool, lower cost but client is unsecured creditor). The choice impacts balance
+            sheet treatment, insurance requirements, and credit risk exposure. Central banks and ETFs typically
+            require allocated storage.</p>
+        </div>
     </div>`;
 }
 
@@ -2774,13 +3218,15 @@ function seedDemoTrades() {
 
     const td = today();
 
-    // Trade 1: Gold Spot Buy — fully completed (Stage 6)
+    // Trade 1: Gold Spot Buy — fully completed (Stage 6) — Allocated account
     const t1 = createTradeObject({
         tradeDate: td, counterparty: 'HSBC', buySell: 'Buy',
         productType: 'Spot', commodity: 'Au', quantity: '2',
         price: String(getMarketPrice('Au') - 15),
-        valueDate: dateStr(addBusinessDays(td, 2))
+        valueDate: dateStr(addBusinessDays(td, 2)),
+        metalAccount: 'Allocated'
     });
+    t1.metalAccount = 'Allocated';
     t1.stage = 6;
     runValidation(t1);
     t1.confirmed = true;
@@ -3362,6 +3808,763 @@ function renderMiniCalendar(date) {
 
     html += `</tr></table></div>`;
     return html;
+}
+
+
+// ============================================================
+// SECTION 27: PAYOFF DIAGRAM RENDERING
+// ============================================================
+
+function renderPayoffDiagram(trade) {
+    if (!isOptionType(trade.productType)) return '';
+    const com = COMMODITIES[trade.commodity];
+    const spot = getMarketPrice(trade.commodity);
+    const K = trade.strike;
+    const prem = trade.premium || 0;
+    const isBuy = trade.buySell === 'Buy';
+    const isCall = trade.callPut === 'Call';
+    const canvasId = 'payoffCanvas_' + trade.id.replace(/-/g, '_');
+
+    let html = `<div class="card">
+        <div class="card-title">Option Payoff Diagram — ${trade.callPut} ${trade.buySell} @ Strike ${formatUSD(K)}</div>
+        <div class="payoff-container">
+            <canvas id="${canvasId}" class="payoff-canvas"></canvas>
+        </div>
+        <div class="payoff-legend">
+            <div class="payoff-legend-item"><div class="payoff-legend-swatch" style="background:#3182ce;"></div> Payoff at Expiry</div>
+            <div class="payoff-legend-item"><div class="payoff-legend-swatch" style="background:#e53e3e;"></div> P&L (incl. premium)</div>
+            <div class="payoff-legend-item"><div class="payoff-legend-swatch" style="background:#718096; border-top:1px dashed #718096;"></div> Break-even</div>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:6px;">
+            Strike: ${formatUSD(K)} | Premium: ${formatUSD(prem)}/unit | Spot: ${formatUSD(spot)} |
+            Break-even: ${formatUSD(isCall ? K + prem : K - prem)} |
+            Max ${isBuy ? 'Loss' : 'Gain'}: ${formatUSD(prem * trade.quantity * com.contractSize)}
+            ${trade.productType === 'Barrier Option' ? ' | Barrier: ' + formatUSD(trade.barrierLevel) + ' (' + trade.barrierType + ')' : ''}
+        </div>
+    </div>`;
+
+    setTimeout(() => drawPayoffCanvas(canvasId, trade), 50);
+    return html;
+}
+
+function drawPayoffCanvas(canvasId, trade) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const W = canvas.width, H = canvas.height;
+    const pad = { top: 20, right: 30, bottom: 35, left: 60 };
+
+    const K = trade.strike;
+    const prem = trade.premium || 0;
+    const isCall = trade.callPut === 'Call';
+    const isBuy = trade.buySell === 'Buy';
+    const spot = getMarketPrice(trade.commodity);
+
+    const minPrice = K * 0.7;
+    const maxPrice = K * 1.3;
+    const range = maxPrice - minPrice;
+    const toX = (p) => pad.left + ((p - minPrice) / range) * (W - pad.left - pad.right);
+    const numPts = 200;
+
+    // Calculate payoff values to find Y range
+    const payoffs = [], pnls = [];
+    for (let i = 0; i <= numPts; i++) {
+        const price = minPrice + (range * i / numPts);
+        let payoff;
+        if (isCall) payoff = Math.max(price - K, 0);
+        else payoff = Math.max(K - price, 0);
+        if (!isBuy) payoff = -payoff;
+        payoffs.push(payoff);
+        pnls.push(isBuy ? payoff - prem : payoff + prem);
+    }
+    const allVals = [...payoffs, ...pnls];
+    let minY = Math.min(...allVals, -prem * 1.2);
+    let maxY = Math.max(...allVals, prem * 1.2);
+    const yRange = maxY - minY || 1;
+    minY -= yRange * 0.1; maxY += yRange * 0.1;
+    const toY = (v) => pad.top + ((maxY - v) / (maxY - minY)) * (H - pad.top - pad.bottom);
+
+    // Background
+    ctx.fillStyle = '#f0f2f7';
+    ctx.fillRect(0, 0, W, H);
+
+    // Zero line
+    ctx.strokeStyle = '#cbd5e0';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(pad.left, toY(0)); ctx.lineTo(W - pad.right, toY(0)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Strike line
+    ctx.strokeStyle = '#718096';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(toX(K), pad.top); ctx.lineTo(toX(K), H - pad.bottom); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Spot line
+    ctx.strokeStyle = '#38a169';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 3]);
+    ctx.beginPath(); ctx.moveTo(toX(spot), pad.top); ctx.lineTo(toX(spot), H - pad.bottom); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Barrier line
+    if (trade.productType === 'Barrier Option' && trade.barrierLevel) {
+        ctx.strokeStyle = '#e53e3e';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([8, 4]);
+        ctx.beginPath(); ctx.moveTo(toX(trade.barrierLevel), pad.top); ctx.lineTo(toX(trade.barrierLevel), H - pad.bottom); ctx.stroke();
+        ctx.setLineDash([]);
+    }
+
+    // Payoff line
+    ctx.strokeStyle = '#3182ce';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= numPts; i++) {
+        const price = minPrice + (range * i / numPts);
+        const x = toX(price), y = toY(payoffs[i]);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // P&L line (with premium)
+    ctx.strokeStyle = '#e53e3e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= numPts; i++) {
+        const price = minPrice + (range * i / numPts);
+        const x = toX(price), y = toY(pnls[i]);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Fill profit area (green) and loss area (red) for P&L
+    for (let i = 0; i < numPts; i++) {
+        const price = minPrice + (range * i / numPts);
+        const x1 = toX(price), x2 = toX(minPrice + (range * (i + 1) / numPts));
+        const y1 = toY(pnls[i]), y0 = toY(0);
+        ctx.fillStyle = pnls[i] >= 0 ? 'rgba(56,161,105,0.08)' : 'rgba(229,62,62,0.08)';
+        ctx.fillRect(x1, Math.min(y1, y0), x2 - x1, Math.abs(y1 - y0));
+    }
+
+    // Axes
+    ctx.strokeStyle = '#2d3748';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, H - pad.bottom); ctx.lineTo(W - pad.right, H - pad.bottom); ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = '#718096';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Underlying Price at Expiry', W / 2, H - 5);
+    ctx.fillText('K=' + K.toFixed(0), toX(K), H - pad.bottom + 14);
+    ctx.fillText('Spot', toX(spot), H - pad.bottom + 24);
+
+    ctx.textAlign = 'right';
+    ctx.fillText('P&L', pad.left - 8, pad.top + 10);
+    const ySteps = 5;
+    for (let i = 0; i <= ySteps; i++) {
+        const v = minY + (maxY - minY) * i / ySteps;
+        const y = toY(v);
+        ctx.fillText(v.toFixed(0), pad.left - 5, y + 3);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+    }
+
+    // Moneyness labels
+    ctx.font = 'bold 11px Inter, sans-serif';
+    const mLabel = trade.moneyness || 'ATM';
+    const mColor = mLabel === 'ITM' ? '#2f855a' : (mLabel === 'OTM' ? '#c53030' : '#b7791f');
+    ctx.fillStyle = mColor;
+    ctx.textAlign = 'left';
+    ctx.fillText(mLabel, toX(spot) + 5, pad.top + 15);
+}
+
+
+// ============================================================
+// SECTION 28: MiFID II & EMIR REGULATORY ENRICHMENT
+// ============================================================
+
+function generateMiFIDFields(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const cpData = COUNTERPARTIES[trade.counterparty];
+    const isin = generateISIN(trade);
+    const cfi = generateCFI(trade);
+    const mic = getMIC(trade.venue);
+    const now = new Date();
+
+    return {
+        reportingEntity: 'OURTRDG',
+        reportingEntityLEI: '529900T8BM49AURSDO55',
+        submittingEntityLEI: '529900T8BM49AURSDO55',
+        buyerLEI: trade.buySell === 'Buy' ? '529900T8BM49AURSDO55' : cpData?.lei,
+        sellerLEI: trade.buySell === 'Sell' ? '529900T8BM49AURSDO55' : cpData?.lei,
+        buyerDecisionMaker: trade.buySell === 'Buy' ? trade.traderInitials + ' (algo: N)' : 'N/A',
+        sellerDecisionMaker: trade.buySell === 'Sell' ? trade.traderInitials + ' (algo: N)' : 'N/A',
+        instrumentISIN: isin,
+        instrumentCFI: cfi,
+        instrumentName: com.name + ' ' + trade.productType,
+        venueOfExecution: mic,
+        tradingDateTime: now.toISOString().replace('Z', '') + '+00:00',
+        transactionRefNumber: trade.id,
+        quantity: trade.quantity,
+        quantityUnit: 'LOTS',
+        price: trade.price,
+        priceCurrency: 'USD',
+        notionalAmount: trade.notional,
+        notionalCurrency: 'USD',
+        buySellIndicator: trade.buySell === 'Buy' ? 'BUYI' : 'SELL',
+        tradingCapacity: 'DEAL',
+        investmentDecisionWithinFirm: trade.traderInitials,
+        executionWithinFirm: trade.traderInitials,
+        waiverIndicator: 'NONE',
+        shortSellingIndicator: 'SELL',
+        commodityDerivativeIndicator: 'true',
+        rts25Timestamp: now.toISOString()
+    };
+}
+
+function generateEMIRFields(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const cpData = COUNTERPARTIES[trade.counterparty];
+    const uti = generateUTI(trade);
+    const upi = generateUPI(trade);
+
+    return {
+        uti: uti,
+        upi: upi,
+        reportingCounterpartyLEI: '529900T8BM49AURSDO55',
+        otherCounterpartyLEI: cpData?.lei || 'N/A',
+        counterpartyClassification: 'FC',
+        reportingCounterpartySide: trade.buySell === 'Buy' ? 'BYER' : 'SLLR',
+        actionType: 'NEWT',
+        eventType: 'TRAD',
+        executionTimestamp: new Date().toISOString(),
+        effectiveDate: trade.tradeDate,
+        maturityDate: isOptionType(trade.productType) ? trade.expiryDate : trade.valueDate,
+        notionalAmount1: trade.notional,
+        notionalCurrency1: 'USD',
+        priceType: 'MONE',
+        price: trade.price,
+        priceCurrency: 'USD',
+        underlyingIdentificationType: 'ISIN',
+        underlyingIdentification: generateISIN(trade),
+        deliveryType: trade.venue === 'OTC' ? 'CASH' : 'PHYS',
+        executionVenueType: trade.venue === 'OTC' ? 'XXXX' : getMIC(trade.venue),
+        tradeRepository: 'DTCC GTR (EU)',
+        reportFormat: 'ISO 20022 XML',
+        clearingObligation: trade.venue === 'OTC' ? 'N' : 'Y',
+        cleared: trade.clearer ? 'Y' : 'N',
+        clearingVenueLEI: trade.clearer || 'N/A',
+        interimEntityIdentifier: 'N/A',
+        valuationAmount: trade.notional,
+        valuationCurrency: 'USD',
+        valuationTimestamp: new Date().toISOString(),
+        valuationType: 'MTMA',
+        collateralisationType: trade.initialMargin > 0 ? 'PRC1' : 'UNCL',
+        portfolioCode: trade.book || 'N/A'
+    };
+}
+
+function generateISIN(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const prefix = com.exchange === 'LME' ? 'GB' : 'US';
+    const hash = (trade.commodity + trade.productType + (trade.expiryDate || trade.valueDate)).split('')
+        .reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0x7FFFFFFF, 0);
+    return prefix + String(Math.abs(hash) % 10000000000).padStart(10, '0');
+}
+
+function generateCFI(trade) {
+    if (isOptionType(trade.productType)) {
+        const c1 = 'O';
+        const c2 = trade.callPut === 'Call' ? 'C' : 'P';
+        const c3 = trade.exerciseStyle === 'American' ? 'A' : 'E';
+        const c4 = trade.productType === 'Vanilla Option' ? 'F' : 'X';
+        const c5 = trade.venue === 'OTC' ? 'C' : 'P';
+        const c6 = 'S';
+        return c1 + c2 + c3 + c4 + c5 + c6;
+    }
+    if (trade.productType === 'Future') return 'FCEPSS';
+    if (trade.productType === 'Swap') return 'SRCCSS';
+    if (trade.productType === 'Forward') return 'FFCPSS';
+    return 'MMCPSS';
+}
+
+function getMIC(venue) {
+    const mics = {
+        'LME': 'XLME', 'COMEX': 'XCEC', 'NYMEX': 'XNYM',
+        'LBMA': 'XLBA', 'LPPM': 'XLPP', 'OTC': 'XXXX'
+    };
+    return mics[venue] || 'XXXX';
+}
+
+function generateUTI(trade) {
+    const prefix = '529900T8BM49AURSDO55';
+    const hash = (trade.id + trade.tradeDate).split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0x7FFFFFFF, 0);
+    return prefix + String(Math.abs(hash) % 100000000).padStart(8, '0') + String(Math.abs(hash * 7) % 10000).padStart(4, '0');
+}
+
+function generateUPI(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const assetClass = 'CO';
+    const baseProduct = com.type === 'precious' ? 'PRME' : 'NPRM';
+    let subProduct = 'METL';
+    let txnType;
+    if (isOptionType(trade.productType)) txnType = 'OPTN';
+    else if (trade.productType === 'Future') txnType = 'FUTR';
+    else if (trade.productType === 'Swap') txnType = 'SWAP';
+    else if (trade.productType === 'Forward') txnType = 'FWRD';
+    else txnType = 'SPOT';
+    return 'QJ' + assetClass + baseProduct + subProduct + txnType + '01';
+}
+
+
+// ============================================================
+// SECTION 29: MiFID II & EMIR SAMPLE REPORTS
+// ============================================================
+
+function renderMiFIDReport(trade) {
+    if (!trade.mifidFields) return '';
+    const f = trade.mifidFields;
+    return `<div class="card">
+        <div class="reg-report-header"><span class="reg-badge reg-badge-mifid">MiFID II</span> Transaction Report — RTS 22 (Sample)</div>
+        <div class="reg-report">TRANSACTION REPORT — MiFID II / RTS 22
+Report Date:              ${new Date().toISOString().slice(0, 10)}
+Reporting Entity LEI:     ${f.reportingEntityLEI}
+Transaction Ref:          ${f.transactionRefNumber}
+
+BUYER:
+  LEI:                    ${f.buyerLEI}
+  Decision Maker:         ${f.buyerDecisionMaker}
+
+SELLER:
+  LEI:                    ${f.sellerLEI}
+  Decision Maker:         ${f.sellerDecisionMaker}
+
+INSTRUMENT:
+  ${tip('ISIN')}:                   ${f.instrumentISIN}
+  ${tip('CFI Code')}:               ${f.instrumentCFI}
+  Name:                   ${f.instrumentName}
+
+EXECUTION:
+  Venue (${tip('MIC')}):            ${f.venueOfExecution}
+  Date/Time (${tip('RTS 25')}):     ${f.rts25Timestamp}
+  Trading Capacity:       ${f.tradingCapacity}
+  Buy/Sell:               ${f.buySellIndicator}
+
+ECONOMICS:
+  Quantity:               ${f.quantity} ${f.quantityUnit}
+  Price:                  ${formatUSD(f.price)} ${f.priceCurrency}
+  ${tip('Notional')}:              ${formatUSD(f.notionalAmount)} ${f.notionalCurrency}
+
+DECISION CHAIN:
+  Investment Decision:    ${f.investmentDecisionWithinFirm}
+  Execution:              ${f.executionWithinFirm}
+  Commodity Derivative:   ${f.commodityDerivativeIndicator}
+  Short Selling:          ${f.shortSellingIndicator}
+  Waiver:                 ${f.waiverIndicator}</div>
+        <div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">
+            Source: MiFID II RTS 22 (EU 2017/590) — 65 reportable fields. Sample shows key fields.
+            Report submitted to National Competent Authority (NCA) via Approved Reporting Mechanism (ARM).
+        </div>
+    </div>`;
+}
+
+function renderEMIRReport(trade) {
+    if (!trade.emirFields) return '';
+    const f = trade.emirFields;
+    return `<div class="card">
+        <div class="reg-report-header"><span class="reg-badge reg-badge-emir">EMIR</span> Trade Report — Refit 2024 (Sample)</div>
+        <div class="reg-report">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!-- EMIR Refit ${tip('ISO 20022')} XML Format --&gt;
+&lt;TradRpt xmlns="urn:iso:std:iso:20022:tech:xsd:auth.030.001.03"&gt;
+  &lt;RptHdr&gt;
+    &lt;RptgTmStmp&gt;${new Date().toISOString()}&lt;/RptgTmStmp&gt;
+    &lt;NbOfRcrds&gt;1&lt;/NbOfRcrds&gt;
+  &lt;/RptHdr&gt;
+  &lt;TradData&gt;
+    &lt;ActionTp&gt;${f.actionType}&lt;/ActionTp&gt;
+    &lt;EvtTp&gt;${f.eventType}&lt;/EvtTp&gt;
+    &lt;!-- ${tip('UTI')} — Unique Transaction Identifier --&gt;
+    &lt;UnqTxIdr&gt;${f.uti}&lt;/UnqTxIdr&gt;
+    &lt;!-- ${tip('UPI')} — from ${tip('DSB')} --&gt;
+    &lt;UnqPdctIdr&gt;${f.upi}&lt;/UnqPdctIdr&gt;
+    &lt;CtrPtySpcfcData&gt;
+      &lt;RptgCtrPty&gt;
+        &lt;LEI&gt;${f.reportingCounterpartyLEI}&lt;/LEI&gt;
+        &lt;Sd&gt;${f.reportingCounterpartySide}&lt;/Sd&gt;
+        &lt;CtrPtyClssfctn&gt;${f.counterpartyClassification}&lt;/CtrPtyClssfctn&gt;
+      &lt;/RptgCtrPty&gt;
+      &lt;OthrCtrPty&gt;
+        &lt;LEI&gt;${f.otherCounterpartyLEI}&lt;/LEI&gt;
+      &lt;/OthrCtrPty&gt;
+    &lt;/CtrPtySpcfcData&gt;
+    &lt;CmonTradData&gt;
+      &lt;ExctnTmStmp&gt;${f.executionTimestamp}&lt;/ExctnTmStmp&gt;
+      &lt;FctvDt&gt;${f.effectiveDate}&lt;/FctvDt&gt;
+      &lt;MtrtyDt&gt;${f.maturityDate}&lt;/MtrtyDt&gt;
+      &lt;NtnlAmt Ccy="${f.notionalCurrency1}"&gt;${f.notionalAmount1.toFixed(2)}&lt;/NtnlAmt&gt;
+      &lt;Pric Tp="${f.priceType}" Ccy="${f.priceCurrency}"&gt;${f.price}&lt;/Pric&gt;
+      &lt;DlvryTp&gt;${f.deliveryType}&lt;/DlvryTp&gt;
+      &lt;ExctnVnTp&gt;${f.executionVenueType}&lt;/ExctnVnTp&gt;
+    &lt;/CmonTradData&gt;
+    &lt;ClrgData&gt;
+      &lt;ClrOblgtn&gt;${f.clearingObligation}&lt;/ClrOblgtn&gt;
+      &lt;Clrd&gt;${f.cleared}&lt;/Clrd&gt;
+      &lt;CollTp&gt;${f.collateralisationType}&lt;/CollTp&gt;
+    &lt;/ClrgData&gt;
+    &lt;ValtnData&gt;
+      &lt;ValtnAmt Ccy="${f.valuationCurrency}"&gt;${f.valuationAmount.toFixed(2)}&lt;/ValtnAmt&gt;
+      &lt;ValtnTp&gt;${f.valuationType}&lt;/ValtnTp&gt;
+    &lt;/ValtnData&gt;
+    &lt;TradRpstry&gt;${f.tradeRepository}&lt;/TradRpstry&gt;
+  &lt;/TradData&gt;
+&lt;/TradRpt&gt;</div>
+        <div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">
+            Source: EMIR Refit (EU 2024/2987) — 203 reportable fields total (89 new vs EMIR 1.0).
+            Format: ${tip('ISO 20022')} XML. Submitted to ${tip('TR')} (DTCC GTR EU).
+            ${tip('UPI')} assigned by ${tip('DSB')} (ANNA-DSB). ${tip('UTI')} generated per ISO 23897.
+        </div>
+    </div>`;
+}
+
+
+// ============================================================
+// SECTION 30: GREEK DEFINITIONS & HEDGING GUIDANCE
+// ============================================================
+
+function renderGreekExplanations(trade) {
+    if (!isOptionType(trade.productType) || !trade.optionGreeks) return '';
+    const g = trade.optionGreeks;
+    const com = COMMODITIES[trade.commodity];
+    const mult = trade.quantity * com.contractSize;
+    const sign = trade.buySell === 'Buy' ? 1 : -1;
+    const posDelta = sign * g.delta * mult;
+    const futuresHedge = Math.abs(posDelta / com.contractSize);
+
+    const greeks = [
+        {
+            name: 'Delta', symbol: '\u0394', value: g.delta.toFixed(4),
+            definition: 'Rate of change of option price per $1 move in the underlying. A delta of 0.55 means the option gains $0.55 for each $1 rise in spot.',
+            formula: '\u0394 = e^(-rT) \u00b7 N(d\u2081) for calls; -e^(-rT) \u00b7 N(-d\u2081) for puts',
+            hedgeAction: posDelta > 0
+                ? `Portfolio is long ${formatNum(Math.abs(posDelta), 1)} delta. SELL ${futuresHedge.toFixed(1)} futures to delta-neutralise.`
+                : `Portfolio is short ${formatNum(Math.abs(posDelta), 1)} delta. BUY ${futuresHedge.toFixed(1)} futures to delta-neutralise.`
+        },
+        {
+            name: 'Gamma', symbol: '\u0393', value: g.gamma.toFixed(6),
+            definition: 'Rate of change of delta per $1 move in underlying. High gamma means delta changes rapidly — rebalance hedges more frequently.',
+            formula: '\u0393 = e^(-rT) \u00b7 n(d\u2081) / (F \u00b7 \u03c3 \u00b7 \u221aT)',
+            hedgeAction: g.gamma > 0.001
+                ? 'High gamma: hedge will need frequent rebalancing. Consider gamma scalping or reducing position.'
+                : 'Low gamma: delta hedge is relatively stable. Less frequent rebalancing needed.'
+        },
+        {
+            name: 'Vega', symbol: '\u03bd', value: g.vega.toFixed(4),
+            definition: 'Sensitivity of option price to a 1% change in implied volatility. If vega = 2.5, a 1% vol rise increases option price by $2.50.',
+            formula: '\u03bd = F \u00b7 e^(-rT) \u00b7 n(d\u2081) \u00b7 \u221aT / 100',
+            hedgeAction: sign * g.vega > 0
+                ? 'Long vega: benefits from rising vol. Hedge by selling options or variance swaps if bearish on vol.'
+                : 'Short vega: loses from rising vol. Hedge by buying options or vol products if concerned about vol spike.'
+        },
+        {
+            name: 'Theta', symbol: '\u0398', value: g.theta.toFixed(4),
+            definition: 'Daily time decay — how much option value erodes per calendar day. Accelerates as expiry approaches (especially last 30 days).',
+            formula: '\u0398 = [-F \u00b7 e^(-rT) \u00b7 n(d\u2081) \u00b7 \u03c3 / (2\u221aT) \u00b1 r \u00b7 PV] / 365',
+            hedgeAction: sign * g.theta < 0
+                ? 'Negative theta: losing ' + formatUSD(Math.abs(sign * g.theta * mult)) + '/day to time decay. Consider rolling to longer expiry.'
+                : 'Positive theta: earning ' + formatUSD(Math.abs(sign * g.theta * mult)) + '/day from time decay. Time is on your side.'
+        }
+    ];
+
+    let html = `<div class="card">
+        <div class="card-title">Greek Definitions & Hedging Guidance (${tip('Black-76')} Model)</div>
+        <div class="greek-explain-grid">`;
+
+    greeks.forEach(gk => {
+        html += `<div class="greek-explain-card">
+            <h4>${gk.symbol} ${gk.name}: ${gk.value}</h4>
+            <div class="definition">${gk.definition}</div>
+            <div class="formula">${gk.formula}</div>
+            <div class="hedge-action">${gk.hedgeAction}</div>
+        </div>`;
+    });
+
+    html += `</div>
+        <div class="mtm-formula-box mt-2">
+            <div style="font-weight:700; font-size:0.82rem; color:var(--primary); margin-bottom:4px;">
+                ${tip('Delta Neutral')} Hedge Calculation
+            </div>
+            <div class="formula-line">Hedge Lots = |Position Delta| / Contract Size</div>
+            <div class="formula-line">         = |${formatNum(Math.abs(posDelta), 2)}| / ${com.contractSize}</div>
+            <div class="formula-line">         = ${futuresHedge.toFixed(2)} lots of ${com.name} futures</div>
+            <div class="formula-line">Direction: ${posDelta > 0 ? 'SELL' : 'BUY'} futures to neutralise</div>
+            <div class="source">Source: Black-76 model (Fischer Black, 1976). Standard for commodity options on futures.</div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary btn-sm" onclick="bookDeltaHedge('${trade.id}')">
+                Book ${tip('Delta Neutral')} Hedge Trade
+            </button>
+        </div>
+    </div>`;
+    return html;
+}
+
+
+// ============================================================
+// SECTION 31: MTM VALUATION FORMULAS
+// ============================================================
+
+function renderMTMFormula(trade) {
+    const com = COMMODITIES[trade.commodity];
+    const spot = getMarketPrice(trade.commodity);
+    const mult = trade.quantity * com.contractSize;
+    const isOpt = isOptionType(trade.productType);
+
+    let formula, calc, mtmValue, source;
+
+    if (isOpt) {
+        const theo = trade.optionTheoPrice || 0;
+        const prem = trade.premium || 0;
+        mtmValue = trade.buySell === 'Buy'
+            ? (theo - prem) * mult
+            : (prem - theo) * mult;
+        formula = 'MTM P&L = (Theoretical Price - Premium Paid) x Quantity x Contract Size';
+        calc = `       = (${formatUSD(theo)} - ${formatUSD(prem)}) x ${trade.quantity} x ${com.contractSize}`;
+        source = 'Black-76 model (Fischer Black, "The Pricing of Commodity Contracts", Journal of Financial Economics, 1976)';
+    } else if (trade.productType === 'Future') {
+        mtmValue = trade.buySell === 'Buy'
+            ? (spot - trade.price) * mult
+            : (trade.price - spot) * mult;
+        formula = `MTM P&L = (Current Market - Trade Price) x Quantity x Contract Size`;
+        calc = `       = (${formatUSD(spot)} - ${formatUSD(trade.price)}) x ${trade.quantity} x ${com.contractSize}`;
+        source = 'LME / CME daily settlement price methodology. Mark-to-market per IFRS 13 (Fair Value Measurement).';
+    } else if (trade.productType === 'Swap') {
+        const swapMult = mult * (trade.swapTenor || 1);
+        mtmValue = trade.buySell === 'Buy'
+            ? (spot - trade.price) * swapMult
+            : (trade.price - spot) * swapMult;
+        formula = `MTM P&L = (Current Market - Fixed Rate) x Qty x Contract Size x Tenor`;
+        calc = `       = (${formatUSD(spot)} - ${formatUSD(trade.price)}) x ${trade.quantity} x ${com.contractSize} x ${trade.swapTenor}M`;
+        source = 'Discounted cash flow (DCF) methodology. Reference: Hull, "Options, Futures, and Other Derivatives".';
+    } else {
+        mtmValue = trade.buySell === 'Buy'
+            ? (spot - trade.price) * mult
+            : (trade.price - spot) * mult;
+        formula = `MTM P&L = (Current Market - Trade Price) x Quantity x Contract Size`;
+        calc = `       = (${formatUSD(spot)} - ${formatUSD(trade.price)}) x ${trade.quantity} x ${com.contractSize}`;
+        source = 'Spot/Forward revaluation at prevailing market price. Reference: LBMA / LME settlement prices.';
+    }
+
+    const pnlClass = mtmValue >= 0 ? 'text-success' : 'text-danger';
+
+    return `<div class="card">
+        <div class="card-title">${tip('MTM Formula')} — Mark-to-Market Valuation</div>
+        <div class="mtm-formula-box">
+            <div class="formula-line">${formula}</div>
+            <div class="formula-line">${calc}</div>
+            <div class="formula-line fw-bold">       = <span class="${pnlClass}">${formatUSD(mtmValue)}</span></div>
+            <div class="source">${source}</div>
+        </div>
+        <table class="enrich-table mt-2">
+            <tr><td>Current Market Price</td><td class="fw-bold">${formatUSD(spot)}</td></tr>
+            <tr><td>Trade Price</td><td>${formatUSD(trade.price)}</td></tr>
+            <tr><td>Quantity</td><td>${trade.quantity} lots (${formatNum(mult, 0)} ${com.unit})</td></tr>
+            ${isOpt ? '<tr><td>Theoretical Option Price</td><td>' + formatUSD(trade.optionTheoPrice || 0) + '</td></tr>' : ''}
+            ${isOpt ? '<tr><td>Premium Paid</td><td>' + formatUSD(trade.premium) + '/unit</td></tr>' : ''}
+            <tr><td>Unrealised P&L</td><td class="${pnlClass} fw-bold">${formatUSD(mtmValue)}</td></tr>
+        </table>
+    </div>`;
+}
+
+
+// ============================================================
+// SECTION 32: HEDGING STRATEGIES & DELTA NEUTRAL HEDGE
+// ============================================================
+
+function renderHedgingStrategies(commoditySym) {
+    const com = COMMODITIES[commoditySym];
+    const spot = getMarketPrice(commoditySym);
+
+    let html = '';
+    for (const [name, strategy] of Object.entries(HEDGING_STRATEGIES)) {
+        html += `<div class="hedge-panel">
+            <div class="hedge-panel-title">${tip(name)}</div>
+            <p style="font-size:0.78rem; margin-bottom:6px;">${strategy.description}</p>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:6px;">
+                <strong>Legs:</strong> ${strategy.legs.join(' + ')} |
+                <strong>Best for:</strong> ${strategy.bestFor}
+            </div>
+            <div class="hedge-example">
+                <div class="hedge-example-title">Worked Example — ${com.name} @ ${formatUSD(spot)}</div>`;
+
+        if (name === 'Zero-Cost Collar') {
+            const putK = Math.round(spot * 0.95);
+            const callK = Math.round(spot * 1.05);
+            const vol = MARKET_DATA_CONFIG.baseVols[commoditySym] || 0.20;
+            const T = 0.25;
+            const r = MARKET_DATA_CONFIG.riskFreeRate;
+            const putPrem = black76Price(spot, putK, T, r, vol, 'Put');
+            const callPrem = black76Price(spot, callK, T, r, vol, 'Call');
+            html += `<div class="hedge-calc">Spot: ${formatUSD(spot)}
+Buy ${formatUSD(putK)} Put  (premium: ${formatUSD(putPrem)}/unit)  — FLOOR
+Sell ${formatUSD(callK)} Call (premium: ${formatUSD(callPrem)}/unit) — CAP
+Net Premium: ${formatUSD(Math.abs(callPrem - putPrem))}/unit (${callPrem >= putPrem ? 'credit' : 'debit'})
+Protected below ${formatUSD(putK)}, capped above ${formatUSD(callK)}
+Max loss: ${formatUSD(spot - putK)}/unit + net premium</div>`;
+        } else if (name === 'Protective Put') {
+            const putK = Math.round(spot * 0.95);
+            const vol = MARKET_DATA_CONFIG.baseVols[commoditySym] || 0.20;
+            const prem = black76Price(spot, putK, 0.25, MARKET_DATA_CONFIG.riskFreeRate, vol, 'Put');
+            html += `<div class="hedge-calc">Long ${com.name} @ ${formatUSD(spot)}
+Buy ${formatUSD(putK)} Put for ${formatUSD(prem)}/unit
+Max loss = (${formatUSD(spot)} - ${formatUSD(putK)}) + ${formatUSD(prem)} = ${formatUSD(spot - putK + prem)}/unit
+Upside: Unlimited (minus premium paid)</div>`;
+        } else if (name === 'Covered Call') {
+            const callK = Math.round(spot * 1.05);
+            const vol = MARKET_DATA_CONFIG.baseVols[commoditySym] || 0.20;
+            const prem = black76Price(spot, callK, 0.25, MARKET_DATA_CONFIG.riskFreeRate, vol, 'Call');
+            html += `<div class="hedge-calc">Long ${com.name} @ ${formatUSD(spot)}
+Sell ${formatUSD(callK)} Call for ${formatUSD(prem)}/unit (income)
+Max gain = (${formatUSD(callK)} - ${formatUSD(spot)}) + ${formatUSD(prem)} = ${formatUSD(callK - spot + prem)}/unit
+Downside: Spot falls, offset by ${formatUSD(prem)} premium received</div>`;
+        } else if (name === 'Delta Neutral Hedge') {
+            html += `<div class="hedge-calc">Example: Long 10 ${com.name} Call contracts (delta ~0.55)
+Position Delta = 0.55 x 10 x ${com.contractSize} = ${formatNum(0.55 * 10 * com.contractSize, 0)} ${com.unit}
+Hedge: SELL ${formatNum(0.55 * 10 * com.contractSize / com.contractSize, 1)} ${com.name} futures
+Rebalance when delta shifts by >0.05 (gamma-dependent)</div>`;
+        }
+
+        html += `</div></div>`;
+    }
+    return html;
+}
+
+function selectMetalAccount(type) {
+    document.getElementById('metalAccount').value = type;
+    document.getElementById('allocatedCard').classList.toggle('selected', type === 'Allocated');
+    document.getElementById('unallocatedCard').classList.toggle('selected', type === 'Unallocated');
+}
+
+function bookDeltaHedge(tradeId) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade || !trade.optionGreeks) return;
+
+    const com = COMMODITIES[trade.commodity];
+    const sign = trade.buySell === 'Buy' ? 1 : -1;
+    const posDelta = sign * trade.optionGreeks.delta * trade.quantity * com.contractSize;
+    const hedgeLots = Math.abs(posDelta / com.contractSize);
+    const hedgeDir = posDelta > 0 ? 'Sell' : 'Buy';
+    const roundedLots = Math.max(1, Math.round(hedgeLots));
+
+    const hedgeTrade = createTradeObject({
+        tradeDate: today(),
+        counterparty: trade.counterparty,
+        buySell: hedgeDir,
+        productType: 'Future',
+        commodity: trade.commodity,
+        quantity: String(roundedLots),
+        price: String(getMarketPrice(trade.commodity)),
+        valueDate: dateStr(addBusinessDays(today(), 3)),
+        futurePromptDate: trade.expiryDate || dateStr(addBusinessDays(today(), 30)),
+        metalAccount: trade.metalAccount || 'Unallocated'
+    });
+
+    hedgeTrade.stage = 2;
+    runValidation(hedgeTrade);
+    state.trades.push(hedgeTrade);
+    trade.deltaHedgeTrade = hedgeTrade.id;
+
+    state.currentTradeId = hedgeTrade.id;
+    updateSidebar();
+    renderTradeView(hedgeTrade);
+
+    alert('Delta Neutral Hedge booked: ' + hedgeTrade.id + '\n' + hedgeDir + ' ' + roundedLots + ' ' + com.name + ' Future(s)\nLinked to option: ' + trade.id);
+}
+
+
+// ============================================================
+// SECTION 33: LME WARRANTS
+// ============================================================
+
+function renderLMEWarrantSection(trade) {
+    const com = COMMODITIES[trade.commodity];
+    if (com.type !== 'base') return '';
+    const w = LME_WARRANT_EXAMPLE;
+
+    return `<div class="card">
+        <div class="card-title">${tip('LME Warrant')} — Warehouse Receipt</div>
+        <p style="font-size:0.82rem; margin-bottom:10px;">
+            An ${tip('LME Warrant')} is a document of title to a specific lot of metal stored in an LME-approved
+            warehouse. Warrants are the mechanism for physical delivery on LME futures contracts. Each warrant
+            represents one standard lot (e.g. 25 MT for copper). Warrants are transferred electronically via ${tip('LMEsword')}.
+        </p>
+        <div class="warrant-panel">
+            <div class="warrant-panel-header">Sample LME Warrant — ${com.name}</div>
+            <div class="warrant-panel-body">
+                <div class="warrant-field"><span class="label">Warrant Number</span><span class="value">${w.warrantNumber}</span></div>
+                <div class="warrant-field"><span class="label">Metal</span><span class="value">${w.metal}</span></div>
+                <div class="warrant-field"><span class="label">Brand</span><span class="value">${w.brand}</span></div>
+                <div class="warrant-field"><span class="label">Shape</span><span class="value">${w.shape}</span></div>
+                <div class="warrant-field"><span class="label">Weight</span><span class="value">${w.weight}</span></div>
+                <div class="warrant-field"><span class="label">Standard Lot</span><span class="value">${w.lotSize}</span></div>
+                <div class="warrant-field"><span class="label">Warehouse</span><span class="value">${w.warehouse}</span></div>
+                <div class="warrant-field"><span class="label">Location</span><span class="value">${w.location}</span></div>
+                <div class="warrant-field"><span class="label">Warehouse Code</span><span class="value">${w.warehouseCode}</span></div>
+                <div class="warrant-field"><span class="label">Storage Rate</span><span class="value">${w.storageRate}</span></div>
+                <div class="warrant-field"><span class="label">Rent Paid To</span><span class="value">${w.rentPaidTo}</span></div>
+                <div class="warrant-field"><span class="label">Status</span><span class="value text-success">${w.status}</span></div>
+                <div class="warrant-field"><span class="label">Registered Owner</span><span class="value">${w.registeredOwner}</span></div>
+                <div class="warrant-field"><span class="label">Transfer System</span><span class="value">${w.system}</span></div>
+                <div class="warrant-field"><span class="label">Issue Date</span><span class="value">${w.issueDate}</span></div>
+                <div class="warrant-field"><span class="label">Quality Spec</span><span class="value">${w.qualitySpec}</span></div>
+            </div>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-body); margin-top:10px; line-height:1.6;">
+            <strong>Key Warrant Concepts:</strong><br>
+            <strong>Live Warrant:</strong> Metal on warrant in an LME-approved warehouse, available for delivery.<br>
+            <strong>Cancelled Warrant:</strong> Warrant cancelled by owner — metal is being removed from the warehouse. No longer deliverable.<br>
+            <strong>Warrant Premium:</strong> Additional cost charged above LME price for specific brand/location preferences.<br>
+            <strong>Rent:</strong> Daily storage charge payable to the warehouse company (e.g. ${w.storageRate}).<br>
+            <strong>${tip('LMEsword')}:</strong> Electronic warrant transfer and tracking system. Replaces paper warrants.
+        </div>
+    </div>`;
+}
+
+function renderMetalAccountComparison(trade) {
+    const com = COMMODITIES[trade.commodity];
+    if (com.type !== 'precious') return '';
+
+    return `<div class="card">
+        <div class="card-title">${tip('Allocated')} vs ${tip('Unallocated')} — Metal Account (${trade.metalAccount || 'Unallocated'})</div>
+        <p style="font-size:0.82rem; margin-bottom:10px;">
+            Precious metals can be held in either allocated or unallocated accounts.
+            This trade uses an <strong>${trade.metalAccount || 'Unallocated'}</strong> account.
+        </p>
+        <table class="data-table">
+            <thead><tr><th>Feature</th><th>${tip('Allocated')}</th><th>${tip('Unallocated')}</th></tr></thead>
+            <tbody>
+                <tr><td class="fw-bold">Ownership</td><td>${METAL_ACCOUNT_TYPES.Allocated.ownership}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.ownership}</td></tr>
+                <tr><td class="fw-bold">Counterparty Risk</td><td class="text-success">${METAL_ACCOUNT_TYPES.Allocated.counterpartyRisk}</td><td class="text-danger">${METAL_ACCOUNT_TYPES.Unallocated.counterpartyRisk}</td></tr>
+                <tr><td class="fw-bold">Balance Sheet</td><td>${METAL_ACCOUNT_TYPES.Allocated.balanceSheet}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.balanceSheet}</td></tr>
+                <tr><td class="fw-bold">Storage Cost</td><td>${METAL_ACCOUNT_TYPES.Allocated.storageCost}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.storageCost}</td></tr>
+                <tr><td class="fw-bold">Insurance</td><td>${METAL_ACCOUNT_TYPES.Allocated.insurance}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.insurance}</td></tr>
+                <tr><td class="fw-bold">Settlement</td><td>${METAL_ACCOUNT_TYPES.Allocated.settlement}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.settlement}</td></tr>
+                <tr><td class="fw-bold">LBMA Standard</td><td>${METAL_ACCOUNT_TYPES.Allocated.lbmaStandard}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.lbmaStandard}</td></tr>
+                <tr><td class="fw-bold">Use Case</td><td>${METAL_ACCOUNT_TYPES.Allocated.useCase}</td><td>${METAL_ACCOUNT_TYPES.Unallocated.useCase}</td></tr>
+                <tr><td class="fw-bold">Risk Rating</td><td class="text-success fw-bold">${METAL_ACCOUNT_TYPES.Allocated.riskRating}</td><td class="text-warning fw-bold">${METAL_ACCOUNT_TYPES.Unallocated.riskRating}</td></tr>
+            </tbody>
+        </table>
+        <div style="font-size:0.68rem; color:var(--text-muted); font-style:italic; margin-top:8px;">
+            Source: LBMA "A Guide to the London Precious Metals Markets" (2024). Storage costs from LBMA member survey.
+        </div>
+    </div>`;
 }
 </script>
 
