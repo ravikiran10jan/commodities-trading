@@ -699,6 +699,83 @@
             font-size: 0.68rem; color: var(--text-muted); margin-top: 6px;
             font-style: italic;
         }
+
+        /* ============================================================
+           LIFECYCLE EVENTS
+           ============================================================ */
+        .event-log {
+            max-height: 300px; overflow-y: auto; margin: 10px 0;
+        }
+        .event-entry {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 8px 10px; border-bottom: 1px solid var(--border-light);
+            font-size: 0.8rem;
+        }
+        .event-entry:hover { background: var(--bg-page); }
+        .event-icon {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+        }
+        .event-icon.evt-new { background: #ebf8ff; color: #2b6cb0; }
+        .event-icon.evt-amend { background: #fefcbf; color: #b7791f; }
+        .event-icon.evt-cancel { background: #fed7d7; color: #c53030; }
+        .event-icon.evt-exercise { background: #c6f6d5; color: #2f855a; }
+        .event-icon.evt-expiry { background: #e9d8fd; color: #6b46c1; }
+        .event-icon.evt-novation { background: #bee3f8; color: #2c5282; }
+        .event-icon.evt-termination { background: #fbd38d; color: #975a16; }
+        .event-icon.evt-settlement { background: #c6f6d5; color: #276749; }
+        .event-icon.evt-margin { background: #fefcbf; color: #b7791f; }
+        .event-icon.evt-delivery { background: #b2f5ea; color: #285e61; }
+        .event-icon.evt-allocation { background: #e9d8fd; color: #553c9a; }
+        .event-icon.evt-default { background: var(--bg-page); color: var(--text-muted); }
+        .event-body { flex: 1; }
+        .event-title { font-weight: 600; color: var(--text-dark); }
+        .event-detail { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+        .event-time { font-size: 0.68rem; color: var(--text-muted); white-space: nowrap; }
+        .event-emir { font-size: 0.65rem; color: #6b46c1; font-family: 'Courier New', monospace; margin-top: 2px; }
+        .event-actions-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px; margin: 12px 0;
+        }
+        .event-action-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 12px 8px; border: 1px solid var(--border); border-radius: var(--radius);
+            background: var(--bg-card); cursor: pointer; transition: all 0.15s;
+            font-family: inherit; font-size: 0.78rem;
+        }
+        .event-action-btn:hover { border-color: var(--accent); background: #f0f5ff; }
+        .event-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .event-action-btn:disabled:hover { border-color: var(--border); background: var(--bg-card); }
+        .event-action-btn .evt-btn-icon { font-size: 1.2rem; }
+        .event-action-btn .evt-btn-label { font-weight: 600; color: var(--primary); }
+        .event-action-btn .evt-btn-desc { font-size: 0.65rem; color: var(--text-muted); text-align: center; line-height: 1.3; }
+        .event-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4); z-index: 500;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .event-modal {
+            background: var(--bg-card); border-radius: var(--radius);
+            padding: 24px; max-width: 520px; width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;
+        }
+        .event-modal h3 {
+            font-size: 1rem; color: var(--primary); margin-bottom: 12px;
+            padding-bottom: 8px; border-bottom: 1px solid var(--border-light);
+        }
+        .trade-status-badge {
+            display: inline-block; padding: 2px 10px; border-radius: 10px;
+            font-size: 0.72rem; font-weight: 700;
+        }
+        .status-live { background: #c6f6d5; color: #2f855a; }
+        .status-amended { background: #fefcbf; color: #b7791f; }
+        .status-cancelled { background: #fed7d7; color: #c53030; }
+        .status-exercised { background: #c6f6d5; color: #276749; }
+        .status-expired { background: #e9d8fd; color: #6b46c1; }
+        .status-terminated { background: #fbd38d; color: #975a16; }
+        .status-novated { background: #bee3f8; color: #2c5282; }
+        .status-delivered { background: #b2f5ea; color: #285e61; }
     </style>
 </head>
 <body>
@@ -899,7 +976,22 @@ const TOOLTIPS = {
     'MTM Formula':      'Futures: (Market - Trade) x Qty x ContractSize | Options: (Theo - Premium) x Qty x ContractSize',
     'ISO 20022':        'International standard for electronic data interchange between financial institutions (used by EMIR Refit)',
     'DSB':              'Derivatives Service Bureau — assigns UPIs (Unique Product Identifiers) for OTC derivative reporting',
-    'TR':               'Trade Repository — entity that centrally collects and maintains records of derivatives under EMIR'
+    'TR':               'Trade Repository — entity that centrally collects and maintains records of derivatives under EMIR',
+    'Amend':            'Modify economic terms of a live trade (price, quantity, dates) — reported as MODI to trade repository',
+    'Cancel':           'Void a trade entirely — reported as EROR (error) to trade repository to remove from records',
+    'Novation':         'Transfer of a trade to a new counterparty — the original trade terminates and a new one is created',
+    'Exercise':         'Option buyer exercises the right to buy (call) or sell (put) at the strike price',
+    'Assignment':       'Option seller is assigned the exercise — must fulfil the obligation',
+    'Auto-Exercise':    'Exchange automatically exercises ITM options at expiry if intrinsic value exceeds threshold',
+    'Abandonment':      'Option holder lets the option expire without exercising — typically when OTM',
+    'Early Termination':'Mutual agreement to end a trade before its scheduled maturity date',
+    'Partial Termination':'Reduce the notional/quantity of an existing trade — the remainder continues',
+    'Give-Up':          'Transfer of a trade from executing broker to clearing broker for clearing purposes',
+    'Allocation':       'Split a block trade into individual sub-accounts or client allocations',
+    'Roll/Carry':       'Close position in near-month and open equivalent in far-month to extend exposure',
+    'Physical Delivery':'Take or make delivery of the actual physical commodity (metal, energy, etc.)',
+    'Margin Call':      'Demand for additional collateral when variation margin exceeds threshold',
+    'Credit Event':     'Counterparty default or downgrade triggering close-out netting under ISDA Master Agreement'
 };
 
 const HEDGING_STRATEGIES = {
@@ -984,6 +1076,31 @@ const METAL_ACCOUNT_TYPES = {
         useCase: 'Trading, short-term holding, cost-sensitive clients',
         riskRating: 'Higher'
     }
+};
+
+/**
+ * Lifecycle event definitions — maps event type to display properties and
+ * EMIR Refit action/event type codes per EU 2024/2987.
+ */
+const LIFECYCLE_EVENTS = {
+    NEW:                 { label: 'New Trade',            icon: '+',  iconClass: 'evt-new',         emirAction: 'NEWT', emirEvent: 'TRAD',  applicable: () => true },
+    AMEND:               { label: 'Amend',                icon: '\u270E', iconClass: 'evt-amend',   emirAction: 'MODI', emirEvent: 'TRAD',  applicable: (t) => t.tradeStatus === 'LIVE' },
+    CANCEL:              { label: 'Cancel',               icon: '\u2715', iconClass: 'evt-cancel',  emirAction: 'EROR', emirEvent: 'TRAD',  applicable: (t) => t.tradeStatus === 'LIVE' },
+    EXERCISE:            { label: 'Exercise',             icon: '\u2713', iconClass: 'evt-exercise', emirAction: 'TERM', emirEvent: 'EXER',  applicable: (t) => t.tradeStatus === 'LIVE' && isOptionType(t.productType) && t.buySell === 'Buy' },
+    AUTO_EXERCISE:       { label: 'Auto-Exercise',        icon: '\u21BB', iconClass: 'evt-exercise', emirAction: 'TERM', emirEvent: 'EXER',  applicable: (t) => t.tradeStatus === 'LIVE' && isOptionType(t.productType) },
+    ASSIGNMENT:          { label: 'Assignment',           icon: '\u2190', iconClass: 'evt-exercise', emirAction: 'TERM', emirEvent: 'EXER',  applicable: (t) => t.tradeStatus === 'LIVE' && isOptionType(t.productType) && t.buySell === 'Sell' },
+    ABANDONMENT:         { label: 'Abandonment (Expire Worthless)', icon: '\u2205', iconClass: 'evt-expiry', emirAction: 'TERM', emirEvent: 'TRAD', applicable: (t) => t.tradeStatus === 'LIVE' && isOptionType(t.productType) },
+    EXPIRY:              { label: 'Expiry',               icon: '\u231B', iconClass: 'evt-expiry',   emirAction: 'TERM', emirEvent: 'TRAD',  applicable: (t) => t.tradeStatus === 'LIVE' && (isOptionType(t.productType) || t.productType === 'Future') },
+    EARLY_TERMINATION:   { label: 'Early Termination',    icon: '\u26A0', iconClass: 'evt-termination', emirAction: 'TERM', emirEvent: 'ETRM', applicable: (t) => t.tradeStatus === 'LIVE' && ['Forward','Swap','Asian Option','Barrier Option'].includes(t.productType) },
+    PARTIAL_TERMINATION: { label: 'Partial Termination',  icon: '\u2702', iconClass: 'evt-termination', emirAction: 'MODI', emirEvent: 'ETRM', applicable: (t) => t.tradeStatus === 'LIVE' && t.quantity > 1 },
+    NOVATION:            { label: 'Novation',             icon: '\u21C4', iconClass: 'evt-novation', emirAction: 'TERM', emirEvent: 'NOVA',  applicable: (t) => t.tradeStatus === 'LIVE' },
+    GIVE_UP:             { label: 'Give-Up',              icon: '\u21B3', iconClass: 'evt-novation', emirAction: 'MODI', emirEvent: 'TRAD',  applicable: (t) => t.tradeStatus === 'LIVE' && (t.productType === 'Future' || t.productType === 'Vanilla Option') },
+    ALLOCATION:          { label: 'Allocation',           icon: '\u2261', iconClass: 'evt-allocation', emirAction: 'MODI', emirEvent: 'ALOC', applicable: (t) => t.tradeStatus === 'LIVE' && t.quantity > 1 && !t.allocationParent },
+    ROLL:                { label: 'Roll / Carry',         icon: '\u21B7', iconClass: 'evt-default',  emirAction: 'TERM', emirEvent: 'TRAD',  applicable: (t) => t.tradeStatus === 'LIVE' && (t.productType === 'Future' || t.productType === 'Forward') },
+    PHYSICAL_DELIVERY:   { label: 'Physical Delivery',    icon: '\u2693', iconClass: 'evt-delivery', emirAction: 'MODI', emirEvent: 'TRAD',  applicable: (t) => t.tradeStatus === 'LIVE' && t.settled && ['Spot','Forward','Future'].includes(t.productType) },
+    CASH_SETTLEMENT:     { label: 'Cash Settlement',      icon: '$',  iconClass: 'evt-settlement', emirAction: 'TERM', emirEvent: 'TRAD',   applicable: (t) => t.tradeStatus === 'LIVE' && t.settled && (t.productType === 'Swap' || isOptionType(t.productType)) },
+    MARGIN_CALL:         { label: 'Margin Call',          icon: '\u26A1', iconClass: 'evt-margin',  emirAction: 'MARU', emirEvent: 'TRAD',   applicable: (t) => t.tradeStatus === 'LIVE' && (t.productType === 'Future' || t.productType === 'Vanilla Option') },
+    CREDIT_EVENT:        { label: 'Credit Event',         icon: '\u2620', iconClass: 'evt-cancel',  emirAction: 'TERM', emirEvent: 'CREV',   applicable: (t) => t.tradeStatus === 'LIVE' }
 };
 
 
@@ -1291,7 +1408,19 @@ function createTradeObject(formData) {
         emirFields: null,
         // Hedging
         hedgingStrategy: null,
-        deltaHedgeTrade: null
+        deltaHedgeTrade: null,
+        // Lifecycle events
+        tradeStatus: 'LIVE',
+        eventLog: [{ type: 'NEW', timestamp: new Date().toISOString(), detail: 'Trade captured', emirAction: 'NEWT', emirEvent: 'TRAD', user: 'SYS' }],
+        amendCount: 0,
+        priorVersions: [],
+        novatedTo: null,
+        novatedFrom: null,
+        exerciseResult: null,
+        terminationDate: null,
+        deliveryStatus: null,
+        allocationParent: null,
+        allocationChildren: []
     };
 }
 
@@ -1380,8 +1509,10 @@ function renderTradeView(trade) {
     const main = document.getElementById('mainContent');
     let html = renderStepper(trade.stage);
     html += '<div id="stageContent"></div>';
+    html += '<div id="lifecycleEventsContainer"></div>';
     main.innerHTML = html;
     renderStageContent(trade);
+    document.getElementById('lifecycleEventsContainer').innerHTML = renderLifecycleEventsPanel(trade);
 }
 
 function renderStageContent(trade) {
@@ -2786,7 +2917,7 @@ function renderBlotterHTML(highlightId) {
                 <th>Trade ID</th><th>Commodity</th><th>B/S</th><th>Product</th><th>Qty</th>
                 <th>Price</th><th>Strike</th><th>Premium</th><th>Type Detail</th>
                 <th>Notional</th><th>Counterparty</th>
-                <th>Value Date</th><th>Stage</th><th>Unrealised P&L</th><th></th>
+                <th>Value Date</th><th>Status</th><th>Stage</th><th>Unrealised P&L</th><th></th>
             </tr></thead><tbody>`;
 
     state.trades.forEach(t => {
@@ -2827,6 +2958,7 @@ function renderBlotterHTML(highlightId) {
             <td>${formatUSD(t.notional)}</td>
             <td>${t.counterparty}</td>
             <td>${datePretty(t.valueDate)}</td>
+            <td><span class="trade-status-badge status-${(t.tradeStatus || 'live').toLowerCase()}">${t.tradeStatus || 'LIVE'}</span></td>
             <td><span class="badge badge-stage">${STAGES[t.stage - 1]}</span></td>
             <td class="${pnlClass} fw-bold">${formatUSD(unrealPnL)}</td>
             <td><button class="btn btn-outline btn-sm" onclick="viewTrade('${t.id}')">View</button></td>
@@ -3204,6 +3336,67 @@ function renderAboutView() {
             sheet treatment, insurance requirements, and credit risk exposure. Central banks and ETFs typically
             require allocated storage.</p>
         </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Trade Lifecycle Events</div>
+        <p style="font-size:0.88rem; color: var(--text-body); margin-bottom:16px;">
+            After a trade is captured, it can undergo numerous lifecycle events throughout its life.
+            Each event is EMIR-reportable with specific Action Type and Event Type codes.
+            This simulator supports 17 lifecycle events applicable to commodity trades.
+        </p>
+
+        <div class="about-section">
+            <h3>Trade Amendments &amp; Cancellations</h3>
+            <p><strong>${tip('Amend')}</strong> (EMIR: MODI/TRAD) — Modify economic terms such as price, quantity, or value date.
+            Prior versions are preserved for audit. <strong>${tip('Cancel')}</strong> (EMIR: EROR/TRAD) — Void a trade entirely,
+            typically due to erroneous booking or duplicate entry. Irreversible — an EMIR error report is submitted to the Trade Repository.</p>
+        </div>
+
+        <div class="about-section">
+            <h3>Option Exercise, Assignment &amp; Expiry</h3>
+            <p><strong>${tip('Exercise')}</strong> (EMIR: TERM/EXER) — Option buyer exercises the right at the strike price.
+            Intrinsic value, payoff, and net P&L are calculated. <strong>${tip('Auto-Exercise')}</strong> — Per CME Rule 812.01,
+            exchange auto-exercises ITM options at expiry unless a contrary instruction is received.
+            <strong>${tip('Assignment')}</strong> — The option seller is assigned when the buyer exercises. Must fulfil the
+            obligation (deliver for calls, buy for puts). <strong>${tip('Abandonment')}</strong> — Option holder lets the option
+            expire unexercised, typically when OTM. Loss is limited to premium paid (buyer) or premium is fully earned (seller).</p>
+        </div>
+
+        <div class="about-section">
+            <h3>Terminations</h3>
+            <p><strong>${tip('Early Termination')}</strong> (EMIR: TERM/ETRM) — Mutual agreement to end a trade before maturity,
+            per ISDA Master Agreement Section 6. Close-out amount is calculated at mid-market.
+            <strong>${tip('Partial Termination')}</strong> (EMIR: MODI/ETRM) — Reduce the notional quantity while the remainder continues.
+            Notional is recalculated on the reduced position.</p>
+        </div>
+
+        <div class="about-section">
+            <h3>Transfer &amp; Allocation</h3>
+            <p><strong>${tip('Novation')}</strong> (EMIR: TERM/NOVA) — Transfer a trade to a new counterparty (step-in). The original
+            trade terminates and a new one is created on identical terms with the step-in party. Both events are EMIR-reportable.
+            <strong>${tip('Give-Up')}</strong> — Transfer from executing broker to clearing broker, common for exchange-traded products.
+            <strong>${tip('Allocation')}</strong> (EMIR: MODI/ALOC) — Split a block trade into individual client sub-allocations.
+            The parent block is cancelled and child trades are created with equal share of the original quantity.</p>
+        </div>
+
+        <div class="about-section">
+            <h3>Roll, Delivery &amp; Settlement</h3>
+            <p><strong>${tip('Roll/Carry')}</strong> — Close the near-month position and open an equivalent far-month position to extend
+            exposure. The cost is the calendar spread between the two months.
+            <strong>${tip('Physical Delivery')}</strong> — Take or make delivery of the actual physical commodity. For base metals,
+            delivery is via LME warrant transfer through ${tip('LMEsword')}. For precious metals, delivery goes through
+            allocated or unallocated accounts.
+            <strong>Cash Settlement</strong> — Net cash payment at market close-out, typical for swaps and financially settled options.</p>
+        </div>
+
+        <div class="about-section">
+            <h3>Risk Events</h3>
+            <p><strong>${tip('Margin Call')}</strong> (EMIR: MARU/TRAD) — Demand for additional collateral when variation margin exceeds
+            the threshold. Deadline is typically T+1 by 10:00 London.
+            <strong>${tip('Credit Event')}</strong> (EMIR: TERM/CREV) — Counterparty default or downgrade triggering close-out netting
+            under the ISDA Master Agreement Section 6(e). All trades with the defaulting counterparty are terminated and netted.</p>
+        </div>
     </div>`;
 }
 
@@ -3235,6 +3428,8 @@ function seedDemoTrades() {
     t1.reconRun = true;
     t1.reconMatched = true;
     t1.realisedPnL = 15 * 2 * 100;
+    // Seed lifecycle event history: a margin call was issued during clearing
+    t1.eventLog.push({ type: 'MARGIN_CALL', timestamp: new Date(Date.now() - 86400000).toISOString(), detail: 'Margin call: $' + (t1.notional * 0.02).toFixed(0) + ' additional collateral required. Total VM: $' + (t1.variationMargin + t1.notional * 0.02).toFixed(0) + '. Deadline: T+1 10:00 London.', emirAction: 'MARU', emirEvent: 'TRAD', user: 'SYS' });
     state.trades.push(t1);
 
     // Trade 2: Silver Future Sell — at Clearing (Stage 4)
@@ -3250,6 +3445,9 @@ function seedDemoTrades() {
     t2.confirmed = true;
     t2.confirmationMessage = generateConfirmation(t2);
     computeClearing(t2);
+    // Seed lifecycle event: trade was given up to clearing broker
+    t2.eventLog.push({ type: 'GIVE_UP', timestamp: new Date(Date.now() - 7200000).toISOString(), detail: 'Given up from executing broker to clearing broker: JP Morgan Clearing. Trade now cleared under JP Morgan Clearing\'s account.', emirAction: 'MODI', emirEvent: 'TRAD', user: 'SYS' });
+    t2.clearer = 'JP Morgan Clearing';
     state.trades.push(t2);
 
     // Trade 3: Copper Forward Buy — at Confirmation (Stage 3)
@@ -3262,6 +3460,10 @@ function seedDemoTrades() {
     t3.stage = 3;
     runValidation(t3);
     t3.confirmationMessage = generateConfirmation(t3);
+    // Seed lifecycle event: this trade was amended (price correction)
+    t3.amendCount = 1;
+    t3.priorVersions.push({ price: t3.price - 50, quantity: t3.quantity, valueDate: t3.valueDate, timestamp: new Date(Date.now() - 3600000).toISOString() });
+    t3.eventLog.push({ type: 'AMEND', timestamp: new Date(Date.now() - 3600000).toISOString(), detail: 'Price correction: $' + (t3.price - 50).toFixed(2) + ' -> $' + t3.price.toFixed(2) + '. Version 1.', emirAction: 'MODI', emirEvent: 'TRAD', user: 'JD' });
     state.trades.push(t3);
 
     // Trade 4: Platinum Swap — at Validation (Stage 2)
@@ -4565,6 +4767,540 @@ function renderMetalAccountComparison(trade) {
             Source: LBMA "A Guide to the London Precious Metals Markets" (2024). Storage costs from LBMA member survey.
         </div>
     </div>`;
+}
+
+
+// ============================================================
+// SECTION 34: LIFECYCLE EVENTS ENGINE
+// ============================================================
+
+function addEvent(trade, type, detail, extra) {
+    const evt = LIFECYCLE_EVENTS[type];
+    if (!evt) return;
+    trade.eventLog.push({
+        type: type,
+        timestamp: new Date().toISOString(),
+        detail: detail,
+        emirAction: evt.emirAction,
+        emirEvent: evt.emirEvent,
+        user: trade.traderInitials || 'SYS',
+        ...(extra || {})
+    });
+}
+
+function getApplicableEvents(trade) {
+    return Object.entries(LIFECYCLE_EVENTS)
+        .filter(([key, evt]) => key !== 'NEW' && evt.applicable(trade))
+        .map(([key, evt]) => ({ key, ...evt }));
+}
+
+function renderLifecycleEventsPanel(trade) {
+    const applicable = getApplicableEvents(trade);
+    const statusClass = 'status-' + (trade.tradeStatus || 'live').toLowerCase();
+
+    let html = `<div class="card">
+        <div class="card-title">
+            Lifecycle Events
+            <span class="trade-status-badge ${statusClass}" style="margin-left:10px;">${trade.tradeStatus}</span>
+        </div>`;
+
+    // Event Actions Grid
+    if (trade.tradeStatus === 'LIVE') {
+        html += `<p style="font-size:0.78rem; color:var(--text-body); margin-bottom:8px;">
+            Available actions for this ${trade.productType} trade. Each triggers an EMIR-reportable lifecycle event.
+        </p>
+        <div class="event-actions-grid">`;
+
+        applicable.forEach(evt => {
+            html += `<button class="event-action-btn" onclick="showEventModal('${trade.id}', '${evt.key}')">
+                <span class="evt-btn-icon">${evt.icon}</span>
+                <span class="evt-btn-label">${evt.label}</span>
+                <span class="evt-btn-desc">EMIR: ${evt.emirAction}/${evt.emirEvent}</span>
+            </button>`;
+        });
+        html += `</div>`;
+    } else {
+        html += `<p style="font-size:0.82rem; color:var(--text-muted);">
+            This trade is <strong>${trade.tradeStatus}</strong>. No further lifecycle actions available.
+        </p>`;
+    }
+
+    // Event Log
+    html += `<div style="margin-top:16px;">
+        <h4 style="font-size:0.85rem; color:var(--primary); margin-bottom:8px;">Event Audit Trail</h4>
+        <div class="event-log">`;
+
+    // Show events in reverse chronological order
+    const events = [...trade.eventLog].reverse();
+    events.forEach(evt => {
+        const evtDef = LIFECYCLE_EVENTS[evt.type] || { label: evt.type, icon: '?', iconClass: 'evt-default' };
+        const time = new Date(evt.timestamp);
+        const timeStr = time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateStr2 = time.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+        html += `<div class="event-entry">
+            <div class="event-icon ${evtDef.iconClass}">${evtDef.icon}</div>
+            <div class="event-body">
+                <div class="event-title">${evtDef.label}</div>
+                <div class="event-detail">${evt.detail}</div>
+                <div class="event-emir">EMIR: Action=${evt.emirAction} Event=${evt.emirEvent} | User: ${evt.user}</div>
+            </div>
+            <div class="event-time">${dateStr2}<br>${timeStr}</div>
+        </div>`;
+    });
+
+    html += `</div></div></div>`;
+    return html;
+}
+
+function showEventModal(tradeId, eventKey) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    const evt = LIFECYCLE_EVENTS[eventKey];
+    if (!evt) return;
+    const com = COMMODITIES[trade.commodity];
+
+    let formHtml = '';
+    const spot = getMarketPrice(trade.commodity);
+
+    switch (eventKey) {
+        case 'AMEND':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Amend')} — modify economic terms. Original values shown as placeholders.</p>
+                <div class="form-grid">
+                    <div class="form-group"><label>New Price</label><input type="number" id="evtAmendPrice" value="${trade.price}" step="${com.tick}"></div>
+                    <div class="form-group"><label>New Quantity (lots)</label><input type="number" id="evtAmendQty" value="${trade.quantity}" min="1"></div>
+                    <div class="form-group"><label>New Value Date</label><input type="date" id="evtAmendValueDate" value="${trade.valueDate}"></div>
+                    <div class="form-group"><label>Reason</label><select id="evtAmendReason"><option>Price correction</option><option>Quantity adjustment</option><option>Date change</option><option>Counterparty request</option></select></div>
+                </div>`;
+            break;
+        case 'CANCEL':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Cancel')} — void this trade. This action is irreversible.</p>
+                <div class="form-group"><label>Cancellation Reason</label><select id="evtCancelReason"><option>Erroneous trade</option><option>Duplicate booking</option><option>Counterparty dispute</option><option>Regulatory requirement</option><option>System error</option></select></div>
+                <div style="background:var(--danger-bg); border:1px solid var(--danger-border); border-radius:var(--radius); padding:10px; margin-top:10px;">
+                    <strong class="text-danger">Warning:</strong> Cancelled trades cannot be reinstated. An EMIR EROR report will be submitted to the Trade Repository.
+                </div>`;
+            break;
+        case 'EXERCISE':
+            const intrinsic = trade.callPut === 'Call' ? Math.max(spot - trade.strike, 0) : Math.max(trade.strike - spot, 0);
+            const payoff = intrinsic * trade.quantity * com.contractSize;
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Exercise')} — exercise this ${trade.callPut} option at strike ${formatUSD(trade.strike)}.</p>
+                <table class="enrich-table">
+                    <tr><td>Current Spot</td><td class="fw-bold">${formatUSD(spot)}</td></tr>
+                    <tr><td>Strike</td><td>${formatUSD(trade.strike)}</td></tr>
+                    <tr><td>Moneyness</td><td><span class="badge badge-${(trade.moneyness||'ATM').toLowerCase()}">${trade.moneyness||'ATM'}</span></td></tr>
+                    <tr><td>Intrinsic Value</td><td class="fw-bold ${intrinsic > 0 ? 'text-success' : 'text-danger'}">${formatUSD(intrinsic)}/unit</td></tr>
+                    <tr><td>Total Payoff</td><td class="fw-bold">${formatUSD(payoff)}</td></tr>
+                    <tr><td>Premium Paid</td><td>${formatUSD(trade.premiumTotal)}</td></tr>
+                    <tr><td>Net P&L</td><td class="fw-bold ${payoff - trade.premiumTotal >= 0 ? 'text-success' : 'text-danger'}">${formatUSD(payoff - trade.premiumTotal)}</td></tr>
+                </table>
+                <div class="form-group mt-2"><label>Settlement Method</label><select id="evtExerciseSettlement">
+                    <option value="futures">${trade.venue !== 'OTC' ? 'Delivery into Futures Position' : 'Cash Settlement'}</option>
+                    <option value="cash">Cash Settlement</option>
+                </select></div>`;
+            break;
+        case 'AUTO_EXERCISE':
+            const autoIntrinsic = trade.callPut === 'Call' ? Math.max(spot - trade.strike, 0) : Math.max(trade.strike - spot, 0);
+            const isITM = autoIntrinsic > 0;
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Auto-Exercise')} — Exchange auto-exercises ITM options at expiry.</p>
+                <table class="enrich-table">
+                    <tr><td>Current Spot</td><td class="fw-bold">${formatUSD(spot)}</td></tr>
+                    <tr><td>Strike</td><td>${formatUSD(trade.strike)}</td></tr>
+                    <tr><td>Intrinsic Value</td><td class="${isITM ? 'text-success' : 'text-danger'} fw-bold">${formatUSD(autoIntrinsic)}</td></tr>
+                    <tr><td>Auto-Exercise</td><td class="fw-bold">${isITM ? 'YES — option is ITM' : 'NO — option is OTM (will abandon)'}</td></tr>
+                </table>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    CME/LME Rule: All options ITM by at least one tick at expiry are automatically exercised unless a contrary instruction is submitted. Source: CME Rule 812.01.
+                </p>`;
+            break;
+        case 'ASSIGNMENT':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Assignment')} — you are assigned on this short ${trade.callPut} option.</p>
+                <p style="font-size:0.78rem;">The option buyer has exercised. As the seller, you must fulfil the obligation
+                ${trade.callPut === 'Call' ? '(deliver the underlying at the strike price)' : '(buy the underlying at the strike price)'}.</p>
+                <table class="enrich-table mt-2">
+                    <tr><td>Your Obligation</td><td class="fw-bold">${trade.callPut === 'Call' ? 'Sell' : 'Buy'} ${trade.quantity * com.contractSize} ${com.unit} @ ${formatUSD(trade.strike)}</td></tr>
+                    <tr><td>Market Value</td><td>${formatUSD(spot * trade.quantity * com.contractSize)}</td></tr>
+                    <tr><td>Premium Received</td><td class="text-success">${formatUSD(trade.premiumTotal)}</td></tr>
+                </table>`;
+            break;
+        case 'ABANDONMENT':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Abandonment')} — let this option expire without exercising.</p>
+                <table class="enrich-table">
+                    <tr><td>Moneyness</td><td><span class="badge badge-${(trade.moneyness||'ATM').toLowerCase()}">${trade.moneyness||'ATM'}</span></td></tr>
+                    <tr><td>Premium ${trade.buySell === 'Buy' ? 'Paid (lost)' : 'Received (kept)'}</td><td class="${trade.buySell === 'Buy' ? 'text-danger' : 'text-success'} fw-bold">${formatUSD(trade.premiumTotal)}</td></tr>
+                </table>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:8px;">
+                    ${trade.buySell === 'Buy' ? 'Total loss is limited to premium paid.' : 'Premium received is fully earned.'}
+                </p>`;
+            break;
+        case 'EARLY_TERMINATION':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Early Termination')} — mutually agree to terminate before maturity.</p>
+                <div class="form-group"><label>Termination Date</label><input type="date" id="evtTermDate" value="${today()}"></div>
+                <div class="form-group mt-2"><label>Breakage Fee / Settlement Amount</label><input type="number" id="evtTermFee" value="0" step="0.01"></div>
+                <div class="form-group mt-2"><label>Reason</label><select id="evtTermReason"><option>Mutual agreement</option><option>Market conditions</option><option>Credit concern</option><option>Regulatory change</option></select></div>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    Per ISDA Master Agreement Section 6. MTM close-out value will be calculated at termination.
+                </p>`;
+            break;
+        case 'PARTIAL_TERMINATION':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Partial Termination')} — reduce quantity. Current: ${trade.quantity} lots.</p>
+                <div class="form-group"><label>Lots to Terminate</label><input type="number" id="evtPartialQty" value="1" min="1" max="${trade.quantity - 1}" oninput="document.getElementById('evtPartialRemaining').value = Math.max(0, ${trade.quantity} - parseInt(this.value || 0)) + ' lots'"></div>
+                <div class="form-group mt-2"><label>Remaining after event</label><input type="text" id="evtPartialRemaining" value="${trade.quantity - 1} lots" readonly></div>`;
+            break;
+        case 'NOVATION':
+            const otherCPs = Object.keys(COUNTERPARTIES).filter(cp => cp !== trade.counterparty);
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Novation')} — transfer this trade to a new counterparty (step-in).</p>
+                <div class="form-group"><label>New Counterparty (Step-In)</label><select id="evtNovationCP">${otherCPs.map(cp => `<option value="${cp}">${cp}</option>`).join('')}</select></div>
+                <div class="form-group mt-2"><label>Novation Fee</label><input type="number" id="evtNovationFee" value="0" step="0.01"></div>
+                <table class="enrich-table mt-2">
+                    <tr><td>Original Counterparty (Step-Out)</td><td>${trade.counterparty}</td></tr>
+                    <tr><td>Trade Reference</td><td>${trade.id}</td></tr>
+                    <tr><td>Notional</td><td>${formatUSD(trade.notional)}</td></tr>
+                </table>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    The original trade is terminated and a new trade is created with the step-in counterparty on identical terms. Both events are EMIR-reportable.
+                </p>`;
+            break;
+        case 'GIVE_UP':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Give-Up')} — transfer from executing broker to clearing broker.</p>
+                <div class="form-group"><label>Clearing Broker</label><select id="evtGiveUpBroker">${Object.keys(COUNTERPARTIES).map(cp => `<option value="${cp}">${cp}</option>`).join('')}</select></div>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    Common for exchange-traded futures/options. The executing broker "gives up" the trade to the client's designated clearing member.
+                </p>`;
+            break;
+        case 'ALLOCATION':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Allocation')} — split this block trade into sub-allocations.</p>
+                <div class="form-group"><label>Number of Allocations</label><select id="evtAllocCount"><option value="2">2</option><option value="3">3</option></select></div>
+                <p style="font-size:0.78rem; margin-top:8px;">Current quantity: <strong>${trade.quantity} lots</strong>. Each allocation will receive an equal share.</p>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:6px;">
+                    Block trades are allocated to individual client accounts post-execution. Each allocation becomes a separate trade with its own reporting obligations.
+                </p>`;
+            break;
+        case 'ROLL':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Roll/Carry')} — close near-month, open far-month position.</p>
+                <div class="form-group"><label>Roll to Prompt Date</label><input type="date" id="evtRollDate" value="${dateStr(addMonths(trade.valueDate || today(), 1))}"></div>
+                <div class="form-group mt-2"><label>Roll Cost / Spread</label><input type="number" id="evtRollCost" value="0" step="0.01"></div>
+                <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                    The existing position is closed and a new position is opened for the next delivery month. The cost is the calendar spread between the two months.
+                </p>`;
+            break;
+        case 'PHYSICAL_DELIVERY':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Physical Delivery')} — ${trade.buySell === 'Buy' ? 'take' : 'make'} delivery of ${com.name}.</p>
+                <table class="enrich-table">
+                    <tr><td>Metal</td><td>${com.name} (${trade.commodity})</td></tr>
+                    <tr><td>Quantity</td><td>${trade.quantity * com.contractSize} ${com.unit}</td></tr>
+                    <tr><td>Delivery Direction</td><td class="fw-bold">${trade.buySell === 'Buy' ? 'RECEIVE metal' : 'DELIVER metal'}</td></tr>
+                    <tr><td>Delivery Location</td><td>${com.exchange === 'LME' ? 'LME-approved warehouse' : 'COMEX/NYMEX approved vault'}</td></tr>
+                    ${com.type === 'base' ? '<tr><td>Warrant</td><td>Via LMEsword transfer</td></tr>' : '<tr><td>Account Type</td><td>' + (trade.metalAccount || 'Unallocated') + '</td></tr>'}
+                </table>`;
+            break;
+        case 'CASH_SETTLEMENT':
+            const mtm = isOptionType(trade.productType) ? (trade.optionTheoPrice || 0) - (trade.premium || 0) : spot - trade.price;
+            const cashAmt = mtm * trade.quantity * com.contractSize * (trade.productType === 'Swap' ? (trade.swapTenor || 1) : 1);
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Cash Settlement')} — net cash payment at market close-out.</p>
+                <table class="enrich-table">
+                    <tr><td>Settlement Amount</td><td class="fw-bold ${cashAmt >= 0 ? 'text-success' : 'text-danger'}">${formatUSD(Math.abs(cashAmt))}</td></tr>
+                    <tr><td>Direction</td><td>${cashAmt >= 0 ? 'RECEIVE' : 'PAY'}</td></tr>
+                    <tr><td>Calculation</td><td>MTM close-out at ${formatUSD(spot)}</td></tr>
+                </table>`;
+            break;
+        case 'MARGIN_CALL':
+            const addlMargin = trade.notional * 0.02;
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Margin Call')} — additional collateral required.</p>
+                <table class="enrich-table">
+                    <tr><td>Current ${tip('Initial Margin')}</td><td>${formatUSD(trade.initialMargin)}</td></tr>
+                    <tr><td>Current ${tip('Variation Margin')}</td><td>${formatUSD(trade.variationMargin)}</td></tr>
+                    <tr><td>Additional Margin Required</td><td class="text-danger fw-bold">${formatUSD(addlMargin)}</td></tr>
+                    <tr><td>Deadline</td><td>T+1 (next business day by 10:00 London)</td></tr>
+                </table>`;
+            break;
+        case 'CREDIT_EVENT':
+            formHtml = `
+                <p style="font-size:0.82rem; margin-bottom:10px;">${tip('Credit Event')} — counterparty default triggers ISDA close-out.</p>
+                <div class="form-group"><label>Event Type</label><select id="evtCreditType"><option>Failure to Pay</option><option>Bankruptcy</option><option>Credit Downgrade</option><option>Restructuring</option></select></div>
+                <div style="background:var(--danger-bg); border:1px solid var(--danger-border); border-radius:var(--radius); padding:10px; margin-top:10px;">
+                    <strong class="text-danger">Close-Out Netting:</strong> All trades with ${trade.counterparty} will be terminated and netted per ISDA Master Agreement Section 6(e). Close-out amount calculated at mid-market.
+                </div>`;
+            break;
+        default:
+            formHtml = `<p>Event: ${eventKey}</p>`;
+    }
+
+    // Render modal
+    const modalId = 'eventModal';
+    const existing = document.getElementById(modalId);
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = modalId;
+    overlay.className = 'event-modal-overlay';
+    overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = `<div class="event-modal">
+        <h3>${evt.icon} ${evt.label}</h3>
+        ${formHtml}
+        <div class="btn-group" style="margin-top:16px;">
+            <button class="btn btn-primary" onclick="executeEvent('${tradeId}', '${eventKey}')">Confirm ${evt.label}</button>
+            <button class="btn btn-outline" onclick="document.getElementById('${modalId}').remove()">Cancel</button>
+        </div>
+    </div>`;
+    document.body.appendChild(overlay);
+}
+
+function executeEvent(tradeId, eventKey) {
+    const trade = state.trades.find(t => t.id === tradeId);
+    if (!trade) return;
+    const com = COMMODITIES[trade.commodity];
+    const spot = getMarketPrice(trade.commodity);
+
+    switch (eventKey) {
+        case 'AMEND': {
+            const newPrice = parseFloat(document.getElementById('evtAmendPrice')?.value) || trade.price;
+            const newQty = parseInt(document.getElementById('evtAmendQty')?.value) || trade.quantity;
+            const newVD = document.getElementById('evtAmendValueDate')?.value || trade.valueDate;
+            const reason = document.getElementById('evtAmendReason')?.value || 'Amendment';
+            trade.priorVersions.push({ price: trade.price, quantity: trade.quantity, valueDate: trade.valueDate, timestamp: new Date().toISOString() });
+            const changes = [];
+            if (newPrice !== trade.price) changes.push(`Price: ${formatUSD(trade.price)} -> ${formatUSD(newPrice)}`);
+            if (newQty !== trade.quantity) changes.push(`Qty: ${trade.quantity} -> ${newQty}`);
+            if (newVD !== trade.valueDate) changes.push(`Value Date: ${trade.valueDate} -> ${newVD}`);
+            trade.price = newPrice; trade.quantity = newQty; trade.valueDate = newVD;
+            trade.notional = trade.quantity * trade.price * com.contractSize * (trade.productType === 'Swap' ? (trade.swapTenor || 1) : 1);
+            if (isOptionType(trade.productType)) trade.notional = trade.quantity * trade.strike * com.contractSize;
+            trade.amendCount++;
+            trade.tradeStatus = 'AMENDED';
+            setTimeout(() => { trade.tradeStatus = 'LIVE'; }, 100);
+            addEvent(trade, 'AMEND', `${reason}: ${changes.join('; ') || 'No changes'}. Version ${trade.amendCount}.`);
+            break;
+        }
+        case 'CANCEL': {
+            const reason = document.getElementById('evtCancelReason')?.value || 'Cancelled';
+            trade.tradeStatus = 'CANCELLED';
+            addEvent(trade, 'CANCEL', `Trade cancelled. Reason: ${reason}. EMIR EROR report submitted to TR.`);
+            break;
+        }
+        case 'EXERCISE': {
+            const intrinsic = trade.callPut === 'Call' ? Math.max(spot - trade.strike, 0) : Math.max(trade.strike - spot, 0);
+            const payoff = intrinsic * trade.quantity * com.contractSize;
+            const settlement = document.getElementById('evtExerciseSettlement')?.value || 'cash';
+            trade.tradeStatus = 'EXERCISED';
+            trade.exerciseResult = { intrinsic, payoff, settlement, spot, timestamp: new Date().toISOString() };
+            trade.realisedPnL = payoff - trade.premiumTotal;
+            addEvent(trade, 'EXERCISE', `${trade.callPut} exercised at spot ${formatUSD(spot)}. Intrinsic: ${formatUSD(intrinsic)}/unit. Payoff: ${formatUSD(payoff)}. Settlement: ${settlement}.`);
+            break;
+        }
+        case 'AUTO_EXERCISE': {
+            const autoIntrinsic = trade.callPut === 'Call' ? Math.max(spot - trade.strike, 0) : Math.max(trade.strike - spot, 0);
+            if (autoIntrinsic > 0) {
+                const payoff = autoIntrinsic * trade.quantity * com.contractSize;
+                trade.tradeStatus = 'EXERCISED';
+                trade.exerciseResult = { intrinsic: autoIntrinsic, payoff, settlement: 'auto', spot, timestamp: new Date().toISOString() };
+                trade.realisedPnL = trade.buySell === 'Buy' ? payoff - trade.premiumTotal : trade.premiumTotal - payoff;
+                addEvent(trade, 'AUTO_EXERCISE', `Auto-exercised at expiry. Spot: ${formatUSD(spot)}, Intrinsic: ${formatUSD(autoIntrinsic)}/unit. CME Rule 812.01.`);
+            } else {
+                trade.tradeStatus = 'EXPIRED';
+                trade.realisedPnL = trade.buySell === 'Buy' ? -trade.premiumTotal : trade.premiumTotal;
+                addEvent(trade, 'ABANDONMENT', `OTM at expiry — auto-abandoned. Spot: ${formatUSD(spot)}, Strike: ${formatUSD(trade.strike)}. Premium ${trade.buySell === 'Buy' ? 'lost' : 'earned'}: ${formatUSD(trade.premiumTotal)}.`);
+            }
+            break;
+        }
+        case 'ASSIGNMENT': {
+            const intrinsic = trade.callPut === 'Call' ? Math.max(spot - trade.strike, 0) : Math.max(trade.strike - spot, 0);
+            const payoff = intrinsic * trade.quantity * com.contractSize;
+            trade.tradeStatus = 'EXERCISED';
+            trade.exerciseResult = { intrinsic, payoff, settlement: 'assignment', spot, timestamp: new Date().toISOString() };
+            trade.realisedPnL = trade.premiumTotal - payoff;
+            addEvent(trade, 'ASSIGNMENT', `Assigned on short ${trade.callPut}. Must ${trade.callPut === 'Call' ? 'sell' : 'buy'} ${trade.quantity * com.contractSize} ${com.unit} @ ${formatUSD(trade.strike)}. Loss on exercise: ${formatUSD(payoff)}.`);
+            break;
+        }
+        case 'ABANDONMENT': {
+            trade.tradeStatus = 'EXPIRED';
+            trade.realisedPnL = trade.buySell === 'Buy' ? -trade.premiumTotal : trade.premiumTotal;
+            addEvent(trade, 'ABANDONMENT', `Option abandoned (expired worthless). Premium ${trade.buySell === 'Buy' ? 'lost' : 'earned'}: ${formatUSD(trade.premiumTotal)}.`);
+            break;
+        }
+        case 'EXPIRY': {
+            trade.tradeStatus = 'EXPIRED';
+            if (isOptionType(trade.productType)) {
+                const intrinsic = trade.callPut === 'Call' ? Math.max(spot - trade.strike, 0) : Math.max(trade.strike - spot, 0);
+                if (intrinsic > 0) {
+                    const payoff = intrinsic * trade.quantity * com.contractSize;
+                    trade.exerciseResult = { intrinsic, payoff, settlement: 'expiry-auto', spot, timestamp: new Date().toISOString() };
+                    trade.realisedPnL = trade.buySell === 'Buy' ? payoff - trade.premiumTotal : trade.premiumTotal - payoff;
+                    addEvent(trade, 'EXPIRY', `Expired ITM. Auto-exercised. Payoff: ${formatUSD(payoff)}.`);
+                } else {
+                    trade.realisedPnL = trade.buySell === 'Buy' ? -trade.premiumTotal : trade.premiumTotal;
+                    addEvent(trade, 'EXPIRY', `Expired OTM. No exercise. Premium ${trade.buySell === 'Buy' ? 'lost' : 'earned'}: ${formatUSD(trade.premiumTotal)}.`);
+                }
+            } else {
+                addEvent(trade, 'EXPIRY', `Future contract expired at prompt date. Final settlement price: ${formatUSD(spot)}.`);
+            }
+            break;
+        }
+        case 'EARLY_TERMINATION': {
+            const termDate = document.getElementById('evtTermDate')?.value || today();
+            const fee = parseFloat(document.getElementById('evtTermFee')?.value) || 0;
+            const reason = document.getElementById('evtTermReason')?.value || 'Mutual agreement';
+            trade.tradeStatus = 'TERMINATED';
+            trade.terminationDate = termDate;
+            const mult = trade.quantity * com.contractSize * (trade.productType === 'Swap' ? (trade.swapTenor || 1) : 1);
+            const closeOut = trade.buySell === 'Buy' ? (spot - trade.price) * mult : (trade.price - spot) * mult;
+            trade.realisedPnL = closeOut - fee;
+            addEvent(trade, 'EARLY_TERMINATION', `Terminated early. Reason: ${reason}. Close-out: ${formatUSD(closeOut)}. Fee: ${formatUSD(fee)}. Net: ${formatUSD(trade.realisedPnL)}. Per ISDA Section 6.`);
+            break;
+        }
+        case 'PARTIAL_TERMINATION': {
+            const termedQty = parseInt(document.getElementById('evtPartialQty')?.value) || 1;
+            const remaining = trade.quantity - termedQty;
+            if (remaining < 1) { alert('Cannot terminate all lots — use full termination instead.'); return; }
+            trade.priorVersions.push({ quantity: trade.quantity, notional: trade.notional, timestamp: new Date().toISOString() });
+            trade.quantity = remaining;
+            trade.notional = remaining * trade.price * com.contractSize * (trade.productType === 'Swap' ? (trade.swapTenor || 1) : 1);
+            if (isOptionType(trade.productType)) {
+                trade.notional = remaining * trade.strike * com.contractSize;
+                trade.premiumTotal = trade.premium * remaining * com.contractSize;
+            }
+            addEvent(trade, 'PARTIAL_TERMINATION', `Partially terminated ${termedQty} lot(s). Remaining: ${remaining} lot(s). New notional: ${formatUSD(trade.notional)}.`);
+            break;
+        }
+        case 'NOVATION': {
+            const newCP = document.getElementById('evtNovationCP')?.value;
+            const fee = parseFloat(document.getElementById('evtNovationFee')?.value) || 0;
+            if (!newCP) return;
+            const oldCP = trade.counterparty;
+            // Terminate original trade
+            trade.tradeStatus = 'NOVATED';
+            trade.novatedTo = newCP;
+            addEvent(trade, 'NOVATION', `Novated from ${oldCP} to ${newCP}. Fee: ${formatUSD(fee)}. Original trade terminated, new trade created.`);
+            // Create new trade with new counterparty
+            const newTradeData = {
+                tradeDate: today(), counterparty: newCP, buySell: trade.buySell,
+                productType: trade.productType, commodity: trade.commodity,
+                quantity: String(trade.quantity), price: String(trade.price),
+                valueDate: trade.valueDate, metalAccount: trade.metalAccount,
+                callPut: trade.callPut, strike: trade.strike ? String(trade.strike) : null,
+                premium: trade.premium ? String(trade.premium) : null,
+                expiryDate: trade.expiryDate, exerciseStyle: trade.exerciseStyle,
+                swapTenor: trade.swapTenor ? String(trade.swapTenor) : null,
+                futurePromptDate: trade.futurePromptDate
+            };
+            const novTrade = createTradeObject(newTradeData);
+            novTrade.stage = trade.stage;
+            novTrade.novatedFrom = trade.id;
+            novTrade.eventLog = [{ type: 'NEW', timestamp: new Date().toISOString(), detail: `Created via novation from ${trade.id}. Step-in: ${newCP}. Step-out: ${oldCP}.`, emirAction: 'NEWT', emirEvent: 'NOVA', user: 'SYS' }];
+            state.trades.push(novTrade);
+            runValidation(novTrade);
+            break;
+        }
+        case 'GIVE_UP': {
+            const broker = document.getElementById('evtGiveUpBroker')?.value;
+            if (!broker) return;
+            addEvent(trade, 'GIVE_UP', `Given up from executing broker to clearing broker: ${broker}. Trade now cleared under ${broker}'s account.`);
+            trade.clearer = broker + ' Clearing';
+            break;
+        }
+        case 'ALLOCATION': {
+            const allocCount = parseInt(document.getElementById('evtAllocCount')?.value) || 2;
+            const perAlloc = Math.floor(trade.quantity / allocCount);
+            const remainder = trade.quantity - (perAlloc * allocCount);
+            trade.tradeStatus = 'CANCELLED';
+            addEvent(trade, 'ALLOCATION', `Block trade allocated into ${allocCount} sub-trades of ${perAlloc} lots each.`);
+            for (let i = 0; i < allocCount; i++) {
+                const qty = i === 0 ? perAlloc + remainder : perAlloc;
+                const allocData = {
+                    tradeDate: trade.tradeDate, counterparty: trade.counterparty, buySell: trade.buySell,
+                    productType: trade.productType, commodity: trade.commodity,
+                    quantity: String(qty), price: String(trade.price),
+                    valueDate: trade.valueDate, metalAccount: trade.metalAccount,
+                    callPut: trade.callPut, strike: trade.strike ? String(trade.strike) : null,
+                    premium: trade.premium ? String(trade.premium) : null,
+                    expiryDate: trade.expiryDate, exerciseStyle: trade.exerciseStyle,
+                    swapTenor: trade.swapTenor ? String(trade.swapTenor) : null,
+                    futurePromptDate: trade.futurePromptDate
+                };
+                const allocTrade = createTradeObject(allocData);
+                allocTrade.stage = 2;
+                allocTrade.allocationParent = trade.id;
+                allocTrade.eventLog = [{ type: 'NEW', timestamp: new Date().toISOString(), detail: `Allocation ${i + 1}/${allocCount} from block ${trade.id}. Qty: ${qty} lots.`, emirAction: 'NEWT', emirEvent: 'ALOC', user: 'SYS' }];
+                trade.allocationChildren.push(allocTrade.id);
+                state.trades.push(allocTrade);
+                runValidation(allocTrade);
+            }
+            break;
+        }
+        case 'ROLL': {
+            const rollDate = document.getElementById('evtRollDate')?.value;
+            const rollCost = parseFloat(document.getElementById('evtRollCost')?.value) || 0;
+            // Close existing position
+            trade.tradeStatus = 'TERMINATED';
+            addEvent(trade, 'ROLL', `Position rolled. Near-month closed at ${formatUSD(spot)}. Roll cost: ${formatUSD(rollCost)}. New prompt: ${rollDate}.`);
+            // Create new position
+            const rollData = {
+                tradeDate: today(), counterparty: trade.counterparty, buySell: trade.buySell,
+                productType: trade.productType, commodity: trade.commodity,
+                quantity: String(trade.quantity), price: String(spot + rollCost * (trade.buySell === 'Buy' ? 1 : -1)),
+                valueDate: rollDate, metalAccount: trade.metalAccount,
+                futurePromptDate: rollDate
+            };
+            const rollTrade = createTradeObject(rollData);
+            rollTrade.stage = 2;
+            rollTrade.eventLog = [{ type: 'NEW', timestamp: new Date().toISOString(), detail: `Rolled from ${trade.id}. New prompt date: ${rollDate}. Carry cost: ${formatUSD(rollCost)}.`, emirAction: 'NEWT', emirEvent: 'TRAD', user: 'SYS' }];
+            state.trades.push(rollTrade);
+            runValidation(rollTrade);
+            break;
+        }
+        case 'PHYSICAL_DELIVERY': {
+            trade.deliveryStatus = 'DELIVERED';
+            trade.tradeStatus = 'DELIVERED';
+            addEvent(trade, 'PHYSICAL_DELIVERY', `Physical delivery completed. ${trade.buySell === 'Buy' ? 'Received' : 'Delivered'} ${trade.quantity * com.contractSize} ${com.unit} of ${com.name}. ${com.type === 'base' ? 'Warrant transferred via LMEsword.' : 'Account: ' + (trade.metalAccount || 'Unallocated')}.`);
+            break;
+        }
+        case 'CASH_SETTLEMENT': {
+            const mtm = isOptionType(trade.productType) ? ((trade.optionTheoPrice || 0) - (trade.premium || 0)) : (spot - trade.price);
+            const cashAmt = mtm * trade.quantity * com.contractSize * (trade.productType === 'Swap' ? (trade.swapTenor || 1) : 1);
+            trade.realisedPnL = trade.buySell === 'Buy' ? cashAmt : -cashAmt;
+            trade.tradeStatus = 'TERMINATED';
+            addEvent(trade, 'CASH_SETTLEMENT', `Cash settled at ${formatUSD(spot)}. Settlement amount: ${formatUSD(Math.abs(cashAmt))} (${cashAmt >= 0 ? 'received' : 'paid'}).`);
+            break;
+        }
+        case 'MARGIN_CALL': {
+            const addlMargin = trade.notional * 0.02;
+            trade.variationMargin += addlMargin;
+            addEvent(trade, 'MARGIN_CALL', `Margin call: ${formatUSD(addlMargin)} additional collateral required. Total VM: ${formatUSD(trade.variationMargin)}. Deadline: T+1 10:00 London.`);
+            break;
+        }
+        case 'CREDIT_EVENT': {
+            const eventType = document.getElementById('evtCreditType')?.value || 'Failure to Pay';
+            trade.tradeStatus = 'TERMINATED';
+            const mult = trade.quantity * com.contractSize * (trade.productType === 'Swap' ? (trade.swapTenor || 1) : 1);
+            const closeOut = trade.buySell === 'Buy' ? (spot - trade.price) * mult : (trade.price - spot) * mult;
+            trade.realisedPnL = closeOut;
+            addEvent(trade, 'CREDIT_EVENT', `Credit event: ${eventType} by ${trade.counterparty}. ISDA close-out netting triggered. Close-out amount: ${formatUSD(closeOut)}. All trades with this counterparty terminated.`);
+            break;
+        }
+    }
+
+    // Close modal
+    document.getElementById('eventModal')?.remove();
+
+    // Update UI
+    updateSidebar();
+    const t = getCurrentTrade();
+    if (t && t.id === tradeId) renderTradeView(t);
+    else if (state.currentView === 'blotter') renderBlotterView();
 }
 </script>
 
